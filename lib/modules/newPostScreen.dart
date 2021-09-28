@@ -24,6 +24,10 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
           navigateAndKill(context, SocialLayout(0));
           showToast('Post Created Successfully');
         }
+          else if(state is UpdatePostSuccessState) {
+            navigateAndKill(context, SocialLayout(0));
+            showToast('Post Updated Successfully');
+          }
       },
       builder: (context,state){
           print(postId);
@@ -36,13 +40,16 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
               automaticallyImplyLeading: false,
               leading: IconButton(
                 onPressed: (){
-                  postTextController.clear();
-                  if(postPic != null)
+                postTextController.clear();
+                pop(context);
+                  if(postPic != null) {
                     SocialCubit.get(context).popPostImage();
-                  else if(postModel!.postImage != null)
+                    pop(context);
+                  } else if(postModel!.postImage != null) {
                     postModel!.postImage = null;
-                  SocialCubit.get(context).emit(HomeSuccessState());
-                  pop(context);
+                    SocialCubit.get(context).emit(HomeSuccessState());
+                    pop(context);
+                  }
                 },
                   icon: Icon(IconBroken.Arrow___Left_2)),
               titleSpacing: 0,

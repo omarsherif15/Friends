@@ -410,7 +410,8 @@ class SocialCubit extends Cubit<SocialStates>
       time: time,
       dateTime: FieldValue.serverTimestamp()
     );
-    FirebaseFirestore.instance.collection('posts').add(postModel.toMap())
+    FirebaseFirestore.instance.collection('posts')
+        .add(postModel.toMap())
         .then((value) {
           getPosts();
       emit(CreatePostSuccessState());
@@ -420,7 +421,19 @@ class SocialCubit extends Cubit<SocialStates>
     });
   }
 
-  List<String> postsId = [];
+  void setPostId(){
+    FirebaseFirestore.instance
+        .collection('posts')
+        .snapshots()
+        .listen((value){
+          value.docs.forEach((element) {
+            element.reference.update({
+              'postId' : element.id
+            });
+          });
+    });
+  }
+
   List<PostModel> posts = [];
   void getPosts(){
     FirebaseFirestore.instance
@@ -429,28 +442,24 @@ class SocialCubit extends Cubit<SocialStates>
         .snapshots()
         .listen((event) {
           posts = [];
-          postsId = [];
           event.docs.forEach((element) {
-            postsId.add(element.id);
             posts.add(PostModel.fromJson(element.data()));
           });
+          setPostId();
           emit(GetPostSuccessState());
     });
   }
 
-  List<String> userPostsId = [];
   List<PostModel> userPosts = [];
   void getUserPosts(String ? userId){
     FirebaseFirestore.instance
         .collection('posts')
         .orderBy('dateTime')
-        .snapshots(includeMetadataChanges: true)
+        .snapshots()
         .listen((event) {
       userPosts = [];
-      userPostsId = [];
       event.docs.forEach((element) {
         if(element.data()['uId'] == userId) {
-          userPostsId.add(element.id);
           userPosts.add(PostModel.fromJson(element.data()));
         }
       });
@@ -554,8 +563,8 @@ class SocialCubit extends Cubit<SocialStates>
     });
   }
 
-
-  void likePost(String postId){
+  bool isLiked = false;
+  void likePost(String? postId){
     LikesModel likesModel = LikesModel(
       uId: model!.uID,
       name: model!.name,
@@ -585,7 +594,7 @@ class SocialCubit extends Cubit<SocialStates>
 
   }
 
-  void disLikePost(String postId){
+  void disLikePost(String? postId){
     FirebaseFirestore.instance
         .collection('posts')
         .doc(postId)
@@ -607,35 +616,6 @@ class SocialCubit extends Cubit<SocialStates>
     });
   }
 
-  bool isLiked = false;
-  void checkLike(String? postId){
-    FirebaseFirestore.instance
-        .collection('posts')
-        .doc(postId)
-        .collection('likes')
-        .snapshots()
-        .listen((value){
-      value.docs.forEach((element) {
-        if(element.id == model!.uID)
-          isLiked = true;
-      });
-      emit(LikePressedSuccessState());
-    });
-  }
-
-
-  void likePressed(postId){
-    checkLike(postId);
-    if(isLiked == false) {
-      likePost(postId);
-      isLiked = true;
-      emit(LikePressedSuccessState());
-    } else {
-      disLikePost(postId);
-      isLiked = false;
-      emit(LikePressedSuccessState());
-    }
-  }
 
   List<LikesModel> peopleReacted = [];
   void getLikes(String? postId){
@@ -654,7 +634,7 @@ class SocialCubit extends Cubit<SocialStates>
   }
 
   void commentPost({
-    required String postId,
+    required String? postId,
     String? comment,
     String? commentImage,
     required String time,
@@ -673,18 +653,19 @@ class SocialCubit extends Cubit<SocialStates>
         .collection('comments')
         .add(commentModel.toMap())
         .then((value) {
+      FirebaseFirestore.instance
+          .collection('posts')
+          .doc(postId)
+          .update({
+        'comments' : FieldValue.increment(1),
+      }).then((value){emit(PlusCommentSuccessState());});
+      getPosts();
       emit(CommentPostSuccessState());
     })
         .catchError((error){
       print(error.toString());
       emit(CommentPostErrorState());
 
-    });
-    FirebaseFirestore.instance
-        .collection('posts')
-        .doc(postId)
-        .update({
-      'comments' : FieldValue.increment(1),
     });
   }
 

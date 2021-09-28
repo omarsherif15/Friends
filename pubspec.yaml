@@ -49,6 +49,8 @@ dependencies:
   scroll_app_bar: ^2.0.0
   scrollable_positioned_list: ^0.2.0-nullsafety.0
   get_time_ago: ^1.0.7+1
+  pull_to_refresh: ^2.0.0
+  full_screen_image_null_safe: any
 
 dev_dependencies:
   flutter_test:

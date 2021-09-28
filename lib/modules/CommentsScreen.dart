@@ -11,12 +11,12 @@ import 'package:socialapp/shared/styles/iconBroken.dart';
 class CommentsScreen extends StatelessWidget {
   var commentTextControl = TextEditingController();
   int index;
-  String postId;
+  String? postId;
 CommentsScreen(this.index,this.postId);
   @override
   Widget build(BuildContext context) {
     int index = this.index;
-    String postId = this.postId;
+    String? postId = this.postId;
     return Builder(
       builder:(context)
       {
@@ -31,7 +31,7 @@ CommentsScreen(this.index,this.postId);
                   leading: IconButton(
                     onPressed: (){
                       comments.clear();
-                      navigateTo(context, SocialLayout(0));
+                      pop(context);
                     },
                     icon: Icon(Icons.arrow_back),
                   ),

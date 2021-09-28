@@ -202,6 +202,7 @@ class SetRecentMessageErrorState extends SocialStates{}
 
 ///CommentPost State
 class CommentPostSuccessState extends SocialStates {}
+class PlusCommentSuccessState extends SocialStates {}
 class CommentPostErrorState extends SocialStates{}
 ///End of CommentPost State
 

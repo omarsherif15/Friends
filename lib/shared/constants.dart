@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:full_screen_image_null_safe/full_screen_image_null_safe.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:intl/intl.dart';
 
@@ -108,6 +109,27 @@ var scroll = ScrollController();
 String sinceWhen(String dateTime){
   return GetTimeAgo.parse(DateTime.parse(dateTime));
 }
+
+Widget imagePreview(String? image){
+  return FullScreenWidget(
+    child: Center(
+      child: Image.network(
+        "$image",
+        fit: BoxFit.cover,
+        width: double.infinity,
+        alignment: AlignmentDirectional.topCenter,
+      ),
+    ),
+  );
+}
+
+// Image.network(
+// '${userModel!.coverPic}',
+// fit: BoxFit.fill,
+// width: double.infinity,
+// height: 190,
+// alignment: AlignmentDirectional.topCenter,
+// ),
 
 // Container(
 // height: 250,

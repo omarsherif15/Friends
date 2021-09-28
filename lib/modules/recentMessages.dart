@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:get_time_ago/get_time_ago.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
@@ -12,6 +13,7 @@ import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/constants.dart';
 
 class RecentMessages extends StatelessWidget {
+  var refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,14 @@ class RecentMessages extends StatelessWidget {
       SocialCubit.get(context).getUserData();
       SocialCubit.get(context).getRecentMessages();
       SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
+      Future<void> onRefresh() async {
+        await Future.delayed(Duration(seconds: 1));
+        SocialCubit.get(context).getUserData();
+        SocialCubit.get(context).getRecentMessages();
+        SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
+        refreshController.refreshCompleted();
+      }
+
       return BlocConsumer<SocialCubit, SocialStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -26,81 +36,86 @@ class RecentMessages extends StatelessWidget {
           List<UserModel> friends = SocialCubit.get(context).friends;
           print(DateTime.now().toString());
           return Scaffold(
-            body: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      height: 40,
-                      width: MediaQuery.of(context).size.width -20,
-                      child: TextFormField(
-                        readOnly: true,
-                        style: Theme.of(context).textTheme.bodyText1,
-                        onTap: (){
-                          navigateTo(context, SearchScreen());
-                        },
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          disabledBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
-                          focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
-                          hintText: 'Search',
-                          hintStyle: TextStyle(fontSize: 15),
-                          prefixIcon: Icon(Icons.search,color: Colors.grey,),
+            body: SmartRefresher(
+              controller: refreshController,
+              enableTwoLevel: true,
+              onRefresh: onRefresh,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Container(
+                        height: 40,
+                        width: MediaQuery.of(context).size.width -20,
+                        child: TextFormField(
+                          readOnly: true,
+                          style: Theme.of(context).textTheme.bodyText1,
+                          onTap: (){
+                            navigateTo(context, SearchScreen());
+                          },
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            disabledBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
+                            focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
+                            hintText: 'Search',
+                            hintStyle: TextStyle(fontSize: 15),
+                            prefixIcon: Icon(Icons.search,color: Colors.grey,),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  if(friends.length > 0)
-                    Container(
-                      height: 110,
-                      child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      physics: BouncingScrollPhysics(),
-                      itemBuilder: (context, index) =>
-                          storyBuildItem(context,friends[index]),
-                      separatorBuilder: (context, index) => SizedBox(height:0,),
-                      itemCount: friends.length,
-                  ),
+                    if(friends.length > 0)
+                      Container(
+                        height: 110,
+                        child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (context, index) =>
+                            storyBuildItem(context,friends[index]),
+                        separatorBuilder: (context, index) => SizedBox(height:0,),
+                        itemCount: friends.length,
                     ),
-                  Conditional.single(
-                        context: context,
-                        conditionBuilder:(context) => recentMessages.length != 0 ,
-                        widgetBuilder:(context) =>
-                            ListView.separated(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) =>
-                                  chatBuildItem(context,recentMessages[index]),
-                              separatorBuilder: (context, index) => SizedBox(height:0,),
-                              itemCount: recentMessages.length,
-                            ),
-                        fallbackBuilder: (context) => Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(Icons.chat,color: Colors.grey,size: 50,),
-                            Text('No recent messages',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                            SizedBox(height: 10,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Click on'),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Icon(Icons.chat,color: Colors.grey),
-                                ),
-                                Text('to start a new conversation'),
-                              ],
-                            )
-                          ],
-                        )
+                      ),
+                    Conditional.single(
+                          context: context,
+                          conditionBuilder:(context) => recentMessages.length != 0 ,
+                          widgetBuilder:(context) =>
+                              ListView.separated(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) =>
+                                    chatBuildItem(context,recentMessages[index]),
+                                separatorBuilder: (context, index) => SizedBox(height:0,),
+                                itemCount: recentMessages.length,
+                              ),
+                          fallbackBuilder: (context) => Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.chat,color: Colors.grey,size: 50,),
+                              Text('No recent messages',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+                              SizedBox(height: 10,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Click on'),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: Icon(Icons.chat,color: Colors.grey),
+                                  ),
+                                  Text('to start a new conversation'),
+                                ],
+                              )
+                            ],
+                          )
           ),
-                ],
+                  ],
+                ),
               ),
             ),
             floatingActionButton: FloatingActionButton(
@@ -116,6 +131,7 @@ class RecentMessages extends StatelessWidget {
     });
   }
 }
+
 
 Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
   return InkWell(

@@ -145,13 +145,13 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                   onSelected: (value) {
                     if (value == 'Delete post')
                       SocialCubit.get(context)
-                          .deletePost(SocialCubit.get(context).postsId[index]);
+                          .deletePost(postModel.postId);
                     else if (value == 'Edit post')
                       navigateTo(
                           context,
                           NewPostScreen(
                             isEdit: true,
-                            postId:SocialCubit.get(context).postsId[index],
+                            postId:postModel.postId,
                             postModel: postModel,
                           ));
                   },
@@ -196,7 +196,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
           if (postModel.postImage != null)
             Padding(
               padding: const EdgeInsetsDirectional.only(top: 10),
-              child: Image(image: NetworkImage('${postModel.postImage}')),
+              child: imagePreview(postModel.postImage)
             ),
           Padding(
             padding: EdgeInsets.only(top: 10),
@@ -204,7 +204,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
               children: [
                 if(postModel.likes != 0)
                   InkWell(
-                    onTap: () => navigateTo(context, WhoLikedScreen(SocialCubit.get(context).postsId[index])),
+                    onTap: () => navigateTo(context, WhoLikedScreen(postModel.postId)),
                     child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -226,7 +226,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                     navigateTo(
                         context,
                         CommentsScreen(
-                            index, SocialCubit.get(context).postsId[index]));
+                            index, postModel.postId));
                   },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -257,7 +257,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                   navigateTo(
                       context,
                       CommentsScreen(
-                          index, SocialCubit.get(context).postsId[index]));
+                          index, postModel.postId));
                 },
                 child: Row(
                   children: [
@@ -278,9 +278,9 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
               InkWell(
                 onTap: () {
                   if(SocialCubit.get(context).isLiked == false)
-                    SocialCubit.get(context).likePost(SocialCubit.get(context).postsId[index]);
+                    SocialCubit.get(context).likePost(postModel.postId);
                   if(SocialCubit.get(context).isLiked == true)
-                    SocialCubit.get(context).disLikePost(SocialCubit.get(context).postsId[index]);
+                    SocialCubit.get(context).disLikePost(postModel.postId);
                 },
                 child: Row(
                   children: [

@@ -12,7 +12,7 @@ import 'package:socialapp/shared/styles/iconBroken.dart';
 import 'chatScreen.dart';
 
 class WhoLikedScreen extends StatelessWidget {
-String postId;
+String ?postId;
 WhoLikedScreen(this.postId);
   @override
   Widget build(BuildContext context) {

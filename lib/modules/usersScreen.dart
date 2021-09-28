@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/models/userModel.dart';
@@ -16,8 +17,7 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-  var mayKnowScroll = ScrollController();
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
+  var refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +33,12 @@ class _UsersScreenState extends State<UsersScreen> {
               List<UserModel> friendRequests = SocialCubit.get(context).friendRequests;
               List<UserModel> friends = SocialCubit.get(context).friends;
               return Scaffold(
-                body: RefreshIndicator(
-                  key: refreshKey,
+                body: SmartRefresher(
+                  controller: refreshController,
+                  enablePullDown: true,
+                  enablePullUp: true,
                   onRefresh: onRefresh,
                   child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: Column(
@@ -76,7 +77,6 @@ class _UsersScreenState extends State<UsersScreen> {
                             height: 350,
                             padding: EdgeInsets.symmetric(vertical: 10),
                             child: ListView.separated(
-                              controller: mayKnowScroll,
                               physics: BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
@@ -125,12 +125,12 @@ class _UsersScreenState extends State<UsersScreen> {
   }
 
   Future<void> onRefresh() async {
-    refreshKey.currentState?.show();
     await Future.delayed(Duration(seconds: 1));
     SocialCubit.get(context).getUserData();
     SocialCubit.get(context).getFriendRequest(SocialCubit.get(context).model!.uID);
     SocialCubit.get(context).getAllUsers();
     SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
+    refreshController.refreshCompleted();
   }
 
   Widget friendBuildItem(context, UserModel userModel) {

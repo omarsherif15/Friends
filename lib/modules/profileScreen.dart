@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:full_screen_image_null_safe/full_screen_image_null_safe.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
+import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/models/postModel.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/editProfileScreen.dart';
@@ -9,6 +12,9 @@ import 'package:socialapp/modules/freindsScreen.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'CommentsScreen.dart';
+import 'LikesScreen.dart';
+import 'friendsProfileScreen.dart';
 import 'newPostScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -18,8 +24,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController commentTextControl = TextEditingController();
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
-
+  var refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +36,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           listener: (context, state) {},
           builder: (context, state) {
             UserModel? userModel = SocialCubit.get(context).model;
-            List<PostModel> posts = SocialCubit.get(context).userPosts;
+            List<PostModel> userPosts = SocialCubit.get(context).userPosts;
             List<UserModel>? friends = SocialCubit.get(context).friends;
 
-            return RefreshIndicator(
-              key: refreshKey,
+            return SmartRefresher(
+              controller: refreshController,
               onRefresh: onRefresh,
               child: SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
@@ -61,13 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         topLeft: Radius.circular(15),
                                         topRight: Radius.circular(15))),
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                                child: Image.network(
-                                  '${userModel!.coverPic}',
-                                  fit: BoxFit.fill,
-                                  width: double.infinity,
-                                  height: 190,
-                                  alignment: AlignmentDirectional.topCenter,
-                                ),
+                                child: imagePreview(userModel!.coverPic)
                               ),
                             ),
                             CircleAvatar(
@@ -75,8 +74,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               backgroundColor: Colors.white,
                               child: CircleAvatar(
                                 radius: 70,
-                                backgroundImage:
-                                    NetworkImage('${userModel.profilePic}'),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(70),
+                                    child: imagePreview(userModel.profilePic))
                               ),
                             )
                           ],
@@ -87,8 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Text(
                         '${userModel.name}',
-                        style:
-                            TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
@@ -102,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Column(
                                 children: [
                                   Text(
-                                    '${posts.length}',
+                                    '${userPosts.length}',
                                     style: TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(
@@ -115,9 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Expanded(
                               child: Column(
                                 children: [
-                                  Text('12K',
-                                      style:
-                                          TextStyle(fontWeight: FontWeight.bold)),
+                                  Text('12K', style: TextStyle(fontWeight: FontWeight.bold)),
                                   SizedBox(
                                     height: 5,
                                   ),
@@ -128,14 +125,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Expanded(
                               child: InkWell(
                                 onTap: () {
-                                  navigateTo(
-                                      context, FriendsScreen(friends));
+                                  navigateTo(context, FriendsScreen(friends));
                                 },
                                 child: Column(
                                   children: [
                                     Text('${friends.length}',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                        style: TextStyle(fontWeight: FontWeight.bold)),
                                     SizedBox(
                                       height: 5,
                                     ),
@@ -181,14 +176,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  navigateTo(context, NewPostScreen(isEdit: false,));
+                                  navigateTo(
+                                      context,
+                                      NewPostScreen(
+                                        isEdit: false,
+                                      ));
                                 },
                                 child: Row(
                                   children: [
                                     CircleAvatar(
                                         radius: 22,
-                                        backgroundImage: NetworkImage(
-                                            '${userModel.profilePic}')),
+                                        backgroundImage: NetworkImage('${userModel.profilePic}')),
                                     SizedBox(
                                       width: 15,
                                     ),
@@ -216,9 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             SizedBox(
                                               width: 5,
                                             ),
-                                            Text('Image',
-                                                style: TextStyle(
-                                                    color: Colors.grey)),
+                                            Text('Image', style: TextStyle(color: Colors.grey)),
                                           ],
                                         )),
                                   ),
@@ -244,8 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             ),
                                             Text(
                                               'Tags',
-                                              style:
-                                                  TextStyle(color: Colors.grey),
+                                              style: TextStyle(color: Colors.grey),
                                             ),
                                           ],
                                         )),
@@ -270,9 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             SizedBox(
                                               width: 5,
                                             ),
-                                            Text('Docs',
-                                                style: TextStyle(
-                                                    color: Colors.grey)),
+                                            Text('Docs', style: TextStyle(color: Colors.grey)),
                                           ],
                                         )),
                                   ),
@@ -289,10 +282,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
-                            return buildPost(context,state, posts[index], userModel, index);
+                          return buildPost(context, state, userPosts[index], userModel, index);
                         },
-                        separatorBuilder: (context, index) => SizedBox(height: 10,),
-                        itemCount: posts.length,
+                        separatorBuilder: (context, index) => SizedBox(
+                          height: 10,
+                        ),
+                        itemCount: userPosts.length,
                       ),
                     ],
                   ),
@@ -304,13 +299,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-  Future<void> onRefresh() async {
-    refreshKey.currentState?.show();
-    await Future.delayed(Duration(seconds: 1))
-        .then((value) {
-      SocialCubit.get(context).getUserPosts(SocialCubit.get(context).model!.uID);
-      SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
-    });
-  }
 
+
+  Future<void> onRefresh() async {
+    await Future.delayed(Duration(seconds: 1));
+    SocialCubit.get(context).getUserPosts(SocialCubit.get(context).model!.uID);
+    SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
+    refreshController.refreshCompleted();
+  }
 }

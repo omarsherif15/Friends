@@ -86,9 +86,10 @@ class SocialLayout extends StatefulWidget {
                     ),
                   ),
             body: TabBarView(
-                controller: tabController,
-                children: SocialCubit.get(context).screens),
-          );
+              controller: tabController,
+              children:SocialCubit.get(context).screens,
+            )
+            );
         });
   }
 }
