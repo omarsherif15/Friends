@@ -22,6 +22,11 @@ class LoginSuccessState extends SocialStates{
 class LoginErrorState extends SocialStates{}
 ///End of Login State
 
+///ResetPassword State
+class ResetPasswordLoadingState extends SocialStates{}
+class ResetPasswordSuccessState extends SocialStates{}
+class ResetPasswordErrorState extends SocialStates{}
+///End of Login State
 
 ///CreateUser State
 class CreateUserLoadingState extends SocialStates{}

@@ -7,6 +7,7 @@ import 'package:socialapp/cubit/LoginCubit.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
+import 'package:socialapp/modules/ResetPasswordScreen.dart';
 import 'package:socialapp/modules/registerScreen.dart';
 import 'package:socialapp/remoteNetwork/cacheHelper.dart';
 import 'package:socialapp/shared/component.dart';
@@ -38,7 +39,6 @@ class LoginScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             extendBodyBehindAppBar: true,
             appBar: AppBar(
-              backwardsCompatibility: false,
               systemOverlayStyle: SystemUiOverlayStyle(
                 statusBarBrightness: Brightness.light,
                 statusBarColor: Colors.transparent,
@@ -133,7 +133,9 @@ class LoginScreen extends StatelessWidget {
                             width: double.infinity,
                             alignment: AlignmentDirectional.centerEnd,
                             child: TextButton(
-                                onPressed: (){},
+                                onPressed: (){
+                                  navigateTo(context, ResetPasswordScreen());
+                                },
                                 child: Text('Forget Your Password ?',
                                   style: TextStyle(
                                       color: Colors.black.withOpacity(0.5)),
