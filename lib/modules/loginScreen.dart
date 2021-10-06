@@ -12,6 +12,7 @@ import 'package:socialapp/modules/registerScreen.dart';
 import 'package:socialapp/remoteNetwork/cacheHelper.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
+import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -30,8 +31,20 @@ class LoginScreen extends StatelessWidget {
               uId =state.uId;
               navigateAndKill(context, SocialLayout(0));
               SocialCubit.get(context).getUserData();
-              SocialCubit.get(context).getAllUsers();
-
+            });
+          else if(state is CreateGoogleUserSuccessState)
+            CacheHelper.saveData(key: 'uId', value: state.uId).
+            then((value) {
+              uId =state.uId;
+              navigateAndKill(context, SocialLayout(0));
+              SocialCubit.get(context).getUserData();
+            });
+          else if(state is UserExistSuccessState)
+            CacheHelper.saveData(key: 'uId', value: state.uId).
+            then((value) {
+              uId =state.uId;
+              navigateAndKill(context, SocialLayout(0));
+              SocialCubit.get(context).getUserData();
             });
         },
         builder: (context, state) {
@@ -62,8 +75,10 @@ class LoginScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 40,),
-                      Text('Welcome Back!',style: TextStyle(fontSize: 50,fontWeight: FontWeight.bold,color: Colors.white)),
+                      SizedBox(height: 60,),
+                      Container(
+                        width: 250,
+                          child: Text('Welcome Back!',style: TextStyle(fontSize: 50,fontWeight: FontWeight.bold,color: Colors.white))),
                       SizedBox(height: 10,),
                       Text('Login to communicate with your friends',style: TextStyle(fontSize: 20,color: Colors.white)),
                     ],
@@ -88,13 +103,13 @@ class LoginScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children:
                         [
-                          SizedBox(height: 20,),
+                          SizedBox(height: 10,),
                           defaultFormField(
                               context: context,
                               controller: emailController,
                               keyboardType: TextInputType.emailAddress,
                               hintText: 'Email Address',
-                              prefix: Icons.email,
+                              prefix: Icons.email_outlined,
                               validate: (value)
                               {
                                 if(value!.isEmpty)
@@ -102,13 +117,13 @@ class LoginScreen extends StatelessWidget {
                               }
                           ),
                           SizedBox(
-                            height: 20,
+                            height: 15,
                           ),
                           defaultFormField(
                               context: context,
                               controller: passwordController,
                               hintText: 'Password',
-                              prefix: IconBroken.Category,
+                              prefix: IconBroken.Lock,
                               isPassword: !LoginCubit.get(context).showPassword ? true : false,
                               validate: (value)
                               {
@@ -146,7 +161,7 @@ class LoginScreen extends StatelessWidget {
                           state is LoginLoadingState ?
                           Center(child: CircularProgressIndicator())
                               :defaultButton(
-                                  text: 'SIGN IN',
+                                  text: 'LOGIN',
                                   onTap: () {
                                     if (loginFormKey.currentState!.validate()) {
                                       LoginCubit.get(context).signIn(
@@ -174,19 +189,33 @@ class LoginScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children:
                                 [
-                                  CircleAvatar(
-                                    child:Image(image:AssetImage('assets/images/facebook_logo.png',),width: 40,height: 40,),
-                                    backgroundColor: Colors.white,
+                                  InkWell(
+                                    onTap: (){
+                                    },
+                                    child: CircleAvatar(
+                                      child:Image(image:AssetImage('assets/images/facebook_logo.png',),width: 40,height: 40,),
+                                      backgroundColor: Colors.white,
+                                    ),
                                   ),
                                   SizedBox(width: 50,),
-                                  CircleAvatar(
-                                    child:Image(image:AssetImage('assets/images/Google_Logo.png',),width: 50,height: 50,),
-                                    backgroundColor: Colors.white,
+                                  InkWell(
+                                    onTap: (){
+                                      LoginCubit.get(context).getGoogleUserCredentials();
+                                    },
+                                    child: CircleAvatar(
+                                      child:Image(image:AssetImage('assets/images/Google_Logo.png',),width: 50,height: 50,),
+                                      backgroundColor: Colors.white,
+                                    ),
                                   ),
                                   SizedBox(width: 50,),
-                                  CircleAvatar(
-                                    child:Image(image:AssetImage('assets/images/Twitter-Logo.png',),width: 70,height: 70,),
-                                    backgroundColor: Colors.white,
+                                  InkWell(
+                                    onTap: (){
+                                      LoginCubit.get(context).signOut();
+                                    },
+                                    child: CircleAvatar(
+                                      child:Image(image:AssetImage('assets/images/Twitter-Logo.png',),width: 70,height: 70,),
+                                      backgroundColor: Colors.white,
+                                    ),
                                   ),
                                 ],
                               )

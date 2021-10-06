@@ -190,6 +190,7 @@ class EditProfileScreen extends StatelessWidget {
                             ],
                           ),
                         ),
+                        SizedBox(height: 30),
                         defaultFormField(
                           context: context,
                           controller:nameController ,

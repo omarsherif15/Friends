@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, state) {
             UserModel? userModel = SocialCubit.get(context).model;
             List<PostModel> posts = SocialCubit.get(context).posts;
-            return state is UserLoadingState || state is GetPostLoadingState || posts == []
+            return state is UserLoadingState || state is GetPostLoadingState
                 ? Container(
                     child: Center(
                     child: CircularProgressIndicator(),

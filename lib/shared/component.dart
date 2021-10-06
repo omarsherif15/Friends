@@ -147,9 +147,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                       SocialCubit.get(context)
                           .deletePost(postModel.postId);
                     else if (value == 'Edit post')
-                      navigateTo(
-                          context,
-                          NewPostScreen(
+                      navigateTo(context, NewPostScreen(
                             isEdit: true,
                             postId:postModel.postId,
                             postModel: postModel,

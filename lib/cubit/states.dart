@@ -11,6 +11,7 @@ class CloseTopSheet extends SocialStates{}
 class RefreshPage extends SocialStates{}
 class ShowTimeState extends SocialStates{}
 
+
 ///End of General states
 
 ///Login State
@@ -20,6 +21,10 @@ class LoginSuccessState extends SocialStates{
   LoginSuccessState(this.uId);
 }
 class LoginErrorState extends SocialStates{}
+class UserExistSuccessState extends SocialStates{
+  final String uId;
+  UserExistSuccessState(this.uId);
+}
 ///End of Login State
 
 ///ResetPassword State
@@ -35,6 +40,15 @@ class CreateUserSuccessState extends SocialStates{
   CreateUserSuccessState(this.uId);
 }
 class CreateUserErrorState extends SocialStates{}
+///End of CreateUser State
+
+///CreateGoogleUSer State
+class CreateGoogleUserLoadingState extends SocialStates{}
+class CreateGoogleUserSuccessState extends SocialStates{
+  final  String uId;
+  CreateGoogleUserSuccessState(this.uId);
+}
+class CreateGoogleUserErrorState extends SocialStates{}
 ///End of CreateUser State
 
 ///SignUp State
@@ -79,6 +93,12 @@ class GetPostPicSuccessState extends SocialStates {}
 class GetPostPicErrorState extends SocialStates{}
 class DeletePostPicState extends SocialStates {}
 ///End of GetPostPic State
+
+///GetMessagePic State
+class GetMessagePicSuccessState extends SocialStates {}
+class GetMessagePicErrorState extends SocialStates{}
+class DeleteMessagePicState extends SocialStates {}
+///End of GetMessagePic State
 
 ///UploadProfilePic State
 class UploadProfilePicSuccessState extends SocialStates {}

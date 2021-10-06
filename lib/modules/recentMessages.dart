@@ -36,64 +36,61 @@ class RecentMessages extends StatelessWidget {
           List<UserModel> friends = SocialCubit.get(context).friends;
           print(DateTime.now().toString());
           return Scaffold(
-            body: SmartRefresher(
-              controller: refreshController,
-              enableTwoLevel: true,
-              onRefresh: onRefresh,
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    SizedBox(height: 10,),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Container(
-                        height: 40,
-                        width: MediaQuery.of(context).size.width -20,
-                        child: TextFormField(
-                          readOnly: true,
-                          style: Theme.of(context).textTheme.bodyText1,
-                          onTap: (){
-                            navigateTo(context, SearchScreen());
-                          },
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                            disabledBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
-                            focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
-                            hintText: 'Search',
-                            hintStyle: TextStyle(fontSize: 15),
-                            prefixIcon: Icon(Icons.search,color: Colors.grey,),
-                          ),
+            body: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  SizedBox(height: 10,),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Container(
+                      height: 40,
+                      width: MediaQuery.of(context).size.width -20,
+                      child: TextFormField(
+                        readOnly: true,
+                        style: Theme.of(context).textTheme.bodyText1,
+                        onTap: (){
+                          navigateTo(context, SearchScreen());
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          disabledBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
+                          focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
+                          hintText: 'Search',
+                          hintStyle: TextStyle(fontSize: 15),
+                          prefixIcon: Icon(Icons.search,color: Colors.grey,),
                         ),
                       ),
                     ),
-                    if(friends.length > 0)
-                      Container(
-                        height: 110,
-                        child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, index) =>
-                            storyBuildItem(context,friends[index]),
-                        separatorBuilder: (context, index) => SizedBox(height:0,),
-                        itemCount: friends.length,
+                  ),
+                  if(friends.length > 0)
+                    Container(
+                      height: 110,
+                      child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (context, index) =>
+                          storyBuildItem(context,friends[index]),
+                      separatorBuilder: (context, index) => SizedBox(height:0,),
+                      itemCount: friends.length,
+                  ),
                     ),
-                      ),
-                    Conditional.single(
-                          context: context,
-                          conditionBuilder:(context) => recentMessages.length != 0 ,
-                          widgetBuilder:(context) =>
-                              ListView.separated(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) =>
-                                    chatBuildItem(context,recentMessages[index]),
-                                separatorBuilder: (context, index) => SizedBox(height:0,),
-                                itemCount: recentMessages.length,
-                              ),
-                          fallbackBuilder: (context) => Column(
+                  Conditional.single(
+                        context: context,
+                        conditionBuilder:(context) => recentMessages.length != 0 ,
+                        widgetBuilder:(context) =>
+                            ListView.separated(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) =>
+                                  chatBuildItem(context,recentMessages[index]),
+                              separatorBuilder: (context, index) => SizedBox(height:0,),
+                              itemCount: recentMessages.length,
+                            ),
+                        fallbackBuilder: (context) => Center(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -112,10 +109,10 @@ class RecentMessages extends StatelessWidget {
                                 ],
                               )
                             ],
-                          )
+                          ),
+                        )
           ),
-                  ],
-                ),
+                ],
               ),
             ),
             floatingActionButton: FloatingActionButton(

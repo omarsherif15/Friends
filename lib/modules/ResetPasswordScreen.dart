@@ -57,7 +57,7 @@ class ResetPasswordScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 50,),
+                      SizedBox(height: 30,),
                       Container(
                         width: double.infinity,
                           child: Image(image: AssetImage('assets/images/pass-removebg-preview.png'),width: 200,height: 200,)),

@@ -20,8 +20,8 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => SignInCubit(),
-        child:BlocConsumer<SignInCubit,SocialStates>(
+        create: (context) => SignUpCubit(),
+        child:BlocConsumer<SignUpCubit,SocialStates>(
           listener: (context, state) {
             if(state is CreateUserSuccessState) {
               CacheHelper.saveData(key: 'uId', value: state.uId).then((value){
@@ -137,7 +137,7 @@ class RegisterScreen extends StatelessWidget {
                                 controller: passwordController,
                                 hintText: 'Password',
                                 prefix: Icons.lock,
-                                isPassword: !SignInCubit.get(context).showPassword ? true : false,
+                                isPassword: !SignUpCubit.get(context).showPassword ? true : false,
                                 validate: (value)
                                 {
                                   if(value!.isEmpty)
@@ -151,10 +151,10 @@ class RegisterScreen extends StatelessWidget {
                                   //       password: passwordController.text);
                                   // }
                                 },
-                                suffix: SignInCubit.get(context).suffixIcon,
+                                suffix: SignUpCubit.get(context).suffixIcon,
                                 suffixPressed: ()
                                 {
-                                  SignInCubit.get(context).changeSuffixIcon(context);
+                                  SignUpCubit.get(context).changeSuffixIcon(context);
                                 }
                             ),
 
@@ -165,7 +165,7 @@ class RegisterScreen extends StatelessWidget {
                               text: 'SIGN UP',
                               onTap: () {
                                 if (signUpFormKey.currentState!.validate()) {
-                                  SignInCubit.get(context).signUp(
+                                  SignUpCubit.get(context).signUp(
                                     name: nameController.text,
                                     phone: phoneController.text,
                                     email: emailController.text,

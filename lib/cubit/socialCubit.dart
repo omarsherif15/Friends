@@ -350,6 +350,7 @@ class SocialCubit extends Cubit<SocialStates>
     }
   }
 
+
   String? postPic;
   void uploadPostPic(
       String? name,
@@ -879,6 +880,23 @@ class SocialCubit extends Cubit<SocialStates>
       print(error.toString());
       emit(SetRecentMessageErrorState());
     });
+  }
+
+  File? messageImage;
+  Future getMessageImage() async {
+    final pickedFile = await picker?.pickImage(source: ImageSource.gallery);
+    if(pickedFile != null) {
+      messageImage = File(pickedFile.path);
+      emit(GetMessagePicSuccessState());
+    } else {
+      print('No Image Selected');
+      emit(GetMessagePicErrorState());
+    }
+  }
+
+  void popMessageImage(){
+    messageImage = null;
+    emit(DeleteMessagePicState());
   }
 
   bool showTime = false;
