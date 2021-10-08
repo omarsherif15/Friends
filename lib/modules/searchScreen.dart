@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/models/userModel.dart';
@@ -50,7 +51,23 @@ class SearchScreen extends StatelessWidget {
               ),
             ),
           ),
-          body: chatBuildItem(context, SocialCubit.get(context).search),
+          body: Conditional.single(
+            context: context,
+            conditionBuilder:(context) => SocialCubit.get(context).search != null,
+              widgetBuilder:(context) => chatBuildItem(context, SocialCubit.get(context).search),
+            fallbackBuilder: (context) => Container(
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.search_off_outlined,size: 50,color: Colors.grey,),
+                  SizedBox(height: 30,),
+                  Text('No Search Results',style: TextStyle(fontSize: 25),)
+                ],
+              ),
+            )
+          ),
           // body: ListView.separated(
           //   physics: BouncingScrollPhysics(),
           //   itemBuilder: (context,index) =>chatBuildItem(context,SocialCubit.get(context).search![index]) ,

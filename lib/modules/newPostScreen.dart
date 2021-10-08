@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,7 +86,6 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                           comments: postModel!.comments,
                           date: postModel!.date,
                           time: postModel!.time,
-                          dateTime: postModel!.dateTime
                         );
                       } else {
                         SocialCubit.get(context).editPostPic(
@@ -99,7 +97,6 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                             comments: postModel!.comments,
                             date: postModel!.date,
                             time: postModel!.time,
-                            dateTime: postModel!.dateTime
                         );
                       }
                     }
@@ -251,7 +248,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                       [
                         Icon(IconBroken.Document,color: Colors.green,),
                         SizedBox(width: 5,),
-                        Text('Image',style: TextStyle(color: Colors.grey)),
+                        Text('Docs',style: TextStyle(color: Colors.grey)),
                       ],
                     )
                 ),

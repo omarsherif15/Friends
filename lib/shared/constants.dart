@@ -102,6 +102,9 @@ Color defaultColor  = Colors.blueAccent;
 
 String? uId = '';
 
+String? token = '';
+
+
 int cartLength = 0;
 
 var scroll = ScrollController();
@@ -109,6 +112,7 @@ var scroll = ScrollController();
 String sinceWhen(String dateTime){
   return GetTimeAgo.parse(DateTime.parse(dateTime));
 }
+
 
 Widget imagePreview(String? image){
   return FullScreenWidget(

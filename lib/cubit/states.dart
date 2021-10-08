@@ -51,6 +51,15 @@ class CreateGoogleUserSuccessState extends SocialStates{
 class CreateGoogleUserErrorState extends SocialStates{}
 ///End of CreateUser State
 
+///LoginGoogleUSer State
+class LoginGoogleUserLoadingState extends SocialStates{}
+class LoginGoogleUserSuccessState extends SocialStates{
+  final  String uId;
+  LoginGoogleUserSuccessState(this.uId);
+}
+class LoginGoogleUserErrorState extends SocialStates{}
+///End of LoginUser State
+
 ///SignUp State
 class SignUpLoadingState extends SocialStates{}
 class SignUpSuccessState extends SocialStates{
@@ -109,6 +118,12 @@ class UploadProfilePicErrorState extends SocialStates{}
 class UploadCoverPicSuccessState extends SocialStates {}
 class UploadCoverPicErrorState extends SocialStates{}
 ///End of UploadCoverPic State
+
+///UploadMessagePic State
+class UploadMessagePicLoadingState extends SocialStates{}
+class UploadMessagePicSuccessState extends SocialStates {}
+class UploadMessagePicErrorState extends SocialStates{}
+///End of UploadMessagePic State
 
 ///UploadPostPic State
 class UploadPostPicSuccessState extends SocialStates {}

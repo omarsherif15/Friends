@@ -62,13 +62,12 @@ class LoginCubit extends Cubit<SocialStates> {
         );
       }
       else
-        print('userExit');
-      print(userExist);
-      emit(UserExistSuccessState(uId!));
+      emit(LoginGoogleUserSuccessState(uId!));
     });
   }
 
   void getGoogleUserCredentials() async {
+    emit(LoginGoogleUserLoadingState());
     GoogleSignIn googleSignIn = GoogleSignIn();
     GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
     GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!.authentication;

@@ -3,47 +3,56 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RecentMessagesModel
 {
-  String? uID;
+  String? senderName;
   String? receiverName;
   String? receiverId;
   String? senderId;
+  String? receiverProfilePic;
+  String? senderProfilePic;
   String? recentMessageText;
+  String? recentMessageImage;
   String? time;
-  String? profilePic;
   FieldValue? dateTime;
 
 
   RecentMessagesModel({
-    this.uID,
+    this.senderName,
     this.receiverName,
     this.receiverId,
     this.senderId,
     this.recentMessageText,
+    this.recentMessageImage,
     this.time,
-    this.profilePic,
-    this.dateTime
+    this.receiverProfilePic,
+    this.senderProfilePic,
+    this.dateTime,
 
   });
 
   RecentMessagesModel.fromJson(Map<String, dynamic> json){
+    senderName          = json['senderName'];
     receiverName        = json['receiverName'];
     receiverId          = json['receiverId'];
     senderId            = json['senderId'];
     recentMessageText   = json['recentMessageText'];
+    recentMessageImage  = json['recentMessageImage'];
     time                = json['time'];
-    profilePic          = json['profilePic'];
+    receiverProfilePic  = json['receiverProfilePic'];
+    senderProfilePic    = json['senderProfilePic'];
   }
 
   Map<String, dynamic> toMap (){
     return {
-      'uId'               :receiverId,
+      'senderName'        :senderName,
       'receiverName'      :receiverName,
       'receiverId'        :receiverId,
       'senderId'          :senderId,
       'recentMessageText' :recentMessageText,
+      'recentMessageImage':recentMessageImage,
       'time'              :time,
-      'profilePic'        :profilePic,
-      'dateTime'          :dateTime
+      'receiverProfilePic':receiverProfilePic,
+      'senderProfilePic'  :senderProfilePic,
+      'dateTime'          :dateTime,
     };
   }
 }

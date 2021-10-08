@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,24 +28,30 @@ class LoginScreen extends StatelessWidget {
         listener: (context, state) {
           if(state is LoginSuccessState)
             CacheHelper.saveData(key: 'uId', value: state.uId).
-            then((value) {
+            then((value) async {
               uId =state.uId;
               navigateAndKill(context, SocialLayout(0));
-              SocialCubit.get(context).getUserData();
+              SocialCubit.get(context).getMyData();
+              SocialCubit.get(context).setUserToken();
+              print (await FirebaseMessaging.instance.getToken());
             });
           else if(state is CreateGoogleUserSuccessState)
             CacheHelper.saveData(key: 'uId', value: state.uId).
-            then((value) {
+            then((value) async {
               uId =state.uId;
               navigateAndKill(context, SocialLayout(0));
-              SocialCubit.get(context).getUserData();
+              SocialCubit.get(context).getMyData();
+              SocialCubit.get(context).setUserToken();
+              print (await FirebaseMessaging.instance.getToken());
             });
-          else if(state is UserExistSuccessState)
+          else if(state is LoginGoogleUserSuccessState)
             CacheHelper.saveData(key: 'uId', value: state.uId).
-            then((value) {
+            then((value) async {
               uId =state.uId;
               navigateAndKill(context, SocialLayout(0));
-              SocialCubit.get(context).getUserData();
+              SocialCubit.get(context).getMyData();
+              SocialCubit.get(context).setUserToken();
+              print (await FirebaseMessaging.instance.getToken());
             });
         },
         builder: (context, state) {
@@ -203,7 +210,9 @@ class LoginScreen extends StatelessWidget {
                                       LoginCubit.get(context).getGoogleUserCredentials();
                                     },
                                     child: CircleAvatar(
-                                      child:Image(image:AssetImage('assets/images/Google_Logo.png',),width: 50,height: 50,),
+                                      child: state is LoginGoogleUserLoadingState?
+                                      CircularProgressIndicator() :
+                                      Image(image:AssetImage('assets/images/Google_Logo.png',),width: 50,height: 50,),
                                       backgroundColor: Colors.white,
                                     ),
                                   ),

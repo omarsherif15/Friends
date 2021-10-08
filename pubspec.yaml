@@ -36,16 +36,17 @@ dependencies:
   webview_flutter: ^2.0.10
   shared_preferences: ^2.0.6
   hexcolor: ^2.0.3
-  smooth_page_indicator: ^0.3.0-nullsafety.0
+  smooth_page_indicator: ^1.0.0+2
   fluttertoast: ^8.0.8
   flutter_conditional_rendering: ^2.0.0
   carousel_slider: ^4.0.0
   firebase_core: ^1.5.0
   firebase_auth: ^3.0.2
-  cloud_firestore: ^2.5.0
+  cloud_firestore: ^2.5.3
   image_picker: ^0.8.3+3
   firebase_storage: ^10.0.3
-  firebase_messaging: ^10.0.7
+  firebase_messaging: ^10.0.8
+  flutter_local_notifications: ^9.0.0
   scroll_app_bar: ^2.0.0
   scrollable_positioned_list: ^0.2.0-nullsafety.0
   get_time_ago: ^1.0.7+1
@@ -53,6 +54,7 @@ dependencies:
   full_screen_image_null_safe: any
   google_sign_in: ^5.1.1
   flutter_facebook_auth: ^3.5.2
+  path_provider: ^2.0.5
 
 dev_dependencies:
   flutter_test:

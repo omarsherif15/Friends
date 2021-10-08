@@ -5,6 +5,7 @@ import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
+import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/chatScreen.dart';
 import 'package:socialapp/modules/friendsProfileScreen.dart';
@@ -32,85 +33,88 @@ class _UsersScreenState extends State<UsersScreen> {
               List<UserModel> peopleYouMayKnow = SocialCubit.get(context).users;
               List<UserModel> friendRequests = SocialCubit.get(context).friendRequests;
               List<UserModel> friends = SocialCubit.get(context).friends;
-              return Scaffold(
-                body: SmartRefresher(
-                  controller: refreshController,
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  onRefresh: onRefresh,
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 15,),
-                          Text('Friend Requests', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                          //SizedBox(height: 10,),
-                          Conditional.single(
-                            context: context,
-                            conditionBuilder: (context) =>
-                            friendRequests.length > 0,
-                            widgetBuilder: (context) =>
-                                ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) =>
-                                      friendRequestBuildItem(
-                                          context, friendRequests[index]),
-                                  separatorBuilder: (context, index) =>
-                                      SizedBox(width: 10),
-                                  itemCount: friendRequests.length,
-                                ),
-                            fallbackBuilder: (context) =>
-                                Container(
-                                    padding: EdgeInsetsDirectional.only(
-                                        top: 15, bottom: 5),
-                                    alignment: AlignmentDirectional.center,
-                                    child: Text('No friend Requests')),
-                          ),
-                          SizedBox(height: 10,),
-                          Text('People you may know', style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),),
-                          SizedBox(height: 10,),
-                          Container(
-                            height: 350,
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: ListView.separated(
-                              physics: BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return peopleMayKnow(context, peopleYouMayKnow[index], index);
-                              },
-                              separatorBuilder: (context, index) =>
-                                  SizedBox(width: 10),
-                              itemCount: peopleYouMayKnow.length,
+              return WillPopScope(
+                onWillPop: willPopCallback,
+                child: Scaffold(
+                  body: SmartRefresher(
+                    controller: refreshController,
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    onRefresh: onRefresh,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 15,),
+                            Text('Friend Requests', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                            //SizedBox(height: 10,),
+                            Conditional.single(
+                              context: context,
+                              conditionBuilder: (context) =>
+                              friendRequests.length > 0,
+                              widgetBuilder: (context) =>
+                                  ListView.separated(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) =>
+                                        friendRequestBuildItem(
+                                            context, friendRequests[index]),
+                                    separatorBuilder: (context, index) =>
+                                        SizedBox(width: 10),
+                                    itemCount: friendRequests.length,
+                                  ),
+                              fallbackBuilder: (context) =>
+                                  Container(
+                                      padding: EdgeInsetsDirectional.only(
+                                          top: 15, bottom: 5),
+                                      alignment: AlignmentDirectional.center,
+                                      child: Text('No friend Requests')),
                             ),
-                          ),
-                          SizedBox(height: 10,),
-                          Text('Friends', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                          SizedBox(height: 10,),
-                          Conditional.single(
-                            context: context,
-                            conditionBuilder: (context) => friends.length > 0,
-                            widgetBuilder: (context) =>
-                                ListView.separated(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) =>
-                                      friendBuildItem(context, friends[index]),
-                                  separatorBuilder: (context, index) =>
-                                      SizedBox(height: 10,),
-                                  itemCount: friends.length,
-                                ),
-                            fallbackBuilder: (context) =>
-                                Container(
-                                    padding: EdgeInsetsDirectional.only(
-                                        top: 15, bottom: 5),
-                                    alignment: AlignmentDirectional.center,
-                                    child: Text('No friend Yet')),
-                          ),
-                        ],
+                            SizedBox(height: 10,),
+                            Text('People you may know', style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),),
+                            SizedBox(height: 10,),
+                            Container(
+                              height: 350,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: ListView.separated(
+                                physics: BouncingScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  return peopleMayKnow(context, peopleYouMayKnow[index], index);
+                                },
+                                separatorBuilder: (context, index) =>
+                                    SizedBox(width: 10),
+                                itemCount: peopleYouMayKnow.length,
+                              ),
+                            ),
+                            SizedBox(height: 10,),
+                            Text('Friends', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                            SizedBox(height: 10,),
+                            Conditional.single(
+                              context: context,
+                              conditionBuilder: (context) => friends.length > 0,
+                              widgetBuilder: (context) =>
+                                  ListView.separated(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) =>
+                                        friendBuildItem(context, friends[index]),
+                                    separatorBuilder: (context, index) =>
+                                        SizedBox(height: 10,),
+                                    itemCount: friends.length,
+                                  ),
+                              fallbackBuilder: (context) =>
+                                  Container(
+                                      padding: EdgeInsetsDirectional.only(
+                                          top: 15, bottom: 5),
+                                      alignment: AlignmentDirectional.center,
+                                      child: Text('No friend Yet')),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -126,11 +130,15 @@ class _UsersScreenState extends State<UsersScreen> {
 
   Future<void> onRefresh() async {
     await Future.delayed(Duration(seconds: 1));
-    SocialCubit.get(context).getUserData();
+    SocialCubit.get(context).getMyData();
     SocialCubit.get(context).getFriendRequest(SocialCubit.get(context).model!.uID);
     SocialCubit.get(context).getAllUsers();
     SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
     refreshController.refreshCompleted();
+  }
+  Future<bool> willPopCallback()async {
+     SocialLayoutState.tabController.animateTo(0,duration: Duration(milliseconds: 30),curve: Curves.fastLinearToSlowEaseIn);
+     return false;
   }
 
   Widget friendBuildItem(context, UserModel userModel) {

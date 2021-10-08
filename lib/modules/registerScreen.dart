@@ -27,10 +27,9 @@ class RegisterScreen extends StatelessWidget {
               CacheHelper.saveData(key: 'uId', value: state.uId).then((value){
                 uId = state.uId;
                 navigateAndKill(context, SocialLayout(0));
-                SocialCubit.get(context).getUserData();
-                SocialCubit.get(context).getAllUsers();
+                SocialCubit.get(context).getMyData();
+                SocialCubit.get(context).setUserToken();
               });
-
             }
           },
           builder: (context, state) {
