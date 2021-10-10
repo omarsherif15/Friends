@@ -40,7 +40,7 @@ void navigateAndKill (context,widget) {
 
 Widget myDivider() => Container(
   color: Colors.grey[300],
-  height: 1,
+  height: 0.2,
   width: double.infinity,
 );
 

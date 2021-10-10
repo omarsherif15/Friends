@@ -19,10 +19,18 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit,SocialStates>(
         listener: (context,state){
-          if(state is CreatePostSuccessState) {
-          navigateAndKill(context, SocialLayout(0));
+          if(state is CreatePostLoadingState) {
+            navigateAndKill(context, SocialLayout(0));
+            showToast('Posting...');
+          }
+          else if(state is CreatePostSuccessState) {
+            navigateAndKill(context, SocialLayout(0));
           showToast('Post Created Successfully');
         }
+          else if(state is UpdatePostLoadingState) {
+            navigateAndKill(context, SocialLayout(0));
+            showToast('Updating...');
+          }
           else if(state is UpdatePostSuccessState) {
             navigateAndKill(context, SocialLayout(0));
             showToast('Post Updated Successfully');

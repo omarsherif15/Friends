@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:socialapp/cubit/appCubit.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
@@ -47,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Column(
                             children: [
                               Card(
+                                color: SocialCubit.get(context).backgroundColor,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
                                 elevation: 8,
                                 margin: EdgeInsets.symmetric(vertical: 10),
@@ -191,7 +193,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<bool> willPop() async {
     final shouldPop = await showDialog(
         context: context,
-        builder: (context) => alertDialog(context));
+        builder: (context) => baseAlertDialog(
+          context: context,
+          title: 'Exit',
+          content: 'Are you sure you want to exit?',
+          outlinedButtonText: 'Cancel',
+          elevatedButtonText: 'Exit',
+          elevatedButtonIcon: Icons.exit_to_app_outlined,
+        ));
     return shouldPop ?? false;
   }
 
@@ -201,40 +210,5 @@ class _HomeScreenState extends State<HomeScreen> {
       refreshController1.refreshCompleted();
     });
   }
-  Widget alertDialog(context){
-    return AlertDialog(
-      title: Text('Exit'),
-      titlePadding: EdgeInsetsDirectional.only(start:13,top: 15 ),
-      content: Text('Are you sure you want to Exit?'),
-      elevation: 8,
-      contentPadding: EdgeInsets.all(15),
-      actions: [
-        OutlinedButton(
-            onPressed: (){
-              Navigator.of(context).pop(false);
-            },
-            child: Text('Cancel')
-        ),
-        Container(
-          width: 100,
-          child: ElevatedButton(
-            style:ButtonStyle(backgroundColor:MaterialStateProperty.all(Colors.blueAccent)) ,
-            onPressed: (){
-              Navigator.of(context).pop(true);
-              pop(context);
-            },
-            child:Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.exit_to_app_outlined),
-                SizedBox(width: 5,),
-                Text('Exit',style: TextStyle(color: Colors.white)),
-              ],
-            ),
-          ),
-        ),
-      ],
 
-    );
-  }
 }

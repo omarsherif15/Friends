@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
+import 'package:socialapp/cubit/appCubit.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
@@ -44,7 +45,7 @@ class EditProfileScreen extends StatelessWidget {
                 title: Text('Edit Profile'),
                 automaticallyImplyLeading: false,
                 leading: IconButton(
-                  onPressed: () => navigateTo(context, SocialLayout(3)),
+                  onPressed: () => navigateAndKill(context, SocialLayout(3)),
                   icon: Icon(Icons.arrow_back),
                 ),
                 titleSpacing: 0,
@@ -74,164 +75,166 @@ class EditProfileScreen extends StatelessWidget {
                   SizedBox(width: 5,)
                 ],
               ),
-              body: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Form(
-                  key: profileFormKey,
-                  child: Column(
-                      children:
-                      [
-                        if(state is UpdateUserLoadingState)
-                          Column(
-                            children: [
-                              LinearProgressIndicator(),
-                              SizedBox(height: 10,),
-                            ],
-                          ),
-                        Container(
-                          height: 250,
-                          width: double.infinity,
-                          alignment: AlignmentDirectional.topCenter,
-                          child: Stack(
-                            alignment: AlignmentDirectional.bottomCenter,
-                            children: [
-                              Align(
-                                child: Stack(
+              body: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Form(
+                    key: profileFormKey,
+                    child: Column(
+                        children:
+                        [
+                          if(state is UpdateUserLoadingState)
+                            Column(
+                              children: [
+                                LinearProgressIndicator(),
+                                SizedBox(height: 10,),
+                              ],
+                            ),
+                          Container(
+                            height: 250,
+                            width: double.infinity,
+                            alignment: AlignmentDirectional.topCenter,
+                            child: Stack(
+                              alignment: AlignmentDirectional.bottomCenter,
+                              children: [
+                                Align(
+                                  child: Stack(
+                                    alignment: AlignmentDirectional.bottomEnd,
+                                    children: [
+                                      Container(
+                                        height: 190,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(15),
+                                                topRight: Radius.circular(15))),
+                                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                                        child: Conditional.single(
+                                            context: context,
+                                            conditionBuilder: (context) =>
+                                            coverPic == null,
+                                            widgetBuilder: (context) => Image.network(
+                                              '${userModel.coverPic}',
+                                              fit: BoxFit.fill,
+                                              width: double.infinity,
+                                              height: 190,
+                                              alignment:
+                                              AlignmentDirectional.topCenter,
+                                            ),
+                                            fallbackBuilder: (context) => Image(
+                                              image: FileImage(coverPic!),
+                                              fit: BoxFit.fill,
+                                              width: double.infinity,
+                                              height: 190,
+                                              alignment: AlignmentDirectional
+                                                  .bottomCenter,
+                                            )),
+                                        alignment: AlignmentDirectional.topCenter,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsetsDirectional.only(
+                                            bottom: 10, end: 10),
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.grey[300],
+                                          child: IconButton(
+                                              onPressed: () {
+                                                SocialCubit.get(context)
+                                                    .getCoverImage()
+                                                    .then((value) {
+                                                  SocialCubit.get(context)
+                                                      .uploadCoverPic(
+                                                    userModel.name,
+                                                    userModel.phone,
+                                                    userModel.bio,
+                                                    userModel.email,
+                                                    userModel.profilePic,
+                                                  );
+                                                });
+                                              },
+                                              icon: Icon(IconBroken.Camera)),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  alignment: AlignmentDirectional.topCenter,
+                                ),
+                                Stack(
                                   alignment: AlignmentDirectional.bottomEnd,
                                   children: [
-                                    Container(
-                                      height: 190,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(15),
-                                              topRight: Radius.circular(15))),
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      child: Conditional.single(
-                                          context: context,
-                                          conditionBuilder: (context) =>
-                                          coverPic == null,
-                                          widgetBuilder: (context) => Image.network(
-                                            '${userModel.coverPic}',
-                                            fit: BoxFit.fill,
-                                            width: double.infinity,
-                                            height: 190,
-                                            alignment:
-                                            AlignmentDirectional.topCenter,
-                                          ),
-                                          fallbackBuilder: (context) => Image(
-                                            image: FileImage(coverPic!),
-                                            fit: BoxFit.fill,
-                                            width: double.infinity,
-                                            height: 190,
-                                            alignment: AlignmentDirectional
-                                                .bottomCenter,
-                                          )),
-                                      alignment: AlignmentDirectional.topCenter,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsetsDirectional.only(
-                                          bottom: 10, end: 10),
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.grey[300],
-                                        child: IconButton(
-                                            onPressed: () {
+                                    CircleAvatar(
+                                        backgroundColor: SocialCubit.get(context).backgroundColor,
+                                        radius: 75,
+                                        child: CircleAvatar(
+                                            radius: 70,
+                                            backgroundImage: profilePic)),
+                                    CircleAvatar(
+                                      backgroundColor: Colors.grey[300],
+                                      child: IconButton(
+                                          onPressed: () {
+                                            SocialCubit.get(context)
+                                                .getProfileImage()!
+                                                .then((value) {
                                               SocialCubit.get(context)
-                                                  .getCoverImage()
-                                                  .then((value) {
-                                                SocialCubit.get(context)
-                                                    .uploadCoverPic(
-                                                  userModel.name,
-                                                  userModel.phone,
-                                                  userModel.bio,
-                                                  userModel.email,
-                                                  userModel.profilePic,
-                                                );
-                                              });
-                                            },
-                                            icon: Icon(IconBroken.Camera)),
-                                      ),
+                                                  .uploadProfilePic(
+                                                userModel.name,
+                                                userModel.phone,
+                                                userModel.bio,
+                                                userModel.email,
+                                                userModel.coverPic,
+                                              );
+                                            });
+                                          },
+                                          icon: Icon(IconBroken.Camera)),
                                     )
                                   ],
-                                ),
-                                alignment: AlignmentDirectional.topCenter,
-                              ),
-                              Stack(
-                                alignment: AlignmentDirectional.bottomEnd,
-                                children: [
-                                  CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 75,
-                                      child: CircleAvatar(
-                                          radius: 70,
-                                          //backgroundImage:NetworkImage('${userModel!.profilePic}'),
-                                          backgroundImage: profilePic)),
-                                  CircleAvatar(
-                                    backgroundColor: Colors.grey[300],
-                                    child: IconButton(
-                                        onPressed: () {
-                                          SocialCubit.get(context)
-                                              .getProfileImage()!
-                                              .then((value) {
-                                            SocialCubit.get(context)
-                                                .uploadProfilePic(
-                                              userModel.name,
-                                              userModel.phone,
-                                              userModel.bio,
-                                              userModel.email,
-                                              userModel.coverPic,
-                                            );
-                                          });
-                                        },
-                                        icon: Icon(IconBroken.Camera)),
-                                  )
-                                ],
-                              )
-                            ],
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 30),
-                        defaultFormField(
-                          context: context,
-                          controller:nameController ,
-                          keyboardType: TextInputType.text,
-                          labelText: 'User Name',
-                          prefix: Icons.person,
-                          validate: (value)
-                          {
-                          if(value!.isEmpty)
-                          return 'Email Address must be filled';
-                          }
-                        ),
-                        SizedBox(height: 20),
-                        defaultFormField(
-                          context: context,
-                          controller: phoneController,
-                          keyboardType: TextInputType.emailAddress,
-                          labelText: 'Phone Number',
-                          prefix: Icons.email,
-                          validate: (value)
-                          {
-                          if(value!.isEmpty)
-                          return 'Email Address must be filled';
-                          }
-                    ),
-                    SizedBox(height: 20),
-                    defaultFormField(
-                      context: context,
-                      controller: bioController,
-                      keyboardType: TextInputType.text,
-                      labelText: 'Bio',
-                      prefix: Icons.notes ,
-                      validate: (value)
-                      {
-                      if(value!.isEmpty)
-                      return 'Email Address must be filled';
-                      }
+                          SizedBox(height: 30),
+                          defaultFormField(
+                            context: context,
+                            controller:nameController ,
+                            keyboardType: TextInputType.text,
+                            labelText: 'User Name',
+                            prefix: Icons.person,
+                            validate: (value)
+                            {
+                            if(value!.isEmpty)
+                            return 'Email Address must be filled';
+                            }
+                          ),
+                          SizedBox(height: 20),
+                          defaultFormField(
+                            context: context,
+                            controller: phoneController,
+                            keyboardType: TextInputType.emailAddress,
+                            labelText: 'Phone Number',
+                            prefix: Icons.phone,
+                            validate: (value)
+                            {
+                            if(value!.isEmpty)
+                            return 'Email Address must be filled';
+                            }
                       ),
+                      SizedBox(height: 20),
+                      defaultFormField(
+                        context: context,
+                        controller: bioController,
+                        keyboardType: TextInputType.text,
+                        labelText: 'Bio',
+                        prefix: Icons.notes ,
+                        validate: (value)
+                        {
+                        if(value!.isEmpty)
+                        return 'Email Address must be filled';
+                        }
+                        ),
             ]
             )
             ),
+                ),
               ),
             ),
           );

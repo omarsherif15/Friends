@@ -49,7 +49,7 @@ WhoLikedScreen(this.postId);
             navigateTo(context, FriendsProfileScreen(userModel.uId));
         },
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(15),
           child: Row(
             children: [
               CircleAvatar(
@@ -61,6 +61,7 @@ WhoLikedScreen(this.postId);
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
+                  color: SocialCubit.get(context).textColor,
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),),

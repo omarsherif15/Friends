@@ -48,7 +48,7 @@ class _UsersScreenState extends State<UsersScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 15,),
-                            Text('Friend Requests', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text('Friend Requests', style: TextStyle(fontSize: 20,color: SocialCubit.get(context).textColor, fontWeight: FontWeight.bold),),
                             //SizedBox(height: 10,),
                             Conditional.single(
                               context: context,
@@ -70,11 +70,11 @@ class _UsersScreenState extends State<UsersScreen> {
                                       padding: EdgeInsetsDirectional.only(
                                           top: 15, bottom: 5),
                                       alignment: AlignmentDirectional.center,
-                                      child: Text('No friend Requests')),
+                                      child: Text('No friend Requests',style: TextStyle(color: SocialCubit.get(context).textColor),)),
                             ),
                             SizedBox(height: 10,),
                             Text('People you may know', style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),),
+                                fontSize: 20, fontWeight: FontWeight.bold,color: SocialCubit.get(context).textColor)),
                             SizedBox(height: 10,),
                             Container(
                               height: 350,
@@ -91,7 +91,7 @@ class _UsersScreenState extends State<UsersScreen> {
                               ),
                             ),
                             SizedBox(height: 10,),
-                            Text('Friends', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text('Friends', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: SocialCubit.get(context).textColor)),
                             SizedBox(height: 10,),
                             Conditional.single(
                               context: context,
@@ -111,7 +111,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                       padding: EdgeInsetsDirectional.only(
                                           top: 15, bottom: 5),
                                       alignment: AlignmentDirectional.center,
-                                      child: Text('No friend Yet')),
+                                      child: Text('No friend Yet',style: TextStyle(color: SocialCubit.get(context).textColor))),
                             ),
                           ],
                         ),
@@ -160,10 +160,7 @@ class _UsersScreenState extends State<UsersScreen> {
               child: Text('${userModel.name}',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),),
+                  style: TextStyle(color: SocialCubit.get(context).textColor)),
             ),
             Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -195,7 +192,7 @@ class _UsersScreenState extends State<UsersScreen> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-              color: Colors.grey.shade300, style: BorderStyle.solid)
+              color:Colors.grey.shade300, style: BorderStyle.solid)
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Column(
@@ -214,7 +211,7 @@ class _UsersScreenState extends State<UsersScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${userModel.name}', style: TextStyle(fontSize: 17)),
+                Text('${userModel.name}', style: TextStyle(fontSize: 17,color: SocialCubit.get(context).textColor)),
                 SizedBox(height: 5,),
                 Text('${userModel.bio}',
                   style: TextStyle(color: Colors.grey[600]),),
@@ -285,10 +282,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   Text('${userModel.name}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),),
+                  style: TextStyle(color: SocialCubit.get(context).textColor)),
                   Text('${userModel.bio}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

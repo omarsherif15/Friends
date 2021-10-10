@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
@@ -8,6 +9,7 @@ import 'package:socialapp/models/recentMessagesModel.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatScreen extends StatelessWidget {
   final UserModel? userModel;
@@ -29,6 +31,7 @@ class ChatScreen extends StatelessWidget {
       return BlocConsumer<SocialCubit, SocialStates>(
           listener: (context, state) {},
           builder: (context, state) {
+            var uuid = Uuid();
             dynamic messageImage = SocialCubit.get(context).messageImage;
             UserModel? user = SocialCubit.get(context).userModel;
             return user == null
@@ -36,7 +39,9 @@ class ChatScreen extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   )
                 : Scaffold(
+                    //backgroundColor: HexColor('#212121'),
                     appBar: AppBar(
+                      //backgroundColor: HexColor('#212121'),
                       titleSpacing: 0,
                       elevation: 8,
                       leading: IconButton(
@@ -95,7 +100,6 @@ class ChatScreen extends StatelessWidget {
                             child:   SocialCubit.get(context).isLoading ?
                             LinearProgressIndicator(color: Colors.blueAccent,) : myDivider(),
                           ),
-
                           if(messageImage != null)
                             Padding(
                             padding: const EdgeInsetsDirectional.only(bottom: 8.0),
@@ -154,7 +158,7 @@ class ChatScreen extends StatelessWidget {
                                         IconButton(
                                             padding: EdgeInsets.zero,
                                             onPressed: () {
-                                              SocialCubit.get(context).getMessageImage(context);
+                                              SocialCubit.get(context).getMessageImage();
                                             },
                                             icon: Icon(Icons.camera_alt_outlined, color: Colors.grey,)),
                                         IconButton(
@@ -162,6 +166,7 @@ class ChatScreen extends StatelessWidget {
                                             onPressed: () {
                                               if(messageImage == null)
                                                 SocialCubit.get(context).sendMessage(
+                                                  messageId: uuid.v4(),
                                                   receiverId: uId,
                                                   messageText: messageTextControl.text,
                                                   date: getDate(),
@@ -169,6 +174,7 @@ class ChatScreen extends StatelessWidget {
                                                 );
                                               else
                                                 SocialCubit.get(context).uploadMessagePic(
+                                                    messageId: uuid.v4(),
                                                     receiverId: uId,
                                                     messageText: messageTextControl.text == '' ? null : messageTextControl.text,
                                                     date: getDate(),
@@ -223,6 +229,23 @@ class ChatScreen extends StatelessWidget {
             InkWell(
               onTap: () {
                 SocialCubit.get(context).time();
+              },
+              onLongPress: () async{
+                final result = await showDialog(context: context, builder: (context) => alertDialog(context));
+               switch(result){
+                 case 'DELETE FOR EVERYONE':
+                   SocialCubit.get(context).deleteForEveryone(
+                       messageId: message.messageId,
+                       receiverId: message.receiverId
+                   );
+                   break;
+                 case 'DELETE FOR ME':
+                   SocialCubit.get(context).deleteForMe(
+                       messageId: message.messageId,
+                       receiverId: message.receiverId
+                   );
+                   break;
+               }
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -294,6 +317,23 @@ class ChatScreen extends StatelessWidget {
               onTap: () {
                 SocialCubit.get(context).time();
               },
+              onLongPress: () async{
+                final result = await showDialog(context: context, builder: (context) => alertDialog(context));
+                switch(result){
+                  case 'DELETE FOR EVERYONE':
+                    SocialCubit.get(context).deleteForEveryone(
+                        messageId: message.messageId,
+                        receiverId: message.receiverId
+                    );
+                    break;
+                  case 'DELETE FOR ME':
+                  SocialCubit.get(context).deleteForMe(
+                      messageId: message.messageId,
+                      receiverId: message.receiverId
+                  );
+                    break;
+                }
+              },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -361,4 +401,36 @@ class ChatScreen extends StatelessWidget {
           ],
         ),
       );
+
+  Widget alertDialog(context) {
+    return AlertDialog(
+      content: Padding(
+        padding: const EdgeInsetsDirectional.only(start: 15,top: 15),
+        child: Text('Delete message?',style: TextStyle(fontSize: 17),),
+      ),
+      elevation: 8,
+      contentPadding: EdgeInsets.all(15),
+      actions: [
+        TextButton(
+            onPressed: (){
+              Navigator.of(context).pop('DELETE FOR EVERYONE');
+            },
+            child: Text('DELETE FOR EVERYONE')
+        ),
+        TextButton(
+            onPressed: (){
+              Navigator.of(context).pop('DELETE FOR ME');
+            },
+            child: Text('DELETE FOR ME')
+        ),
+        TextButton(
+            onPressed: (){
+             pop(context);
+            },
+            child: Text('CANCEL')
+        ),
+      ],
+
+    );
+  }
 }

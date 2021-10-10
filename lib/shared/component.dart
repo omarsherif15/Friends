@@ -51,7 +51,9 @@ Widget defaultFormField({
           hintText: hintText,
           labelText: labelText,
           hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+          labelStyle: TextStyle(color: SocialCubit.get(context).textColor),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: SocialCubit.get(context).textColor)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: SocialCubit.get(context).textColor)),
           prefixIcon: Icon(
             prefix,
             color: Colors.blueAccent,
@@ -94,6 +96,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
     clipBehavior: Clip.antiAliasWithSaveLayer,
     elevation: 8,
     margin: EdgeInsets.zero,
+    color: SocialCubit.get(context).backgroundColor,
     child: Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -129,7 +132,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                       else
                         navigateTo(context, SocialLayout(3));
                     },
-                      child: Text('${postModel.name}')),
+                      child: Text('${postModel.name}',style: TextStyle(color: SocialCubit.get(context).textColor),)),
                   SizedBox(
                     height: 5,
                   ),
@@ -189,8 +192,8 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
           SizedBox(
             height: 10,
           ),
-          postModel.postImage != null ?Text('${postModel.postText}',style: TextStyle(fontSize: 15),)
-          : Text('${postModel.postText}',style: TextStyle(fontSize: 20),),
+          postModel.postImage != null ?Text('${postModel.postText}',style: TextStyle(fontSize: 15,color: SocialCubit.get(context).textColor),)
+          : Text('${postModel.postText}',style: TextStyle(fontSize: 20,color: SocialCubit.get(context).textColor),),
           if (postModel.postImage != null)
             Padding(
               padding: const EdgeInsetsDirectional.only(top: 10),
@@ -213,7 +216,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                       SizedBox(
                         width: 5,
                       ),
-                      Text('${postModel.likes}'),
+                      Text('${postModel.likes}',style: TextStyle(color: SocialCubit.get(context).textColor)),
                     ],
                 ),
                   ),
@@ -237,7 +240,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                       SizedBox(
                         width: 5,
                       ),
-                      Text('${postModel.comments} Comments'),
+                      Text('${postModel.comments} Comments',style: TextStyle(color: SocialCubit.get(context).textColor)),
                     ],
                   ),
                 ),
@@ -289,7 +292,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                     SizedBox(
                       width: 5,
                     ),
-                    Text('Like'),
+                    Text('Like',style: TextStyle(color: SocialCubit.get(context).textColor)),
                   ],
                 ),
               ),
@@ -297,6 +300,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                 width: 10,
               ),
               PopupMenuButton(
+                color: SocialCubit.get(context).backgroundColor,
                 onSelected: (value) {
                   if(value == 'Share')
                     {
@@ -313,17 +317,18 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     value: 'Share',
-                      child: Row(children: [
-                        Icon(Icons.share),
-                        SizedBox(width: 5,),
-                        Text('Share Now'),
+                      child:
+                      Row(children: [
+                        Icon(Icons.share,color: Colors.green),
+                        SizedBox(width: 8,),
+                        Text('Share Now',style: TextStyle(color: SocialCubit.get(context).textColor)),
                   ],))
                 ],
                 child: Row(
                   children: [
                     Icon(Icons.share, color: Colors.green,),
                     SizedBox(width: 5,),
-                    Text('Share'),
+                    Text('Share',style: TextStyle(color: SocialCubit.get(context).textColor)),
                   ],
                 ),
               ),
@@ -338,7 +343,48 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
   );
 }
 
+Widget baseAlertDialog({
+  required context,
+  String? title,
+  String? content,
+  String? outlinedButtonText,
+  String? elevatedButtonText,
+  IconData? elevatedButtonIcon,
+}){
+  return AlertDialog(
+    title: Text('$title'),
+    titlePadding: EdgeInsetsDirectional.only(start:13,top: 15 ),
+    content: Text('$content'),
+    elevation: 8,
+    contentPadding: EdgeInsets.all(15),
+    actions: [
+      OutlinedButton(
+          onPressed: (){
+            Navigator.of(context).pop(false);
+          },
+          child: Text('$outlinedButtonText')
+      ),
+      Container(
+        width: 100,
+        child: ElevatedButton(
+          style:ButtonStyle(backgroundColor:MaterialStateProperty.all(Colors.blueAccent)) ,
+          onPressed: (){
+            Navigator.of(context).pop(true);
+          },
+          child:Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(elevatedButtonIcon),
+              SizedBox(width: 5,),
+              Text('$elevatedButtonText',style: TextStyle(color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
+    ],
 
+  );
+}
 
 // Widget bottomSheet (){
 //   return BottomSheet(

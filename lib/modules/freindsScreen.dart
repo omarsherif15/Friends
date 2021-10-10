@@ -9,8 +9,9 @@ import 'package:socialapp/shared/constants.dart';
 import 'friendsProfileScreen.dart';
 
 class FriendsScreen extends StatelessWidget {
+  bool? myFreinds = false;
   List<UserModel>? friends;
-  FriendsScreen(this.friends);
+  FriendsScreen(this.friends,{this.myFreinds});
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context){
@@ -18,19 +19,17 @@ class FriendsScreen extends StatelessWidget {
         listener: (context,state){},
         builder: (context,state){
           List<UserModel>? friends = this.friends;
-          print(SocialCubit.get(context).friends.length);
           return Scaffold(
             appBar: AppBar(
               title: Text('Friends'),
               elevation: 8,
               titleSpacing: 0,
             ),
-              backgroundColor: Colors.white,
               body: //state is GetFriendLoadingState
               friends!.length == 0 ?
               Center(child: CircularProgressIndicator(),) : ListView.separated(
                 physics: BouncingScrollPhysics(),
-                itemBuilder: (context, index) => chatBuildItem(context,friends[index]),
+                itemBuilder: (context, index) => chatBuildItem(context,friends[index],myFreinds ?? false),
                 separatorBuilder:(context,index) =>SizedBox(height: 0,),
                 itemCount:friends.length,
               )
@@ -41,7 +40,7 @@ class FriendsScreen extends StatelessWidget {
   }
 
 }
-Widget chatBuildItem (context,UserModel userModel) {
+Widget chatBuildItem (context,UserModel userModel,bool myFriends) {
   return InkWell(
     onTap: (){
       if (SocialCubit.get(context).model!.uID == userModel.uID) {
@@ -62,11 +61,14 @@ Widget chatBuildItem (context,UserModel userModel) {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
+              color: SocialCubit.get(context).textColor,
               fontSize: 15,
               fontWeight: FontWeight.bold,
             ),),
           Spacer(),
+          if(myFriends)
           PopupMenuButton(
+            color: SocialCubit.get(context).backgroundColor,
               onSelected: (value){
                 if(value == 'Unfriend')
                   SocialCubit.get(context).unFriend(userModel.uID);
@@ -79,7 +81,7 @@ Widget chatBuildItem (context,UserModel userModel) {
                   child: Row(children: [
                     Icon(Icons.person_remove),
                     SizedBox(width: 15,),
-                    Text('Unfriend'),
+                    Text('Unfriend',style: TextStyle(color: SocialCubit.get(context).textColor,),),
               ],))
             ],
           ),

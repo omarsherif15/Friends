@@ -73,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               CircleAvatar(
                                 radius: 75,
-                                backgroundColor: Colors.white,
+                                backgroundColor: SocialCubit.get(context).backgroundColor,
                                 child: CircleAvatar(
                                   radius: 70,
                                   child: ClipRRect(
@@ -89,12 +89,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Text(
                           '${userModel.name}',
-                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 25,color: SocialCubit.get(context).textColor, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        Text('${userModel.bio}'),
+                        Text('${userModel.bio}',style: TextStyle(color: SocialCubit.get(context).textColor),),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           child: Row(
@@ -104,39 +104,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   children: [
                                     Text(
                                       '${userPosts.length}',
-                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),
                                     ),
                                     SizedBox(
                                       height: 5,
                                     ),
-                                    Text('Posts'),
+                                    Text('Posts',style: TextStyle(color: SocialCubit.get(context).textColor),),
                                   ],
                                 ),
                               ),
                               Expanded(
                                 child: Column(
                                   children: [
-                                    Text('12K', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text('12K', style: TextStyle(fontWeight: FontWeight.bold,color: SocialCubit.get(context).textColor)),
                                     SizedBox(
                                       height: 5,
                                     ),
-                                    Text('Followers'),
+                                    Text('Followers',style: TextStyle(color: SocialCubit.get(context).textColor),),
                                   ],
                                 ),
                               ),
                               Expanded(
                                 child: InkWell(
                                   onTap: () {
-                                    navigateTo(context, FriendsScreen(friends));
+                                    navigateTo(context, FriendsScreen(friends,myFreinds: true,));
                                   },
                                   child: Column(
                                     children: [
                                       Text('${friends.length}',
-                                          style: TextStyle(fontWeight: FontWeight.bold)),
+                                          style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)),
                                       SizedBox(
                                         height: 5,
                                       ),
-                                      Text('Friends'),
+                                      Text('Friends',style: TextStyle(color: SocialCubit.get(context).textColor),),
                                     ],
                                   ),
                                 ),
@@ -168,6 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Card(
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           margin: EdgeInsets.zero,
+                          color: SocialCubit.get(context).backgroundColor,
                           elevation: 8,
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 10),

@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:socialapp/cubit/appCubit.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/shared/styles/themes.dart';
 
 class SocialLayout extends StatefulWidget {
   int initialIndex = 0;
@@ -30,7 +32,6 @@ class SocialLayout extends StatefulWidget {
 
   @override
   void dispose() {
-    tabController.dispose();
     super.dispose();
   }
 
@@ -42,9 +43,8 @@ class SocialLayout extends StatefulWidget {
           return Scaffold(
             appBar: tabController.index == 0 ?
             AppBar(
-                    title: Text('News Feeds'),
+                    title: Text('News Feeds',),
                     automaticallyImplyLeading: false,
-                    backgroundColor: Colors.white,
                     elevation: 8,
                     actions: [
                       IconButton(
@@ -57,6 +57,11 @@ class SocialLayout extends StatefulWidget {
                             SocialCubit.get(context).signOut(context);
                           },
                           icon: Icon(IconBroken.Logout)),
+                      IconButton(
+                          onPressed: () {
+                            SocialCubit.get(context).changeMode();
+                          },
+                          icon: Icon(SocialCubit.get(context).icon)),
                     ],
                     bottom: TabBar(
                       controller: tabController,
@@ -71,7 +76,6 @@ class SocialLayout extends StatefulWidget {
                     ),
                   ) : AppBar(
                     automaticallyImplyLeading: false,
-                    backgroundColor: Colors.white,
                     elevation: 8,
                     title: TabBar(
                       controller: tabController,

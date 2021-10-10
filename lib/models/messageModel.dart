@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MessageModel
 {
+  String? messageId;
   String? receiverId;
   String? senderId;
   String? messageText;
@@ -12,6 +13,7 @@ class MessageModel
 
 
   MessageModel({
+    this.messageId,
     this.receiverId,
     this.senderId,
     this.messageText,
@@ -23,6 +25,7 @@ class MessageModel
   });
 
   MessageModel.fromJson(Map<String, dynamic> json){
+    messageId     = json['messageId'];
     receiverId    = json['receiverId'];
     senderId      = json['senderId'];
     messageText   = json['messageText'];
@@ -33,6 +36,7 @@ class MessageModel
 
   Map<String, dynamic> toMap (){
     return {
+      'messageId'   :messageId,
       'receiverId'  :receiverId,
       'senderId'    :senderId,
       'messageText' :messageText,

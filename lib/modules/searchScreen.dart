@@ -61,9 +61,9 @@ class SearchScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(Icons.search_off_outlined,size: 50,color: Colors.grey,),
+                  Icon(Icons.search_off_outlined,size: 60,color: Colors.grey,),
                   SizedBox(height: 30,),
-                  Text('No Search Results',style: TextStyle(fontSize: 25),)
+                  Text('No Search Results',style: TextStyle(fontSize: 25,color: SocialCubit.get(context).textColor),)
                 ],
               ),
             )
@@ -100,6 +100,7 @@ class SearchScreen extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
+                color: SocialCubit.get(context).textColor,
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),

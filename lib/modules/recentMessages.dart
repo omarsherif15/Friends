@@ -169,6 +169,7 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 15,
+                        color: SocialCubit.get(context).textColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -182,32 +183,33 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
                 Row (children: [
                   Icon(Icons.image_rounded),
                   SizedBox(width: 5,),
-                  Expanded(child: Text('${recentMessages.recentMessageText}',maxLines: 1,overflow: TextOverflow.ellipsis,)),
+                  Expanded(child: Text('${recentMessages.recentMessageText}',style: TextStyle(color: SocialCubit.get(context).textColor,)
+                    ,maxLines: 1,overflow: TextOverflow.ellipsis,)),
                 ],): Row (
                   children: [
                   Text('You: '),
                   Icon(Icons.image_rounded,color: Colors.grey,),
                   SizedBox(width: 5,),
-                  Expanded(child: Text('${recentMessages.recentMessageText}',maxLines: 1,overflow: TextOverflow.ellipsis,)),
+                  Expanded(child: Text('${recentMessages.recentMessageText}',maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: SocialCubit.get(context).textColor,))),
                 ],)
                     : recentMessages.recentMessageImage != null ?
                 recentMessages.receiverId == SocialCubit.get(context).model!.uID ?
                 Row (children: [
                   Icon(Icons.image_rounded),
                   SizedBox(width: 5,),
-                  Text('Photo',style: TextStyle(fontSize: 16)),
+                  Text('Photo',style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor)),
                 ],): Row (children: [
                   Text('You: '),
                   Icon(Icons.image_rounded,color: Colors.grey,),
                   SizedBox(width: 5,),
-                  Text('Photo',style: TextStyle(fontSize: 16),),
+                  Text('Photo',style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor),),
                 ],)
                     : recentMessages.recentMessageText !=null ?
                 recentMessages.receiverId == SocialCubit.get(context).model!.uID ?
                 Text('${recentMessages.recentMessageText}',
-                  style: TextStyle(fontSize: 16),maxLines: 1,overflow: TextOverflow.ellipsis,):
+                  style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor),maxLines: 1,overflow: TextOverflow.ellipsis,):
                 Text('You: ${recentMessages.recentMessageText}',
-                    style: TextStyle(fontSize: 16),maxLines: 1,overflow: TextOverflow.ellipsis,)
+                    style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor),maxLines: 1,overflow: TextOverflow.ellipsis,)
                     : Text('ERROR 404'),
               ],
 
@@ -218,6 +220,7 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
     ),
   );
 }
+
 Future<bool> willPopCallback()async {
   SocialLayoutState.tabController.animateTo(0,duration: Duration(milliseconds: 30),curve: Curves.fastLinearToSlowEaseIn);
   return false;
@@ -241,7 +244,7 @@ Widget storyBuildItem (context,UserModel users) {
                     radius: 27,
                   ),
                   CircleAvatar(
-                    backgroundColor: Colors.white,
+                    backgroundColor: SocialCubit.get(context).backgroundColor,
                     radius: 9,
                   ),
                   Padding(
@@ -259,6 +262,7 @@ Widget storyBuildItem (context,UserModel users) {
                 alignment: AlignmentDirectional.center,
                 child: Text(
                   '${users.name}',
+                  style:TextStyle(color: SocialCubit.get(context).textColor),
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,

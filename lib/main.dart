@@ -75,27 +75,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(create:(context) =>AppCubit()),
-          BlocProvider(create: (context) => SocialCubit()
-            ..getMyData()
-              ..setUserToken()
-            //..getFriends(SocialCubit.get(context).model!.uID)
-          )
-        ],
-        child: BlocConsumer<AppCubit,SocialStates>(
-            listener:(context,state){},
-            builder: (context,state) {
-              return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                home: startWidget,
-                theme: lightMode(),
-                darkTheme: darkMode(),
-                themeMode: ThemeMode.light,
-              );
-            }
-        )
+    return BlocProvider(
+      create: (context) => SocialCubit()..changeMode(fromCache: isDark)..getMyData(),
+      child: BlocConsumer<SocialCubit,SocialStates>(
+          listener:(context,state){},
+          builder: (context,state) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: startWidget,
+              theme: lightMode(),
+              darkTheme: darkMode(),
+              themeMode:SocialCubit.get(context).appMode
+            );
+          }
+      ),
     );
   }
 }

@@ -43,7 +43,7 @@ ThemeData lightMode () => ThemeData(
   ));
 ThemeData darkMode () =>   ThemeData(
   appBarTheme: AppBarTheme(
-    backgroundColor: HexColor('#202A44'),
+    backgroundColor:HexColor('#181818'),
     elevation: 0,
     actionsIconTheme: IconThemeData(
         color: Colors.white
@@ -53,14 +53,13 @@ ThemeData darkMode () =>   ThemeData(
       fontSize: 23,
     ),
     iconTheme: IconThemeData(color: Colors.white),
-    backwardsCompatibility: false,
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarBrightness: Brightness.light,
-      statusBarColor: HexColor('#202A44'),
+      statusBarColor: HexColor('#181818'),
       statusBarIconBrightness: Brightness.light,
     ),),
-  primarySwatch: Colors.red,
-  scaffoldBackgroundColor:HexColor('#202A44'),
+  primarySwatch: Colors.blue,
+  scaffoldBackgroundColor:HexColor('#181818'),
   inputDecorationTheme: InputDecorationTheme(
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
     contentPadding: EdgeInsetsDirectional.only(top: 5,start: 30),
