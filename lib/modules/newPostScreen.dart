@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:socialapp/models/postModel.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class NewPostScreen extends StatelessWidget {
 TextEditingController postTextController = TextEditingController();
@@ -21,19 +23,19 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
         listener: (context,state){
           if(state is CreatePostLoadingState) {
             navigateAndKill(context, SocialLayout(0));
-            showToast('Posting...');
+            showToast(LocaleKeys.posting.tr());
           }
           else if(state is CreatePostSuccessState) {
             navigateAndKill(context, SocialLayout(0));
-          showToast('Post Created Successfully');
+          showToast(LocaleKeys.postedSuccess.tr());
         }
           else if(state is UpdatePostLoadingState) {
             navigateAndKill(context, SocialLayout(0));
-            showToast('Updating...');
+            showToast(LocaleKeys.editing.tr());
           }
           else if(state is UpdatePostSuccessState) {
             navigateAndKill(context, SocialLayout(0));
-            showToast('Post Updated Successfully');
+            showToast(LocaleKeys.EditSuccess.tr());
           }
       },
       builder: (context,state){
@@ -60,7 +62,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                 },
                   icon: Icon(IconBroken.Arrow___Left_2)),
               titleSpacing: 0,
-              title: Text('Create Post'),
+              title: Text(LocaleKeys.createPost.tr()),
               actions: [
                 TextButton(
                     onPressed: (){
@@ -109,7 +111,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                       }
                     }
                   },
-                    child: isEdit?Text('SAVE'):Text('POST')
+                    child: isEdit?Text(LocaleKeys.save.tr()):Text(LocaleKeys.post.tr())
                 ),
                 SizedBox(width: 10,)
               ],
@@ -140,7 +142,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                           children: [
                             Text('${userModel.name}',style: TextStyle(fontSize: 15),),
                             SizedBox(height: 5,),
-                            Text('public',style: TextStyle(color: Colors.grey),)
+                            Text(LocaleKeys.public.tr(),style: TextStyle(color: Colors.grey),)
                           ],
                         ),
                       ],
@@ -152,7 +154,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                       textCapitalization: TextCapitalization.sentences,
                       autocorrect: true,
                       decoration: InputDecoration(
-                        hintText: 'What is on your mind...',
+                        hintText: LocaleKeys.whatOnYourMind.tr(),
                         hintStyle: TextStyle(color: Colors.grey,fontSize: 18),
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.zero,
@@ -226,7 +228,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                       [
                         Icon(IconBroken.Image),
                         SizedBox(width: 5,),
-                        Text('Image',style: TextStyle(color: Colors.grey)),
+                        Text(LocaleKeys.image.tr(),style: TextStyle(color: Colors.grey)),
                       ],
                     )
                 ),
@@ -241,7 +243,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                       [
                         Icon(Icons.tag,color: Colors.red,),
                         SizedBox(width: 5,),
-                        Text('Tags',style: TextStyle(color: Colors.grey),),
+                        Text(LocaleKeys.tags.tr(),style: TextStyle(color: Colors.grey),),
                       ],
                     )
                 ),
@@ -256,7 +258,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                       [
                         Icon(IconBroken.Document,color: Colors.green,),
                         SizedBox(width: 5,),
-                        Text('Docs',style: TextStyle(color: Colors.grey)),
+                        Text(LocaleKeys.docs.tr(),style: TextStyle(color: Colors.grey)),
                       ],
                     )
                 ),

@@ -23,7 +23,7 @@ void showToast(msg){
   );}
 
 Future navigateTo(BuildContext context,Widget widget) async {
-  return await Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
+  return await Navigator.push(context, MaterialPageRoute(builder: (context) => widget, ));
 }
 
 Widget separator (double wide,double high){

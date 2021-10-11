@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/remoteNetwork/cacheHelper.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class RegisterScreen extends StatelessWidget {
   TextEditingController nameController = TextEditingController();
@@ -90,7 +92,7 @@ class RegisterScreen extends StatelessWidget {
                                 context: context,
                                 controller:nameController ,
                                 keyboardType: TextInputType.text,
-                                hintText: 'User Name',
+                                hintText: LocaleKeys.userName.tr(),
                                 prefix: Icons.person,
                                 validate: (value)
                                 {
@@ -120,7 +122,7 @@ class RegisterScreen extends StatelessWidget {
                                 context: context,
                                 controller: phoneController,
                                 keyboardType: TextInputType.phone,
-                                hintText: 'Phone Number',
+                                hintText: LocaleKeys.phoneNumber.tr(),
                                 prefix: Icons.phone,
                                 validate: (value)
                                 {
@@ -134,7 +136,7 @@ class RegisterScreen extends StatelessWidget {
                             defaultFormField(
                                 context: context,
                                 controller: passwordController,
-                                hintText: 'Password',
+                                hintText: LocaleKeys.password.tr(),
                                 prefix: Icons.lock,
                                 isPassword: !SignUpCubit.get(context).showPassword ? true : false,
                                 validate: (value)

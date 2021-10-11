@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
@@ -7,6 +8,7 @@ import 'package:socialapp/models/commentModel.dart';
 import 'package:socialapp/modules/LikesScreen.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class CommentsScreen extends StatelessWidget {
   var commentTextControl = TextEditingController();
@@ -68,9 +70,10 @@ CommentsScreen(this.index,this.postId);
                         ) : Expanded(
                             child: Center(
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('No Comments yet'),
-                                  Text('Type your own')
+                                  Text(LocaleKeys.noComments.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                  Text(LocaleKeys.beFirstComment.tr(),style: TextStyle(color: SocialCubit.get(context).textColor))
                                 ],
                               ),)),
                         Padding(
@@ -116,7 +119,8 @@ CommentsScreen(this.index,this.postId);
                               controller: commentTextControl,
                               autofocus: true,
                               textAlignVertical: TextAlignVertical.center,
-                              cursorColor: Colors.black,
+                              cursorColor: SocialCubit.get(context).textColor,
+                              style: TextStyle(color: SocialCubit.get(context).textColor),
                               validator: (value){
                                 if(value!.isEmpty)
                                   return null;
@@ -124,7 +128,8 @@ CommentsScreen(this.index,this.postId);
                               decoration: InputDecoration(
                                   focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(40),borderSide: BorderSide.none),
                                   //contentPadding: EdgeInsets.all(10),
-                                  hintText: 'Write a comment...',
+
+                                  hintText: LocaleKeys.write_comment.tr(),
                                   hintStyle: TextStyle(color: Colors.grey),
                                   suffixIcon: Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -160,7 +165,7 @@ CommentsScreen(this.index,this.postId);
                                     ],
                                   ),
                                   filled: true,
-                                  fillColor: Colors.grey[300],
+                                  fillColor: SocialCubit.get(context).textFieldColor,
                                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(40))
                               )
                           ),

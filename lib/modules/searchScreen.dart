@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
@@ -6,6 +7,7 @@ import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/friendsProfileScreen.dart';
 import 'package:socialapp/shared/constants.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class SearchScreen extends StatelessWidget {
   TextEditingController searchController = TextEditingController();
@@ -27,7 +29,7 @@ class SearchScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width - 20,
                 child: TextFormField(
                   controller: searchController,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: TextStyle(color: SocialCubit.get(context).textColor),
                   autofocus: true,
                   textCapitalization: TextCapitalization.words,
                   onFieldSubmitted: (value) {
@@ -36,12 +38,12 @@ class SearchScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                     filled: true,
-                    fillColor: Colors.grey[200],
+                    fillColor: SocialCubit.get(context).textFieldColor,
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: BorderSide(color: Colors.blueAccent)),
-                    hintText: 'Search',
-                    hintStyle: TextStyle(fontSize: 15),
+                    hintText: LocaleKeys.search.tr(),
+                    hintStyle: TextStyle(fontSize: 15,color: Colors.grey),
                     prefixIcon: Icon(
                       Icons.search,
                       color: Colors.grey,

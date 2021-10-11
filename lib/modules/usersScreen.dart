@@ -1,16 +1,20 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:socialapp/cubit/appCubit.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/chatScreen.dart';
 import 'package:socialapp/modules/friendsProfileScreen.dart';
+import 'package:socialapp/modules/recentMessages.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class UsersScreen extends StatefulWidget {
   @override
@@ -19,6 +23,7 @@ class UsersScreen extends StatefulWidget {
 
 class _UsersScreenState extends State<UsersScreen> {
   var refreshController = RefreshController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,6 @@ class _UsersScreenState extends State<UsersScreen> {
                   body: SmartRefresher(
                     controller: refreshController,
                     enablePullDown: true,
-                    enablePullUp: true,
                     onRefresh: onRefresh,
                     child: SingleChildScrollView(
                       child: Padding(
@@ -48,7 +52,7 @@ class _UsersScreenState extends State<UsersScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 15,),
-                            Text('Friend Requests', style: TextStyle(fontSize: 20,color: SocialCubit.get(context).textColor, fontWeight: FontWeight.bold),),
+                            Text(LocaleKeys.friendRequest.tr(), style: TextStyle(fontSize: 20,color: SocialCubit.get(context).textColor, fontWeight: FontWeight.bold),),
                             //SizedBox(height: 10,),
                             Conditional.single(
                               context: context,
@@ -73,7 +77,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                       child: Text('No friend Requests',style: TextStyle(color: SocialCubit.get(context).textColor),)),
                             ),
                             SizedBox(height: 10,),
-                            Text('People you may know', style: TextStyle(
+                            Text(LocaleKeys.peopleMayKnow.tr(), style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold,color: SocialCubit.get(context).textColor)),
                             SizedBox(height: 10,),
                             Container(
@@ -91,7 +95,7 @@ class _UsersScreenState extends State<UsersScreen> {
                               ),
                             ),
                             SizedBox(height: 10,),
-                            Text('Friends', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: SocialCubit.get(context).textColor)),
+                            Text(LocaleKeys.friends.tr(), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: SocialCubit.get(context).textColor)),
                             SizedBox(height: 10,),
                             Conditional.single(
                               context: context,
@@ -174,7 +178,7 @@ class _UsersScreenState extends State<UsersScreen> {
                     children: [
                       Icon(IconBroken.Chat, color: Colors.black,),
                       SizedBox(width: 5,),
-                      Text('Message', style: TextStyle(color: Colors.black)),
+                      Text(LocaleKeys.message.tr(), style: TextStyle(color: Colors.black)),
                     ],
                   ),
                 )
@@ -192,7 +196,7 @@ class _UsersScreenState extends State<UsersScreen> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-              color:Colors.grey.shade300, style: BorderStyle.solid)
+              color:Colors.grey.shade900, style: BorderStyle.solid)
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Column(
@@ -243,7 +247,7 @@ class _UsersScreenState extends State<UsersScreen> {
                           children: [
                             Icon(Icons.person_add_alt_1_rounded),
                             SizedBox(width: 5,),
-                            Text('Add Friend', style: TextStyle(color: Colors.white)),
+                            Text(LocaleKeys.addFriend.tr(), style: TextStyle(color: Colors.white)),
                           ],
                         ),
                       ),
@@ -254,7 +258,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       onPressed: () {
 
                       },
-                      child: Text('Remove')
+                      child: Text(LocaleKeys.remove.tr())
                   ),
                 ],),
             ),

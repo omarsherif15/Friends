@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:socialapp/remoteNetwork/dioHelper.dart';
 import 'package:socialapp/shared/bloc_observer.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/themes.dart';
+import 'package:socialapp/translations/codegen_loader.g.dart';
 import 'cubit/appCubit.dart';
 import 'modules/loginScreen.dart';
 
@@ -28,6 +30,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  await EasyLocalization.ensureInitialized();
   token =  await FirebaseMessaging.instance.getToken();
   print (token);
   FirebaseMessaging.onMessage.listen((event)
@@ -61,10 +64,19 @@ Future<void> main() async {
     else
       widget = LoginScreen();
 
-  runApp(MyApp(
-    isDark: isDark,
-    startWidget: widget,
-  ));
+  runApp(
+      EasyLocalization(
+        supportedLocales: [
+          Locale('en'),
+          Locale('ar')
+        ],
+        path: 'assets/translations', // <-- change the path of the translation files
+        fallbackLocale: Locale('en'),
+        child: MyApp(
+          isDark: isDark,
+          startWidget: widget,
+  ),
+      ));
 }
 
 class MyApp extends StatelessWidget {
@@ -81,6 +93,9 @@ class MyApp extends StatelessWidget {
           listener:(context,state){},
           builder: (context,state) {
             return MaterialApp(
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
               debugShowCheckedModeBanner: false,
               home: startWidget,
               theme: lightMode(),

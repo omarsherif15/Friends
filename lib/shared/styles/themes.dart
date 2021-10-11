@@ -43,7 +43,7 @@ ThemeData lightMode () => ThemeData(
   ));
 ThemeData darkMode () =>   ThemeData(
   appBarTheme: AppBarTheme(
-    backgroundColor:HexColor('#181818'),
+    backgroundColor:HexColor('#212121'),
     elevation: 0,
     actionsIconTheme: IconThemeData(
         color: Colors.white
@@ -55,7 +55,7 @@ ThemeData darkMode () =>   ThemeData(
     iconTheme: IconThemeData(color: Colors.white),
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarBrightness: Brightness.light,
-      statusBarColor: HexColor('#181818'),
+      statusBarColor: HexColor('#212121'),
       statusBarIconBrightness: Brightness.light,
     ),),
   primarySwatch: Colors.blue,

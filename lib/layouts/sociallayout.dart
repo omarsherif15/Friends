@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,7 +85,6 @@ class SocialLayout extends StatefulWidget {
                       onTap: (index) {
                         SocialCubit.get(context).changeBottomNav(index);
                       },
-                      labelStyle: TextStyle(fontSize: 20),
                       indicatorColor: Colors.blueAccent,
                       unselectedLabelColor: Colors.grey,
                     ),
@@ -92,7 +92,8 @@ class SocialLayout extends StatefulWidget {
             body: TabBarView(
               controller: tabController,
               children:SocialCubit.get(context).screens,
-            )
+            ),
+
             );
         });
   }

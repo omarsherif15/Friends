@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ import 'package:socialapp/models/messageModel.dart';
 import 'package:socialapp/models/postModel.dart';
 import 'package:socialapp/models/recentMessagesModel.dart';
 import 'package:socialapp/models/userModel.dart';
+import 'package:socialapp/modules/SettingScreen.dart';
+import 'package:socialapp/modules/notificationScreen.dart';
 import 'package:socialapp/modules/recentMessages.dart';
 import 'package:socialapp/modules/homeScreen.dart';
 import 'package:socialapp/modules/loginScreen.dart';
@@ -30,6 +33,16 @@ class SocialCubit extends Cubit<SocialStates> {
   SocialCubit() : super(InitialState());
 
   static SocialCubit get(context) => BlocProvider.of(context);
+
+
+  void changeLocalToAr (BuildContext context)async {
+    await context.setLocale(Locale('ar'));
+    emit(ChangeLocalToArState());
+  }
+  void changeLocalToEn (BuildContext context) async {
+    await context.setLocale(Locale('en'));
+    emit(ChangeLocalToEnState());
+  }
 
   UserModel? model;
 
@@ -163,7 +176,7 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  List<UserModel> friends = [];
+   List<UserModel> friends = [];
 
   void getFriends(String? userUid) {
     emit(GetFriendLoadingState());
@@ -1098,6 +1111,10 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   bool isDark = false;
+  Color borderColor = Colors.grey.shade300;
+  Color? textFieldColor = Colors.grey[300];
+  Color? myMessageColor = Colors.blueAccent;
+  Color? messageColor = Colors.grey[300];
   Color textColor = Colors.black;
   Color backgroundColor = Colors.white;
   IconData? icon = Icons.brightness_4_outlined;
@@ -1121,6 +1138,10 @@ class SocialCubit extends Cubit<SocialStates> {
         icon = Icons.brightness_7;
         textColor = Colors.white;
         backgroundColor = HexColor('#212121').withOpacity(0.8);
+        textFieldColor = Colors.grey[900];
+        borderColor = Colors.grey.shade500;
+        messageColor = Colors.grey[600];
+        myMessageColor = Colors.blueAccent;
         emit(ChangeModeState());
       }
       else
@@ -1130,6 +1151,10 @@ class SocialCubit extends Cubit<SocialStates> {
         icon = Icons.brightness_4_outlined;
         backgroundColor = Colors.white;
         textColor = Colors.black;
+        textFieldColor = Colors.grey[300];
+        borderColor = Colors.grey.shade900;
+        messageColor = Colors.grey[300];
+        myMessageColor = Colors.blueAccent;
         emit(ChangeModeState());
       }
       emit(ChangeModeState());
@@ -1148,6 +1173,12 @@ class SocialCubit extends Cubit<SocialStates> {
     ),
     Tab(
       icon: Icon(IconBroken.Profile),
+    ),
+    Tab(
+      icon: Icon(IconBroken.Notification),
+    ),
+    Tab(
+      icon: Icon(Icons.menu),
     )
   ];
 
@@ -1168,16 +1199,9 @@ class SocialCubit extends Cubit<SocialStates> {
     UsersScreen(),
     RecentMessages(),
     ProfileScreen(),
+    NotificationScreen(),
+    SettingScreen()
   ];
-  List<Widget> appBarTitle = [
-    Text(
-      'News Feed',
-    ),
-    Text('Users'),
-    Text('Chats'),
-    Text('My Account'),
-  ];
-
 // void signIn() {
 //   DioHelper.postData(
 //       url: 'login',

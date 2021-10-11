@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
@@ -10,6 +11,7 @@ import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 import 'chatScreen.dart';
 import 'freindsScreen.dart';
 
@@ -57,30 +59,7 @@ class FriendsProfileScreen extends StatelessWidget {
                     icon: Icon(Icons.arrow_back),
                   ),
                   titleSpacing: 0,
-                  title: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      height: 40,
-                      width: MediaQuery.of(context).size.width -20,
-                      child: TextFormField(
-                        readOnly: true,
-                        style: Theme.of(context).textTheme.bodyText1,
-                        onTap: (){
-                          navigateTo(context, SearchScreen());
-                        },
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          disabledBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
-                          focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: Colors.grey.shade200)),
-                          hintText: 'Search',
-                          hintStyle: TextStyle(fontSize: 15),
-                          prefixIcon: Icon(Icons.search,color: Colors.grey,),
-                        ),
-                      ),
-                    ),
-                  ),
+                  title: searchBar(context: context)
                 ),
                 body: SmartRefresher(
                   controller: refreshController5,
@@ -94,176 +73,188 @@ class FriendsProfileScreen extends StatelessWidget {
                       children:
                       [
                         Container(
-                          height: 250,
-                          width: double.infinity,
-                          alignment: AlignmentDirectional.topCenter,
-                          child: Stack(
-                            alignment: AlignmentDirectional.bottomCenter,
+                          decoration: BoxDecoration(
+                            color: SocialCubit.get(context).backgroundColor,
+                            borderRadius: BorderRadius.circular(15)
+                          ),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: Column(
                             children: [
-                              Align(
+                              Container(
+                                height: 250,
+                                width: double.infinity,
                                 alignment: AlignmentDirectional.topCenter,
-                                child: Container(
-                                    height: 190,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(15),
-                                            topRight: Radius.circular(15))),
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    child: imagePreview(friendsModel!.coverPic)
+                                child: Stack(
+                                  alignment: AlignmentDirectional.bottomCenter,
+                                  children: [
+                                    Align(
+                                      alignment: AlignmentDirectional.topCenter,
+                                      child: Container(
+                                          height: 190,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(15),
+                                                  topRight: Radius.circular(15))),
+                                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                                          child: imagePreview(friendsModel!.coverPic)
+                                      ),
+                                    ),
+                                    CircleAvatar(
+                                      radius: 75,
+                                      backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
+                                      child: CircleAvatar(
+                                          radius: 70,
+                                          child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(70),
+                                              child: imagePreview(friendsModel.profilePic))
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              CircleAvatar(
-                                radius: 75,
-                                backgroundColor: SocialCubit.get(context).backgroundColor,
-                                child: CircleAvatar(
-                                    radius: 70,
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(70),
-                                        child: imagePreview(friendsModel.profilePic))
-                                ),
-                              )
+                              SizedBox(height: 15,),
+                              Text('${friendsModel.name}',style: TextStyle(color: SocialCubit.get(context).textColor,fontSize: 25,fontWeight: FontWeight.bold),),
+                              SizedBox(height: 10,),
+                              Text('${friendsModel.bio}',style: TextStyle(color: SocialCubit.get(context).textColor,),),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text('${posts.length}',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),),
+                                          SizedBox(height: 5,),
+                                          Text(LocaleKeys.posts.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text('12K',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)),
+                                          SizedBox(height: 5,),
+                                          Text(LocaleKeys.followers.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          navigateTo(
+                                              context, FriendsScreen(friends));
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Text('${friends.length}',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)),
+                                            SizedBox(height: 5,),
+                                            Text(LocaleKeys.profileFriends.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],),
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                          style:ButtonStyle(
+                                              backgroundColor: SocialCubit.get(context).isFriend == false?
+                                              MaterialStateProperty.all(Colors.blueAccent)
+                                                  :MaterialStateProperty.all(Colors.grey[300])
+                                          ) ,
+                                          onPressed: (){
+                                           if(SocialCubit.get(context).isFriend == false) {
+                                              SocialCubit.get(context).sendFriendRequest(
+                                                  friendsUid: userUid,
+                                                  friendName: friendsModel.name,
+                                                  friendProfilePic: friendsModel.profilePic);
+                                              SocialCubit.get(context).checkFriendRequest(userUid);
+                                            }
+                                           else {
+                                             showDialog(
+                                                 context: context,
+                                                 builder: (context) => baseAlertDialog(
+                                                   context: context,
+                                                   title: 'You are already Friends',
+                                                   content: 'Do you want to Unfriend ?',
+                                                   outlinedButtonText:'Cancel' ,
+                                                   elevatedButtonText: 'Unfriend',
+                                                   elevatedButtonIcon:Icons.person_remove ,
+                                                 ),
+                                               barrierDismissible: true,
+                                             );
+                                           }
+                                          },
+                                          child: SocialCubit.get(context).isFriend == false? SocialCubit.get(context).request ?
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.person_add_alt_1_rounded,color: Colors.white,),
+                                              SizedBox(width: 5,),
+                                              Text(LocaleKeys.requestSent.tr(),style: TextStyle(color: Colors.white)),
+                                            ],
+                                          ) : Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.person_add_alt_1_rounded,color: Colors.white,),
+                                              SizedBox(width: 5,),
+                                              Text(LocaleKeys.addFriend.tr(),style: TextStyle(color: Colors.white)),
+                                            ],
+                                          ) :
+                                          Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                    Icon(Icons.person,color: Colors.black,),
+                                                    SizedBox(width: 5,),
+                                                    Text(LocaleKeys.profileFriends.tr(),style: TextStyle(color: Colors.black),),
+                                              ],
+                                          )
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        style:ButtonStyle(
+                                          backgroundColor: SocialCubit.get(context).isFriend == false?
+                                          MaterialStateProperty.all(Colors.grey[300])
+                                              :MaterialStateProperty.all(Colors.blueAccent)
+                                        ) ,
+                                          onPressed: (){
+                                          navigateTo(context, ChatScreen(userModel: friendsModel,));
+                                          },
+                                          child: SocialCubit.get(context).isFriend != false?
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(IconBroken.Chat,color: Colors.white,),
+                                              SizedBox(width: 5,),
+                                              Text(LocaleKeys.message.tr(),style: TextStyle(color: Colors.white)),
+                                            ],
+                                          ) :
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(IconBroken.Chat,color: Colors.black,),
+                                              SizedBox(width: 5,),
+                                              Text(LocaleKeys.message.tr(),style: TextStyle(color: Colors.black),),
+                                            ],
+                                          )
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
-                        SizedBox(height: 15,),
-                        Text('${friendsModel.name}',style: TextStyle(color: SocialCubit.get(context).textColor,fontSize: 25,fontWeight: FontWeight.bold),),
                         SizedBox(height: 10,),
-                        Text('${friendsModel.bio}',style: TextStyle(color: SocialCubit.get(context).textColor,),),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Text('${posts.length}',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),),
-                                    SizedBox(height: 5,),
-                                    Text('Posts',style: TextStyle(color: SocialCubit.get(context).textColor)),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Text('12K',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)),
-                                    SizedBox(height: 5,),
-                                    Text('Followers',style: TextStyle(color: SocialCubit.get(context).textColor)),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    navigateTo(
-                                        context, FriendsScreen(friends));
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Text('${friends.length}',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)),
-                                      SizedBox(height: 5,),
-                                      Text('Friends',style: TextStyle(color: SocialCubit.get(context).textColor)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ElevatedButton(
-                                    style:ButtonStyle(
-                                        backgroundColor: SocialCubit.get(context).isFriend == false?
-                                        MaterialStateProperty.all(Colors.blueAccent)
-                                            :MaterialStateProperty.all(Colors.grey[300])
-                                    ) ,
-                                    onPressed: (){
-                                     if(SocialCubit.get(context).isFriend == false) {
-                                        SocialCubit.get(context).sendFriendRequest(
-                                            friendsUid: userUid,
-                                            friendName: friendsModel.name,
-                                            friendProfilePic: friendsModel.profilePic);
-                                        SocialCubit.get(context).checkFriendRequest(userUid);
-                                      }
-                                     else {
-                                       showDialog(
-                                           context: context,
-                                           builder: (context) => baseAlertDialog(
-                                             context: context,
-                                             title: 'You are already Friends',
-                                             content: 'Do you want to Unfriend ?',
-                                             outlinedButtonText:'Cancel' ,
-                                             elevatedButtonText: 'Unfriend',
-                                             elevatedButtonIcon:Icons.person_remove ,
-                                           ),
-                                         barrierDismissible: true,
-                                       );
-                                     }
-                                    },
-                                    child: SocialCubit.get(context).isFriend == false? SocialCubit.get(context).request ?
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.person_add_alt_1_rounded,color: Colors.white,),
-                                        SizedBox(width: 5,),
-                                        Text('Request sent',style: TextStyle(color: Colors.white)),
-                                      ],
-                                    ) : Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.person_add_alt_1_rounded,color: Colors.white,),
-                                        SizedBox(width: 5,),
-                                        Text('Add Friend',style: TextStyle(color: Colors.white)),
-                                      ],
-                                    ) :
-                                    Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                              Icon(Icons.person,color: Colors.black,),
-                                              SizedBox(width: 5,),
-                                              Text('Friends',style: TextStyle(color: Colors.black),),
-                                        ],
-                                    )
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ElevatedButton(
-                                  style:ButtonStyle(
-                                    backgroundColor: SocialCubit.get(context).isFriend == false?
-                                    MaterialStateProperty.all(Colors.grey[300])
-                                        :MaterialStateProperty.all(Colors.blueAccent)
-                                  ) ,
-                                    onPressed: (){
-                                    navigateTo(context, ChatScreen(userModel: friendsModel,));
-                                    },
-                                    child: SocialCubit.get(context).isFriend != false?
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(IconBroken.Chat,color: Colors.white,),
-                                        SizedBox(width: 5,),
-                                        Text('Message',style: TextStyle(color: Colors.white)),
-                                      ],
-                                    ) :
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(IconBroken.Chat,color: Colors.black,),
-                                        SizedBox(width: 5,),
-                                        Text('Message',style: TextStyle(color: Colors.black),),
-                                      ],
-                                    )
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                         Conditional.single(
                           context: context,
                           conditionBuilder: (context) => posts.length > 0,
@@ -274,24 +265,24 @@ class FriendsProfileScreen extends StatelessWidget {
                             separatorBuilder: (context,index) => SizedBox(height: 10,),
                             itemCount:posts.length,
                           ),
-                          fallbackBuilder: (context) => Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.article_outlined,
-                                    size: 50,
-                                    color: Colors.grey,
-                                  ),
-                                  Text(
-                                    'No Posts',
-                                    style: TextStyle(
-                                        fontSize: 20, fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
+                          fallbackBuilder: (context) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(height: 70,),
+                                Icon(
+                                  Icons.article_outlined,
+                                  size: 70,
+                                  color: Colors.grey,
+                                ),
+                                Text(
+                                  'No Posts',
+                                  style: TextStyle(
+                                    color: SocialCubit.get(context).textColor,
+                                      fontSize: 20, fontWeight: FontWeight.bold),
+                                )
+                              ],
                             ),
                           )
                         ),

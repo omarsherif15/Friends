@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
@@ -5,6 +6,7 @@ import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/shared/constants.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 import 'friendsProfileScreen.dart';
 
@@ -21,7 +23,7 @@ class FriendsScreen extends StatelessWidget {
           List<UserModel>? friends = this.friends;
           return Scaffold(
             appBar: AppBar(
-              title: Text('Friends'),
+              title: Text(LocaleKeys.friends.tr()),
               elevation: 8,
               titleSpacing: 0,
             ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
@@ -8,7 +9,9 @@ import 'package:socialapp/modules/CommentsScreen.dart';
 import 'package:socialapp/modules/LikesScreen.dart';
 import 'package:socialapp/modules/friendsProfileScreen.dart';
 import 'package:socialapp/modules/newPostScreen.dart';
+import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 import 'constants.dart';
 
@@ -169,7 +172,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Text('Delete post')
+                                Text(LocaleKeys.DeletePost.tr())
                               ],
                             )), // delete post
                         PopupMenuItem(
@@ -183,7 +186,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Text('Edit post')
+                                Text(LocaleKeys.editPost.tr())
                               ],
                             )), // editPost
                       ]),
@@ -240,7 +243,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                       SizedBox(
                         width: 5,
                       ),
-                      Text('${postModel.comments} Comments',style: TextStyle(color: SocialCubit.get(context).textColor)),
+                      Text('${postModel.comments}' + LocaleKeys.comment.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
                     ],
                   ),
                 ),
@@ -269,7 +272,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                       width: 15,
                     ),
                     Text(
-                      'Write a comment...',
+                      LocaleKeys.write_comment.tr(),
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],
@@ -292,7 +295,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                     SizedBox(
                       width: 5,
                     ),
-                    Text('Like',style: TextStyle(color: SocialCubit.get(context).textColor)),
+                    Text(LocaleKeys.Like.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
                   ],
                 ),
               ),
@@ -321,14 +324,14 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                       Row(children: [
                         Icon(Icons.share,color: Colors.green),
                         SizedBox(width: 8,),
-                        Text('Share Now',style: TextStyle(color: SocialCubit.get(context).textColor)),
+                        Text(LocaleKeys.shareNow.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
                   ],))
                 ],
                 child: Row(
                   children: [
                     Icon(Icons.share, color: Colors.green,),
                     SizedBox(width: 5,),
-                    Text('Share',style: TextStyle(color: SocialCubit.get(context).textColor)),
+                    Text(LocaleKeys.share.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
                   ],
                 ),
               ),
@@ -352,9 +355,10 @@ Widget baseAlertDialog({
   IconData? elevatedButtonIcon,
 }){
   return AlertDialog(
-    title: Text('$title'),
+    backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
+    title: Text('$title',style: TextStyle(color: SocialCubit.get(context).textColor),),
     titlePadding: EdgeInsetsDirectional.only(start:13,top: 15 ),
-    content: Text('$content'),
+    content: Text('$content',style: TextStyle(color: SocialCubit.get(context).textColor,),),
     elevation: 8,
     contentPadding: EdgeInsets.all(15),
     actions: [
@@ -383,6 +387,35 @@ Widget baseAlertDialog({
       ),
     ],
 
+  );
+}
+
+Widget searchBar({
+  required context,
+  bool readOnly = true,
+  double height = 40,
+  double width = double.infinity,
+
+}){
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 10),
+    height: height,
+    width: width,
+    child: TextFormField(
+      readOnly: readOnly,
+      style: TextStyle(color: SocialCubit.get(context).textColor),
+      onTap: () => navigateTo(context, SearchScreen()),
+      decoration: InputDecoration(
+        border: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
+        filled: true,
+        fillColor: SocialCubit.get(context).textFieldColor,
+        disabledBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
+        focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
+        hintText: LocaleKeys.search.tr(),
+        hintStyle: TextStyle(fontSize: 15,color: Colors.grey),
+        prefixIcon: Icon(Icons.search,color: Colors.grey,),
+      ),
+    ),
   );
 }
 

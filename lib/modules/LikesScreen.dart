@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
@@ -8,6 +9,7 @@ import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/friendsProfileScreen.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 import 'chatScreen.dart';
 
@@ -84,7 +86,7 @@ WhoLikedScreen(this.postId);
                     children: [
                       Icon(Icons.person_add_alt_1_rounded,size: 15,),
                       SizedBox(width: 5,),
-                      Text('Add Friend',style: TextStyle(color: Colors.white,fontSize: 12)),
+                      Text(LocaleKeys.addFriend.tr(),style: TextStyle(color: Colors.white,fontSize: 12)),
                     ],
                   ),
                 ),

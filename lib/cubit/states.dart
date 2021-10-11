@@ -10,8 +10,8 @@ class EditPressedState extends SocialStates{}
 class CloseTopSheet extends SocialStates{}
 class RefreshPage extends SocialStates{}
 class ShowTimeState extends SocialStates{}
-
-
+class ChangeLocalToArState extends SocialStates{}
+class ChangeLocalToEnState extends SocialStates{}
 ///End of General states
 
 ///Login State

@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:socialapp/modules/newPostScreen.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -51,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: SocialCubit.get(context).backgroundColor,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
                                 elevation: 8,
-                                margin: EdgeInsets.symmetric(vertical: 10),
+                                //margin: EdgeInsets.symmetric(vertical: 10),
                                 child: Container(
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: Column(
@@ -81,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     isEdit: false,
                                                   ));
                                             },
-                                            child: Text('What is on your mind...',
+                                            child: Text(LocaleKeys.whatOnYourMind.tr(),
                                                 style: TextStyle(color: Colors.grey)),
                                           ),
                                         ],
@@ -106,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     SizedBox(
                                                       width: 5,
                                                     ),
-                                                    Text('Image',
+                                                    Text(LocaleKeys.image.tr(),
                                                         style: TextStyle(color: Colors.grey)),
                                                   ],
                                                 )),
@@ -132,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       width: 5,
                                                     ),
                                                     Text(
-                                                      'Tags',
+                                                      LocaleKeys.tags.tr(),
                                                       style: TextStyle(color: Colors.grey),
                                                     ),
                                                   ],
@@ -158,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     SizedBox(
                                                       width: 5,
                                                     ),
-                                                    Text('Docs',
+                                                    Text(LocaleKeys.docs.tr(),
                                                         style: TextStyle(color: Colors.grey)),
                                                   ],
                                                 )),
@@ -169,6 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ),
+                              SizedBox(height: 5,),
                               ListView.separated(
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
@@ -183,6 +186,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
+                    floatingActionButton: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        FloatingActionButton(
+                          heroTag: 'English',
+                          onPressed: (){
+                            SocialCubit.get(context).changeLocalToEn(context);
+                          },
+                          child: Icon(Icons.landscape),
+                        ),
+                        SizedBox(height: 20,),
+                        FloatingActionButton(
+                          heroTag: 'Arabic',
+                          onPressed: (){
+                            SocialCubit.get(context).changeLocalToAr(context);
+                          },
+                          child: Icon(Icons.language),
+                        ),
+                      ],
+                    ),
                     ),
                 );
           },
@@ -195,10 +218,10 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder: (context) => baseAlertDialog(
           context: context,
-          title: 'Exit',
-          content: 'Are you sure you want to exit?',
+          title: LocaleKeys.exit.tr(),
+          content: LocaleKeys.areYouSureExit.tr(),
           outlinedButtonText: 'Cancel',
-          elevatedButtonText: 'Exit',
+          elevatedButtonText: LocaleKeys.exit.tr(),
           elevatedButtonIcon: Icons.exit_to_app_outlined,
         ));
     return shouldPop ?? false;

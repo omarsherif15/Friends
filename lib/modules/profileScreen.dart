@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:full_screen_image_null_safe/full_screen_image_null_safe.dart';
@@ -12,6 +13,7 @@ import 'package:socialapp/modules/freindsScreen.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 import 'CommentsScreen.dart';
 import 'LikesScreen.dart';
 import 'friendsProfileScreen.dart';
@@ -52,114 +54,132 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
-                          height: 250,
                           width: double.infinity,
-                          alignment: AlignmentDirectional.topCenter,
-                          child: Stack(
-                            alignment: AlignmentDirectional.bottomCenter,
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          decoration: BoxDecoration(
+                              color: SocialCubit.get(context).backgroundColor,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Column(
                             children: [
-                              Align(
+                              Container(
+                                height: 250,
+                                width: double.infinity,
                                 alignment: AlignmentDirectional.topCenter,
-                                child: Container(
-                                  height: 190,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(15),
-                                          topRight: Radius.circular(15))),
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  child: imagePreview(userModel!.coverPic)
-                                ),
-                              ),
-                              CircleAvatar(
-                                radius: 75,
-                                backgroundColor: SocialCubit.get(context).backgroundColor,
-                                child: CircleAvatar(
-                                  radius: 70,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(70),
-                                      child: imagePreview(userModel.profilePic))
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          '${userModel.name}',
-                          style: TextStyle(fontSize: 25,color: SocialCubit.get(context).textColor, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text('${userModel.bio}',style: TextStyle(color: SocialCubit.get(context).textColor),),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
+                                child: Stack(
+                                  alignment: AlignmentDirectional.bottomCenter,
                                   children: [
-                                    Text(
-                                      '${userPosts.length}',
-                                      style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text('Posts',style: TextStyle(color: SocialCubit.get(context).textColor),),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Text('12K', style: TextStyle(fontWeight: FontWeight.bold,color: SocialCubit.get(context).textColor)),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text('Followers',style: TextStyle(color: SocialCubit.get(context).textColor),),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    navigateTo(context, FriendsScreen(friends,myFreinds: true,));
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Text('${friends.length}',
-                                          style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                        height: 5,
+                                    Align(
+                                      alignment: AlignmentDirectional.topCenter,
+                                      child: Container(
+                                        height: 190,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(15),
+                                                topRight: Radius.circular(15))),
+                                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                                        child: imagePreview(userModel!.coverPic)
                                       ),
-                                      Text('Friends',style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                    ),
+                                    CircleAvatar(
+                                      radius: 75,
+                                      backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
+                                      child: CircleAvatar(
+                                        radius: 70,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(70),
+                                            child: imagePreview(userModel.profilePic))
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                '${userModel.name}',
+                                style: TextStyle(fontSize: 25,color: SocialCubit.get(context).textColor, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text('${userModel.bio}',style: TextStyle(color: SocialCubit.get(context).textColor),),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '${userPosts.length}',
+                                            style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(LocaleKeys.posts.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text('12K', style: TextStyle(fontWeight: FontWeight.bold,color: SocialCubit.get(context).textColor)),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(LocaleKeys.followers.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          navigateTo(context, FriendsScreen(friends,myFreinds: true,));
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Text('${friends.length}',
+                                                style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(LocaleKeys.profileFriends.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                width: double.infinity,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    navigateTo(context, EditProfileScreen());
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.edit_outlined),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(LocaleKeys.editprofile.tr()),
                                     ],
                                   ),
                                 ),
                               ),
+                              SizedBox(
+                                height: 10,
+                              ),
+
                             ],
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              navigateTo(context, EditProfileScreen());
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.edit_outlined),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text('EDIT PROFILE'),
-                              ],
-                            ),
                           ),
                         ),
                         SizedBox(
@@ -194,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         width: 15,
                                       ),
                                       Text(
-                                        'What is on your mind...',
+                                        LocaleKeys.whatOnYourMind.tr(),
                                         style: TextStyle(color: Colors.grey),
                                       ),
                                     ],
@@ -217,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               SizedBox(
                                                 width: 5,
                                               ),
-                                              Text('Image', style: TextStyle(color: Colors.grey)),
+                                              Text(LocaleKeys.image.tr(), style: TextStyle(color: Colors.grey)),
                                             ],
                                           )),
                                     ),
@@ -242,7 +262,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 width: 5,
                                               ),
                                               Text(
-                                                'Tags',
+                                                LocaleKeys.tags.tr(),
                                                 style: TextStyle(color: Colors.grey),
                                               ),
                                             ],
@@ -268,7 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               SizedBox(
                                                 width: 5,
                                               ),
-                                              Text('Docs', style: TextStyle(color: Colors.grey)),
+                                              Text(LocaleKeys.docs.tr(), style: TextStyle(color: Colors.grey)),
                                             ],
                                           )),
                                     ),

@@ -9,6 +9,7 @@ import 'package:socialapp/models/recentMessagesModel.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/chatScreen.dart';
 import 'package:socialapp/modules/searchScreen.dart';
+import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
 
 class RecentMessages extends StatelessWidget {
@@ -44,30 +45,7 @@ class RecentMessages extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(height: 10,),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          height: 40,
-                          width: MediaQuery.of(context).size.width -20,
-                          child: TextFormField(
-                            readOnly: true,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            onTap: (){
-                              navigateTo(context, SearchScreen());
-                            },
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide.none),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              disabledBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide.none),
-                              focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15),borderSide: BorderSide.none),
-                              hintText: 'Search',
-                              hintStyle: TextStyle(fontSize: 15),
-                              prefixIcon: Icon(Icons.search,color: Colors.grey,),
-                            ),
-                          ),
-                        ),
-                      ),
+                      searchBar(context: context,height: 60),
                       if(friends.length > 0)
                         Container(
                           height: 110,

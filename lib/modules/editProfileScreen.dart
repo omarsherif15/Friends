@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
@@ -9,6 +10,7 @@ import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class EditProfileScreen extends StatelessWidget {
 
@@ -42,7 +44,7 @@ class EditProfileScreen extends StatelessWidget {
             },
             child: Scaffold(
               appBar: AppBar(
-                title: Text('Edit Profile'),
+                title: Text(LocaleKeys.editprofile.tr().toLowerCase()),
                 automaticallyImplyLeading: false,
                 leading: IconButton(
                   onPressed: () => navigateAndKill(context, SocialLayout(3)),
@@ -68,7 +70,7 @@ class EditProfileScreen extends StatelessWidget {
                         children: [
                           Icon(Icons.save_rounded),
                           SizedBox(width: 5,),
-                          Text('Save'),
+                          Text(LocaleKeys.save.tr()),
                         ],
                       )
                   ),
@@ -197,7 +199,7 @@ class EditProfileScreen extends StatelessWidget {
                             context: context,
                             controller:nameController ,
                             keyboardType: TextInputType.text,
-                            labelText: 'User Name',
+                            labelText: LocaleKeys.userName.tr(),
                             prefix: Icons.person,
                             validate: (value)
                             {
@@ -210,7 +212,7 @@ class EditProfileScreen extends StatelessWidget {
                             context: context,
                             controller: phoneController,
                             keyboardType: TextInputType.emailAddress,
-                            labelText: 'Phone Number',
+                            labelText: LocaleKeys.phoneNumber.tr(),
                             prefix: Icons.phone,
                             validate: (value)
                             {
@@ -223,7 +225,7 @@ class EditProfileScreen extends StatelessWidget {
                         context: context,
                         controller: bioController,
                         keyboardType: TextInputType.text,
-                        labelText: 'Bio',
+                        labelText: LocaleKeys.bio.tr(),
                         prefix: Icons.notes ,
                         validate: (value)
                         {

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +16,7 @@ import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class LoginScreen extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
@@ -129,7 +131,7 @@ class LoginScreen extends StatelessWidget {
                           defaultFormField(
                               context: context,
                               controller: passwordController,
-                              hintText: 'Password',
+                              hintText: LocaleKeys.password.tr(),
                               prefix: IconBroken.Lock,
                               isPassword: !LoginCubit.get(context).showPassword ? true : false,
                               validate: (value)

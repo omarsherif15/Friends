@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -9,6 +10,7 @@ import 'package:socialapp/models/recentMessagesModel.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -39,9 +41,7 @@ class ChatScreen extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   )
                 : Scaffold(
-                    //backgroundColor: HexColor('#212121'),
                     appBar: AppBar(
-                      //backgroundColor: HexColor('#212121'),
                       titleSpacing: 0,
                       elevation: 8,
                       leading: IconButton(
@@ -137,7 +137,8 @@ class ChatScreen extends StatelessWidget {
                             child: TextFormField(
                                 controller: messageTextControl,
                                 textAlignVertical: TextAlignVertical.center,
-                                cursorColor: Colors.black,
+                                cursorColor: SocialCubit.get(context).textColor,
+                                style: TextStyle(color: SocialCubit.get(context).textColor),
                                 validator: (value) {
                                   if (value!.isEmpty) return null;
                                 },
@@ -149,7 +150,7 @@ class ChatScreen extends StatelessWidget {
                                     enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(40),
                                         borderSide: BorderSide.none),
-                                    hintText: 'Write a message...',
+                                    hintText: LocaleKeys.writeMessage.tr(),
                                     hintStyle: TextStyle(color: Colors.grey),
                                     suffixIcon: Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -203,7 +204,7 @@ class ChatScreen extends StatelessWidget {
                                       ],
                                     ),
                                     filled: true,
-                                    fillColor: Colors.grey[300],
+                                    fillColor: SocialCubit.get(context).textFieldColor,
                                     border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(40)))),
@@ -259,7 +260,7 @@ class ChatScreen extends StatelessWidget {
                           width: 190,
                           height: 250,
                           decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: SocialCubit.get(context).messageColor,
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(10),
                               )
@@ -269,12 +270,12 @@ class ChatScreen extends StatelessWidget {
                           width: 190,
                           padding: EdgeInsets.symmetric(horizontal: 15,vertical: 8),
                           decoration: BoxDecoration(
-                              color: Colors.grey[300],
+                              color: SocialCubit.get(context).messageColor,
                               borderRadius: BorderRadius.only(
                                 bottomLeft: Radius.circular(10),
                                 bottomRight: Radius.circular(10),
                               )),
-                          child: Text('${message.messageText}')),
+                          child: Text('${message.messageText}',style: TextStyle(color: SocialCubit.get(context).textColor))),
                     ],) :
                   message.messageImage != null ?
                   Container(
@@ -282,7 +283,7 @@ class ChatScreen extends StatelessWidget {
                       width: 190,
                       height: 250,
                       decoration: BoxDecoration(
-                          color: Colors.grey[300],
+                          color: SocialCubit.get(context).messageColor,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
                             bottomLeft: Radius.circular(10),
@@ -294,13 +295,13 @@ class ChatScreen extends StatelessWidget {
                   Container(
                       padding: EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                          color: Colors.grey[300],
+                          color: SocialCubit.get(context).messageColor,
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10),
                           )),
-                      child: Text('${message.messageText}')) : Container(height: 0,width: 0,)
+                      child: Text('${message.messageText}',style: TextStyle(color: SocialCubit.get(context).textColor))) : Container(height: 0,width: 0,)
                 ],
               ),
             ),
@@ -346,7 +347,7 @@ class ChatScreen extends StatelessWidget {
                             width: 190,
                             height: 250,
                             decoration: BoxDecoration(
-                                color: Colors.blueAccent.withOpacity(0.6),
+                                color: SocialCubit.get(context).myMessageColor,
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(10),
                                 )
@@ -356,12 +357,12 @@ class ChatScreen extends StatelessWidget {
                           width: 190,
                             padding: EdgeInsets.symmetric(horizontal: 15,vertical: 8),
                             decoration: BoxDecoration(
-                                color: Colors.blueAccent.withOpacity(0.6),
+                                color: SocialCubit.get(context).myMessageColor,
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(10),
                                   bottomRight: Radius.circular(10),
                                 )),
-                            child: Text('${message.messageText}')),
+                            child: Text('${message.messageText}',style: TextStyle(color: Colors.white))),
                       ],) :
                   message.messageImage != null ?
                     Container(
@@ -369,7 +370,7 @@ class ChatScreen extends StatelessWidget {
                         width: 190,
                         height: 250,
                         decoration: BoxDecoration(
-                          color: Colors.blueAccent.withOpacity(0.6),
+                          color: SocialCubit.get(context).myMessageColor,
                             borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(10),
                                       bottomLeft: Radius.circular(10),
@@ -381,13 +382,13 @@ class ChatScreen extends StatelessWidget {
                     Container(
                         padding: EdgeInsets.all(15),
                         decoration: BoxDecoration(
-                            color: Colors.blueAccent.withOpacity(0.6),
+                            color: SocialCubit.get(context).myMessageColor,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(10),
                               bottomLeft: Radius.circular(10),
                               bottomRight: Radius.circular(10),
                             )),
-                        child: Text('${message.messageText}')) : Container(height: 0,width: 0,)
+                        child: Text('${message.messageText}',style: TextStyle(color: Colors.white))) : Container(height: 0,width: 0,)
 
 
                 ],
@@ -404,9 +405,10 @@ class ChatScreen extends StatelessWidget {
 
   Widget alertDialog(context) {
     return AlertDialog(
+      backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
       content: Padding(
         padding: const EdgeInsetsDirectional.only(start: 15,top: 15),
-        child: Text('Delete message?',style: TextStyle(fontSize: 17),),
+        child: Text(LocaleKeys.deleteMessage.tr(),style: TextStyle(fontSize: 17,color: SocialCubit.get(context).textColor,),),
       ),
       elevation: 8,
       contentPadding: EdgeInsets.all(15),
