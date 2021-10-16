@@ -1,14 +1,12 @@
-import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:socialapp/cubit/appCubit.dart';
+import 'package:scroll_app_bar/scroll_app_bar.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
-import 'package:socialapp/shared/styles/themes.dart';
 
 class SocialLayout extends StatefulWidget {
   int initialIndex = 0;
@@ -19,6 +17,7 @@ class SocialLayout extends StatefulWidget {
 }
  class SocialLayoutState extends State<SocialLayout> with SingleTickerProviderStateMixin {
   static late TabController tabController;
+  static ScrollController scrollController = ScrollController();
   late int initialIndex;
 
   @override
@@ -42,56 +41,49 @@ class SocialLayout extends StatefulWidget {
         listener: (context, state) {},
         builder: (context, state) {
           return Scaffold(
-            appBar: tabController.index == 0 ?
+            appBar: tabController.index == 0?
             AppBar(
-                    title: Text('News Feeds',),
-                    automaticallyImplyLeading: false,
-                    elevation: 8,
-                    actions: [
-                      IconButton(
-                          onPressed: () {
-                            navigateTo(context, SearchScreen());
-                          },
-                          icon: Icon(IconBroken.Search)),
-                      IconButton(
-                          onPressed: () {
-                            SocialCubit.get(context).signOut(context);
-                          },
-                          icon: Icon(IconBroken.Logout)),
-                      IconButton(
-                          onPressed: () {
-                            SocialCubit.get(context).changeMode();
-                          },
-                          icon: Icon(SocialCubit.get(context).icon)),
-                    ],
-                    bottom: TabBar(
-                      controller: tabController,
-                      labelColor: Colors.blueAccent,
-                      tabs: SocialCubit.get(context).tabBar,
-                      onTap: (index) {
-                        SocialCubit.get(context).changeBottomNav(index);
-                      },
-                      labelStyle: TextStyle(fontSize: 20),
-                      indicatorColor: Colors.blueAccent,
-                      unselectedLabelColor: Colors.grey,
-                    ),
-                  ) : AppBar(
-                    automaticallyImplyLeading: false,
-                    elevation: 8,
-                    title: TabBar(
-                      controller: tabController,
-                      labelColor: Colors.blueAccent,
-                      tabs: SocialCubit.get(context).tabBar,
-                      onTap: (index) {
-                        SocialCubit.get(context).changeBottomNav(index);
-                      },
-                      indicatorColor: Colors.blueAccent,
-                      unselectedLabelColor: Colors.grey,
-                    ),
-                  ),
+                      title: Text('News Feeds',),
+                      automaticallyImplyLeading: false,
+                      elevation: 8,
+                      actions: [
+                        IconButton(
+                            onPressed: () {
+                              navigateTo(context, SearchScreen());
+                            },
+                            icon: Icon(Icons.search)),
+                      ],
+              bottom: TabBar(
+                controller: tabController,
+                labelColor: Colors.blueAccent,
+                tabs: SocialCubit.get(context).tabBar,
+                onTap: (index) {
+                  SocialCubit.get(context).changeBottomNav(index);
+                },
+                labelStyle: TextStyle(fontSize: 20),
+                indicatorColor: Colors.blueAccent,
+                unselectedLabelColor: Colors.grey,
+              ),
+                    ) :
+            AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 8,
+              title: TabBar(
+                controller: tabController,
+                labelColor: Colors.blueAccent,
+                tabs: SocialCubit.get(context).tabBar,
+                onTap: (index) {
+                  SocialCubit.get(context).changeBottomNav(index);
+                },
+                labelStyle: TextStyle(fontSize: 20),
+                indicatorColor: Colors.blueAccent,
+                unselectedLabelColor: Colors.grey,
+              ),
+            ) ,
             body: TabBarView(
+              physics: BouncingScrollPhysics(),
               controller: tabController,
-              children:SocialCubit.get(context).screens,
+              children: SocialCubit.get(context).screens
             ),
 
             );

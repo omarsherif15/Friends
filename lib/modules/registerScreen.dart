@@ -30,7 +30,6 @@ class RegisterScreen extends StatelessWidget {
                 uId = state.uId;
                 navigateAndKill(context, SocialLayout(0));
                 SocialCubit.get(context).getMyData();
-                SocialCubit.get(context).setUserToken();
               });
             }
           },
@@ -40,13 +39,35 @@ class RegisterScreen extends StatelessWidget {
               extendBodyBehindAppBar: true,
               appBar: AppBar(
                 automaticallyImplyLeading: false,
-                backwardsCompatibility: false,
                 systemOverlayStyle: SystemUiOverlayStyle(
                 statusBarBrightness: Brightness.light,
                 statusBarColor: Colors.transparent,
                 statusBarIconBrightness: Brightness.light),
                 backgroundColor: Colors.transparent,
                 elevation: 0,
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: PopupMenuButton(
+                      onSelected: (value){
+                        if(value == 'Arabic')
+                          SocialCubit.get(context).changeLocalToAr(context);
+                        else
+                          SocialCubit.get(context).changeLocalToEn(context);
+                      } ,
+                      color: SocialCubit.get(context).backgroundColor.withOpacity(1),
+                      icon: Icon(Icons.language),
+                      itemBuilder: (context) =>  [
+                        PopupMenuItem(
+                          value: 'Arabic',
+                          child: Text('عربي',style: TextStyle(color: SocialCubit.get(context).textColor),),),
+                        PopupMenuItem(
+                          value: 'English',
+                          child: Text('English',style: TextStyle(color: SocialCubit.get(context).textColor)),)
+                      ],
+                    )
+                  )
+                ],
               ),
               body: Stack(
                 alignment: AlignmentDirectional.bottomCenter,
@@ -59,140 +80,148 @@ class RegisterScreen extends StatelessWidget {
                             image: AssetImage('assets/images/3700.jpeg'),fit: BoxFit.cover
                         )
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 50,),
-                        Text('Register',style: TextStyle(fontSize: 50,fontWeight: FontWeight.bold,color: Colors.white)),
-                        SizedBox(height: 10,),
-                        Text('Create a new Account to communicate with your friends',style: TextStyle(fontSize: 20,color: Colors.white)),
-                      ],
-                    ),
                   ),
                   SingleChildScrollView(
-                    child: Container(
-                      height: 560,
-                      width: double.infinity,
-                      padding: EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                          border: Border.all(),
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(40.0),
-                            topLeft: Radius.circular(40.0),
-                          )),
-                      child: Form(
-                        key: signUpFormKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:
-                          [
-                            defaultFormField(
-                                context: context,
-                                controller:nameController ,
-                                keyboardType: TextInputType.text,
-                                hintText: LocaleKeys.userName.tr(),
-                                prefix: Icons.person,
-                                validate: (value)
-                                {
-                                  if(value!.isEmpty)
-                                    return 'Email Address must be filled';
-                                }
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            defaultFormField(
-                                context: context,
-                                controller: emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                hintText: 'Email Address',
-                                prefix: Icons.email,
-                                validate: (value)
-                                {
-                                  if(value!.isEmpty)
-                                    return 'Email Address must be filled';
-                                }
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            defaultFormField(
-                                context: context,
-                                controller: phoneController,
-                                keyboardType: TextInputType.phone,
-                                hintText: LocaleKeys.phoneNumber.tr(),
-                                prefix: Icons.phone,
-                                validate: (value)
-                                {
-                                  if(value!.isEmpty)
-                                    return 'Email Address must be filled';
-                                }
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            defaultFormField(
-                                context: context,
-                                controller: passwordController,
-                                hintText: LocaleKeys.password.tr(),
-                                prefix: Icons.lock,
-                                isPassword: !SignUpCubit.get(context).showPassword ? true : false,
-                                validate: (value)
-                                {
-                                  if(value!.isEmpty)
-                                    return'Password must be filled';
-                                },
-                                onSubmit: (value)
-                                {
-                                  // if (loginFormKey.currentState!.validate()) {
-                                  //   LoginCubit.get(context).signIn(
-                                  //       email: emailController.text,
-                                  //       password: passwordController.text);
-                                  // }
-                                },
-                                suffix: SignUpCubit.get(context).suffixIcon,
-                                suffixPressed: ()
-                                {
-                                  SignUpCubit.get(context).changeSuffixIcon(context);
-                                }
-                            ),
-
-                            SizedBox(height: 40,),
-                            state is LoginLoadingState ?
-                            Center(child: CircularProgressIndicator())
-                                :defaultButton(
-                              text: 'SIGN UP',
-                              onTap: () {
-                                if (signUpFormKey.currentState!.validate()) {
-                                  SignUpCubit.get(context).signUp(
-                                    name: nameController.text,
-                                    phone: phoneController.text,
-                                    email: emailController.text,
-                                    password: passwordController.text,
-                                  );
-                                }
-                              },
-                            ),
-                            SizedBox(height: 10,),
-                            Row(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 50,),
+                              Text(LocaleKeys.Register.tr(),style: TextStyle(fontSize: 50,fontWeight: FontWeight.bold,color: Colors.white)),
+                              SizedBox(height: 10,),
+                              Text(LocaleKeys.CreateToCommunicate.tr(),style: TextStyle(fontSize: 20,color: Colors.white)),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 560,
+                          width: double.infinity,
+                          padding: EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                              border: Border.all(),
+                              color: SocialCubit.get(context).backgroundColor,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(40.0),
+                                topLeft: Radius.circular(40.0),
+                              )),
+                          child: Form(
+                            key: signUpFormKey,
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Already have an Account?',style: TextStyle(color: Colors.black.withOpacity(0.5)),
+                              children:
+                              [
+                                defaultFormField(
+                                    context: context,
+                                    controller:nameController ,
+                                    keyboardType: TextInputType.text,
+                                    hintText: LocaleKeys.userName.tr(),
+                                    prefix: Icons.person,
+                                    validate: (value)
+                                    {
+                                      if(value!.isEmpty)
+                                        return LocaleKeys.ThisFieldMustBeFilled.tr();
+                                    }
                                 ),
-                                TextButton(
-                                    onPressed: () {
-                                      pop(context);
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                defaultFormField(
+                                    context: context,
+                                    controller: emailController,
+                                    keyboardType: TextInputType.emailAddress,
+                                    hintText: LocaleKeys.EmailAddress.tr(),
+                                    prefix: Icons.email,
+                                    validate: (value)
+                                    {
+                                      if(value!.isEmpty)
+                                        return LocaleKeys.ThisFieldMustBeFilled.tr();
+                                    }
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                defaultFormField(
+                                    context: context,
+                                    controller: phoneController,
+                                    keyboardType: TextInputType.phone,
+                                    hintText: LocaleKeys.phoneNumber.tr(),
+                                    prefix: Icons.phone,
+                                    validate: (value)
+                                    {
+                                      if(value!.isEmpty)
+                                        return LocaleKeys.ThisFieldMustBeFilled.tr();
+                                    }
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                defaultFormField(
+                                    context: context,
+                                    controller: passwordController,
+                                    hintText: LocaleKeys.password.tr(),
+                                    prefix: Icons.lock,
+                                    isPassword: !SignUpCubit.get(context).showPassword ? true : false,
+                                    validate: (value)
+                                    {
+                                      if(value!.isEmpty)
+                                        return LocaleKeys.ThisFieldMustBeFilled.tr();
                                     },
-                                    child: Text('Sign In')
+                                    onSubmit: (value)
+                                    {
+                                      // if (loginFormKey.currentState!.validate()) {
+                                      //   LoginCubit.get(context).signIn(
+                                      //       email: emailController.text,
+                                      //       password: passwordController.text);
+                                      // }
+                                    },
+                                    suffix: SignUpCubit.get(context).suffixIcon,
+                                    suffixPressed: ()
+                                    {
+                                      SignUpCubit.get(context).changeSuffixIcon(context);
+                                    }
+                                ),
+
+                                SizedBox(height: 40,),
+                                state is LoginLoadingState ?
+                                Center(child: CircularProgressIndicator())
+                                    :defaultButton(
+                                  text: LocaleKeys.SIGNUP.tr(),
+                                  onTap: () {
+                                    if (signUpFormKey.currentState!.validate()) {
+                                      SignUpCubit.get(context).signUp(
+                                        name: nameController.text,
+                                        phone: phoneController.text,
+                                        email: emailController.text,
+                                        password: passwordController.text,
+                                      );
+                                    }
+                                  },
+                                ),
+                                SizedBox(height: 10,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      LocaleKeys.alreadyhaveanAccount.tr() + '?',style: TextStyle(color: SocialCubit.get(context).textColor.withOpacity(0.5)),
+                                    ),
+                                    TextButton(
+                                        onPressed: () {
+                                          pop(context);
+                                        },
+                                        child: Text(LocaleKeys.SignIn.tr())
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ],

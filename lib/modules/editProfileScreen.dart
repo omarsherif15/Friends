@@ -39,7 +39,7 @@ class EditProfileScreen extends StatelessWidget {
 
           return WillPopScope(
             onWillPop: () async {
-              navigateAndKill(context, SocialLayout(3));
+              pop(context);
               return false;
             },
             child: Scaffold(
@@ -47,7 +47,7 @@ class EditProfileScreen extends StatelessWidget {
                 title: Text(LocaleKeys.editprofile.tr().toLowerCase()),
                 automaticallyImplyLeading: false,
                 leading: IconButton(
-                  onPressed: () => navigateAndKill(context, SocialLayout(3)),
+                  onPressed: () => pop(context),
                   icon: Icon(Icons.arrow_back),
                 ),
                 titleSpacing: 0,

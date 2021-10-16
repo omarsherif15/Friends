@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:socialapp/cubit/appCubit.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
@@ -28,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Builder(
       builder: (context) {
         SocialCubit.get(context).getPosts();
-        SocialCubit.get(context).setUserToken();
+        SocialCubit.get(context).getMyData();
         return BlocConsumer<SocialCubit, SocialStates>(
           listener: (context, state) {},
           builder: (context, state) {
@@ -43,10 +42,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   onWillPop: willPop,
                   child: Scaffold(
                       body: SmartRefresher(
+                        physics: BouncingScrollPhysics(),
                         controller: refreshController1,
                         onRefresh: onRefresh,
                         child: SingleChildScrollView(
-                          physics: BouncingScrollPhysics(),
+                          controller: SocialLayoutState.scrollController,
+                          physics: NeverScrollableScrollPhysics(),
                           child: Column(
                             children: [
                               Card(
@@ -186,26 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                    floatingActionButton: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        FloatingActionButton(
-                          heroTag: 'English',
-                          onPressed: (){
-                            SocialCubit.get(context).changeLocalToEn(context);
-                          },
-                          child: Icon(Icons.landscape),
-                        ),
-                        SizedBox(height: 20,),
-                        FloatingActionButton(
-                          heroTag: 'Arabic',
-                          onPressed: (){
-                            SocialCubit.get(context).changeLocalToAr(context);
-                          },
-                          child: Icon(Icons.language),
-                        ),
-                      ],
-                    ),
                     ),
                 );
           },

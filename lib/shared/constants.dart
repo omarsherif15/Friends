@@ -102,8 +102,8 @@ Color defaultColor  = Colors.blueAccent;
 
 String? uId = '';
 
-String? token = '';
 
+ThemeMode appMode = ThemeMode.light;
 
 int cartLength = 0;
 

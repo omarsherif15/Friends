@@ -55,8 +55,8 @@ Widget defaultFormField({
           labelText: labelText,
           hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
           labelStyle: TextStyle(color: SocialCubit.get(context).textColor),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: SocialCubit.get(context).textColor)),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: SocialCubit.get(context).textColor)),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: SocialCubit.get(context).borderColor)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15),borderSide: BorderSide(color: SocialCubit.get(context).borderColor)),
           prefixIcon: Icon(
             prefix,
             color: Colors.blueAccent,
@@ -148,6 +148,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
               Spacer(),
               if(SocialCubit.get(context).model!.uID == postModel.uId)
                 PopupMenuButton(
+                  color: SocialCubit.get(context).backgroundColor.withOpacity(1),
                   onSelected: (value) {
                     if (value == 'Delete post')
                       SocialCubit.get(context)
@@ -172,7 +173,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Text(LocaleKeys.DeletePost.tr())
+                                Text(LocaleKeys.deletepost.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),)
                               ],
                             )), // delete post
                         PopupMenuItem(
@@ -186,7 +187,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Text(LocaleKeys.editPost.tr())
+                                Text(LocaleKeys.Editpost.tr(),style: TextStyle(color: SocialCubit.get(context).textColor))
                               ],
                             )), // editPost
                       ]),
@@ -303,7 +304,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                 width: 10,
               ),
               PopupMenuButton(
-                color: SocialCubit.get(context).backgroundColor,
+                color: SocialCubit.get(context).backgroundColor.withOpacity(1),
                 onSelected: (value) {
                   if(value == 'Share')
                     {

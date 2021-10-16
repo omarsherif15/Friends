@@ -53,10 +53,11 @@ dependencies:
   pull_to_refresh: ^2.0.0
   full_screen_image_null_safe: any
   google_sign_in: ^5.1.1
-  flutter_facebook_auth: ^3.5.2
   path_provider: ^2.0.5
   uuid: 3.0.5
   easy_localization: ^3.0.0
+  google_fonts: ^2.1.0
+  expansion_widget: ^0.0.2
 
 dev_dependencies:
   flutter_test:

@@ -29,10 +29,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
   await EasyLocalization.ensureInitialized();
-  token =  await FirebaseMessaging.instance.getToken();
-  print (token);
   FirebaseMessaging.onMessage.listen((event)
   {
     print('on message');
@@ -50,7 +47,7 @@ Future<void> main() async {
   // background fcm
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   Bloc.observer = MyBlocObserver();
-  DioHelper.init();
+  await DioHelper.init();
   await CacheHelper.init();
 
 
@@ -87,8 +84,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return BlocProvider(
-      create: (context) => SocialCubit()..changeMode(fromCache: isDark)..getMyData(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AppCubit()),
+        BlocProvider(create: (context) => SocialCubit()..changeMode(fromCache: isDark),),
+      ],
       child: BlocConsumer<SocialCubit,SocialStates>(
           listener:(context,state){},
           builder: (context,state) {
@@ -100,7 +100,7 @@ class MyApp extends StatelessWidget {
               home: startWidget,
               theme: lightMode(),
               darkTheme: darkMode(),
-              themeMode:SocialCubit.get(context).appMode
+              themeMode:appMode
             );
           }
       ),

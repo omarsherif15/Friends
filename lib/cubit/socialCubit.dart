@@ -17,11 +17,11 @@ import 'package:socialapp/models/postModel.dart';
 import 'package:socialapp/models/recentMessagesModel.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/SettingScreen.dart';
-import 'package:socialapp/modules/notificationScreen.dart';
-import 'package:socialapp/modules/recentMessages.dart';
 import 'package:socialapp/modules/homeScreen.dart';
 import 'package:socialapp/modules/loginScreen.dart';
+import 'package:socialapp/modules/notificationScreen.dart';
 import 'package:socialapp/modules/profileScreen.dart';
+import 'package:socialapp/modules/recentMessages.dart';
 import 'package:socialapp/modules/usersScreen.dart';
 import 'package:socialapp/remoteNetwork/cacheHelper.dart';
 import 'package:socialapp/remoteNetwork/dioHelper.dart';
@@ -54,9 +54,9 @@ class SocialCubit extends Cubit<SocialStates> {
         .get()
         .then((value) async {
       model = UserModel.fromJson(value.data());
+      setUserToken();
       print(model!.uID);
       emit(UserSuccessState());
-      setUserToken();
     }).catchError((error) {
       emit(UserErrorState());
     });
@@ -92,16 +92,12 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  void setUserToken() async {
-    emit(GetAllUsersLoadingState());
-    FirebaseFirestore.instance.collection('users').get().then((value) {
-      value.docs.forEach((element) async {
-        if (element.id == model!.uID)
-          element.reference
-              .update({'token': await FirebaseMessaging.instance.getToken()});
-      });
-    });
-    emit(GetAllUsersSuccessState());
+  void setUserToken() async{
+    emit(SetUSerTokenLoadingState());
+    String? token = await FirebaseMessaging.instance.getToken();
+    await FirebaseFirestore.instance.collection('users').doc(model!.uID)
+        .update({'token': token})
+        .then((value) => emit(SetUSerTokenSuccessState()));
   }
 
   List<UserModel> searchList = [];
@@ -349,6 +345,20 @@ class SocialCubit extends Cubit<SocialStates> {
       emit(UpdateUserErrorState());
     });
   }
+  void resetPassword({
+    required String email,
+  })
+  {
+    emit(ResetPasswordLoadingState());
+    FirebaseAuth.instance.sendPasswordResetEmail(
+      email: email,
+    ).then((value) {
+      emit(ResetPasswordSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(ResetPasswordErrorState());
+    });
+  }
 
   void signOut(context) {
     emit(SignOutLoadingState());
@@ -449,7 +459,7 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   void setPostId() {
-    FirebaseFirestore.instance.collection('posts').snapshots().listen((value) {
+    FirebaseFirestore.instance.collection('posts').get().then((value) {
       value.docs.forEach((element) {
         element.reference.update({'postId': element.id});
       });
@@ -468,7 +478,7 @@ class SocialCubit extends Cubit<SocialStates> {
       event.docs.forEach((element) {
         posts.add(PostModel.fromJson(element.data()));
       });
-      setPostId();
+      //setPostId();
       emit(GetPostSuccessState());
     });
   }
@@ -1111,6 +1121,7 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   bool isDark = false;
+  String? darkModeRadio = 'Off';
   Color borderColor = Colors.grey.shade300;
   Color? textFieldColor = Colors.grey[300];
   Color? myMessageColor = Colors.blueAccent;
@@ -1118,7 +1129,6 @@ class SocialCubit extends Cubit<SocialStates> {
   Color textColor = Colors.black;
   Color backgroundColor = Colors.white;
   IconData? icon = Icons.brightness_4_outlined;
-  ThemeMode appMode = ThemeMode.light;
 
   void changeMode({fromCache}) {
     if(fromCache == null) {
@@ -1135,6 +1145,7 @@ class SocialCubit extends Cubit<SocialStates> {
       {
         print('dark mode');
         appMode = ThemeMode.dark;
+        darkModeRadio = 'On';
         icon = Icons.brightness_7;
         textColor = Colors.white;
         backgroundColor = HexColor('#212121').withOpacity(0.8);
@@ -1148,6 +1159,7 @@ class SocialCubit extends Cubit<SocialStates> {
       {
         print('light mode');
         appMode = ThemeMode.light;
+        darkModeRadio = 'Off';
         icon = Icons.brightness_4_outlined;
         backgroundColor = Colors.white;
         textColor = Colors.black;
@@ -1161,12 +1173,20 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+  changeActiveRadio(value) {
+    if(value != darkModeRadio) {
+      value = darkModeRadio;
+      changeMode();
+    }
+    emit(ChangeActiveRadio());
+  }
+
   List<Widget> tabBar = [
     Tab(
       icon: Icon(Icons.home_outlined),
     ),
     Tab(
-      icon: Icon(Icons.group),
+      icon: Icon(Icons.group_outlined),
     ),
     Tab(
       icon: Icon(IconBroken.Chat),
@@ -1182,18 +1202,6 @@ class SocialCubit extends Cubit<SocialStates> {
     )
   ];
 
-  int currentIndex = 0;
-
-  changeBottomNav(index) {
-    if (index == 0)
-      getPosts();
-    else if (index == 1)
-      getAllUsers();
-    else if (index == 2) getRecentMessages();
-    currentIndex = index;
-    emit(ChangeBottomNavState());
-  }
-
   List<Widget> screens = [
     HomeScreen(),
     UsersScreen(),
@@ -1202,6 +1210,13 @@ class SocialCubit extends Cubit<SocialStates> {
     NotificationScreen(),
     SettingScreen()
   ];
+
+  int currentIndex = 0;
+
+  changeBottomNav(index) {
+    currentIndex = index;
+    emit(ChangeBottomNavState());
+  }
 // void signIn() {
 //   DioHelper.postData(
 //       url: 'login',

@@ -7,7 +7,7 @@ class ChangeBottomNavState extends SocialStates{}
 class ChangeSuffixIconState extends SocialStates{}
 class GetTokenSuccessState extends SocialStates{}
 class EditPressedState extends SocialStates{}
-class CloseTopSheet extends SocialStates{}
+class ChangeActiveRadio extends SocialStates{}
 class RefreshPage extends SocialStates{}
 class ShowTimeState extends SocialStates{}
 class ChangeLocalToArState extends SocialStates{}
@@ -141,6 +141,12 @@ class GetAllUsersLoadingState extends SocialStates{}
 class GetAllUsersSuccessState extends SocialStates {}
 class GetAllUsersErrorState extends SocialStates{}
 ///End of GetAllUsers State
+
+///SetUSerToken State
+class SetUSerTokenLoadingState extends SocialStates{}
+class SetUSerTokenSuccessState extends SocialStates {}
+class SetUSerTokenErrorState extends SocialStates{}
+///End of SetUSerToken State
 
 ///GetFriendProfile State
 class GetFriendProfileLoadingState extends SocialStates{}
