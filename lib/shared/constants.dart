@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:full_screen_image_null_safe/full_screen_image_null_safe.dart';
@@ -44,6 +43,11 @@ Widget myDivider() => Container(
   width: double.infinity,
 );
 
+double intToDouble(int num){
+ double doubleNum = num.toDouble();
+  return doubleNum;
+}
+
 // void sinceWhen(){
 //   DateTime.now().compareTo()
 // }
@@ -86,7 +90,6 @@ int importId(){
 String getDate ()
 {
 DateTime dateTime =  DateTime.now();
-String time = TimeOfDay.fromDateTime(dateTime).toString();
 String date =  DateFormat.yMMMd().format(dateTime);
 return date;
 }

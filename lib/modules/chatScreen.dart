@@ -44,14 +44,6 @@ class ChatScreen extends StatelessWidget {
                     appBar: AppBar(
                       titleSpacing: 0,
                       elevation: 8,
-                      leading: IconButton(
-                        onPressed: () {
-                          pop(context);
-                        },
-                        icon: Icon(IconBroken.Arrow___Left_2),
-                      ),
-                      automaticallyImplyLeading: false,
-                      leadingWidth: 50,
                       title: Row(
                         children: [
                           CircleAvatar(
@@ -81,10 +73,8 @@ class ChatScreen extends StatelessWidget {
                               child: ListView.separated(
                                   physics: BouncingScrollPhysics(),
                                   itemBuilder: (context, index) {
-                                    var chat =
-                                        SocialCubit.get(context).chat[index];
-                                    if (SocialCubit.get(context).model!.uID ==
-                                        chat.senderId)
+                                    var chat = SocialCubit.get(context).chat[index];
+                                    if (SocialCubit.get(context).model!.uID == chat.senderId)
                                       return buildMyMessage(chat, context);
                                     else
                                       return buildMessage(chat, context);
@@ -257,15 +247,17 @@ class ChatScreen extends StatelessWidget {
                     children: [
                       Container(
                           padding: EdgeInsets.all(8),
-                          width: 190,
-                          height: 250,
+                          width: intToDouble(message.messageImage!['width']) < 230 ?
+                          intToDouble(message.messageImage!['width']) : 230,
+                          height: intToDouble(message.messageImage!['height']) < 250 ?
+                          intToDouble(message.messageImage!['height']) : 250,
                           decoration: BoxDecoration(
                               color: SocialCubit.get(context).messageColor,
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(10),
                               )
                           ),
-                          child: imagePreview(message.messageImage)),
+                          child: imagePreview(message.messageImage!['image'])),
                       Container(
                           width: 190,
                           padding: EdgeInsets.symmetric(horizontal: 15,vertical: 8),
@@ -280,8 +272,10 @@ class ChatScreen extends StatelessWidget {
                   message.messageImage != null ?
                   Container(
                       padding: EdgeInsets.all(8),
-                      width: 190,
-                      height: 250,
+                      width: intToDouble(message.messageImage!['width']) < 230 ?
+                      intToDouble(message.messageImage!['width']) : 230,
+                      height: intToDouble(message.messageImage!['height']) < 250 ?
+                      intToDouble(message.messageImage!['height']) : 250,
                       decoration: BoxDecoration(
                           color: SocialCubit.get(context).messageColor,
                           borderRadius: BorderRadius.only(
@@ -290,7 +284,7 @@ class ChatScreen extends StatelessWidget {
                             bottomRight: Radius.circular(10),
                           )
                       ),
-                      child: imagePreview(message.messageImage)) :
+                      child: imagePreview(message.messageImage!['image'])) :
                   message.messageText != null ?
                   Container(
                       padding: EdgeInsets.all(15),
@@ -343,22 +337,21 @@ class ChatScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
-                            padding: EdgeInsets.all(8),
-                            width: 190,
-                            height: 250,
-                            decoration: BoxDecoration(
-                                color: SocialCubit.get(context).myMessageColor,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                )
-                            ),
-                            child: imagePreview(message.messageImage)),
+                            width: intToDouble(message.messageImage!['width']) < 230 ?
+                            intToDouble(message.messageImage!['width']) : 230,
+                            height: intToDouble(message.messageImage!['height']) < 250 ?
+                            intToDouble(message.messageImage!['height']) : 250,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                child: imagePreview(message.messageImage!['image']))),
                         Container(
                           width: 190,
-                            padding: EdgeInsets.symmetric(horizontal: 15,vertical: 8),
+                            padding: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
                             decoration: BoxDecoration(
                                 color: SocialCubit.get(context).myMessageColor,
                                 borderRadius: BorderRadius.only(
+                                  topLeft:Radius.circular(10) ,
                                   bottomLeft: Radius.circular(10),
                                   bottomRight: Radius.circular(10),
                                 )),
@@ -377,10 +370,10 @@ class ChatScreen extends StatelessWidget {
                                       bottomRight: Radius.circular(10),
                                     )
                         ),
-                        child: imagePreview(message.messageImage)) :
+                        child: imagePreview(message.messageImage!['image'])) :
                   message.messageText != null ?
                     Container(
-                        padding: EdgeInsets.all(15),
+                        padding: EdgeInsets.all(13),
                         decoration: BoxDecoration(
                             color: SocialCubit.get(context).myMessageColor,
                             borderRadius: BorderRadius.only(

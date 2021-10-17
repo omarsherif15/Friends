@@ -84,8 +84,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     isEdit: false,
                                                   ));
                                             },
-                                            child: Text(LocaleKeys.whatOnYourMind.tr(),
-                                                style: TextStyle(color: Colors.grey)),
+                                            child: Container(
+                                              width: 200,
+                                              child: Text(LocaleKeys.whatOnYourMind.tr(),
+                                                  style: TextStyle(color: Colors.grey),
+                                                textAlign: TextAlign.start,
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),

@@ -13,6 +13,7 @@ class PostModel
   String? date;
   String? time;
   FieldValue? dateTime;
+  late bool likedByMe;
 
 
   PostModel({
@@ -26,7 +27,8 @@ class PostModel
     this.comments,
     this.time,
     this.date,
-    this.dateTime
+    this.dateTime,
+    required this.likedByMe
 });
 
   PostModel.fromJson(Map<String, dynamic>? json){
@@ -40,6 +42,7 @@ class PostModel
     comments = json['comments'];
     time = json['time'];
     date = json['date'];
+    likedByMe = json['likedByMe'];
   }
 
   Map<String, dynamic> toMap (){
@@ -55,7 +58,7 @@ class PostModel
       'time':time,
       'date': date,
       'dateTime': dateTime,
-
+      'likedByMe':likedByMe
     };
   }
 }

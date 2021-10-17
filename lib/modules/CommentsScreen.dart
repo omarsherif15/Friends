@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
-import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/models/commentModel.dart';
 import 'package:socialapp/modules/LikesScreen.dart';
 import 'package:socialapp/shared/constants.dart';
@@ -52,7 +51,7 @@ CommentsScreen(this.index,this.postId);
                             children: [
                               Icon(IconBroken.Heart,color: Colors.red,),
                               SizedBox(width: 5,),
-                              Text('${SocialCubit.get(context).posts[index].likes}'),
+                              Text('${SocialCubit.get(context).posts[index].likes}',style: TextStyle(color: SocialCubit.get(context).textColor),),
                               Spacer(),
                               Icon(IconBroken.Arrow___Right_2),
                             ],
@@ -63,7 +62,7 @@ CommentsScreen(this.index,this.postId);
                         SizedBox(height: 15,),
                         comments.length > 0 ?  Expanded(
                           child: ListView.separated(
-                              itemBuilder: (context,index) => buildComment(comments[index]),
+                              itemBuilder: (context,index) => buildComment(comments[index],context),
                               separatorBuilder: (context,index) => SizedBox(height: 10,),
                               itemCount: SocialCubit.get(context).comments.length
                           ),
@@ -179,7 +178,7 @@ CommentsScreen(this.index,this.postId);
   }
 
 
-  Widget buildComment(CommentModel comment){
+  Widget buildComment(CommentModel comment,context){
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,51 +203,58 @@ CommentsScreen(this.index,this.postId);
                     Container(
                         padding: EdgeInsets.symmetric(horizontal: 10,vertical: 8),
                         decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: SocialCubit.get(context).backgroundColor.withOpacity(1),
                             borderRadius: BorderRadius.circular(15)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('${comment.name}',style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text('${comment.name}',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),),
                             SizedBox(height: 5,),
-                            Text('${comment.commentText}'),
+                            Text('${comment.commentText}',style: TextStyle(color: SocialCubit.get(context).textColor),),
                           ],
                         )),
                     SizedBox(height: 3,),
                     Container(
-                        width: 190,
+                        width: intToDouble(comment.commentImage!['width']) <= 400 ?
+                        intToDouble(comment.commentImage!['width']) : 250,
+                        height: intToDouble(comment.commentImage!['height']) <= 300 ?
+                          intToDouble(comment.commentImage!['height']) : 300,
                         clipBehavior: Clip.antiAliasWithSaveLayer ,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15)
                         ),
-                        child: imagePreview(comment.commentImage)),
+                        child: imagePreview(comment.commentImage!['image'])),
                   ],) :
                 comment.commentImage != null ? /// If its (Image) Comment
-                Container(
-                    padding: EdgeInsets.all(8),
-                    width: 190,
-                    height: 250,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
-                        )
-                    ),
-                    child: imagePreview(comment.commentImage)) :
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${comment.name}',style: TextStyle(fontWeight: FontWeight.bold,color: SocialCubit.get(context).textColor),),
+                    SizedBox(height: 5,),
+                    Container(
+                        padding: EdgeInsets.all(8),
+                        width: intToDouble(comment.commentImage!['width']) <= 400 ?
+                        intToDouble(comment.commentImage!['width']) : 250,
+                        height: intToDouble(comment.commentImage!['height']) <= 300 ?
+                        intToDouble(comment.commentImage!['height']) : 300,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15)
+                        ),
+                        child: imagePreview(comment.commentImage!['image'])),
+                  ],
+                ) :
                 comment.commentText != null ? /// If its (Text) Comment
                 Container(
                     padding: EdgeInsets.symmetric(horizontal: 10,vertical: 8),
                     decoration: BoxDecoration(
-                        color: Colors.grey[300],
+                        color: SocialCubit.get(context).backgroundColor.withOpacity(1),
                         borderRadius: BorderRadius.circular(15)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${comment.name}',style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text('${comment.name}',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),),
                         SizedBox(height: 5,),
-                        Text('${comment.commentText}'),
+                        Text('${comment.commentText}',style: TextStyle(color: SocialCubit.get(context).textColor),),
                       ],
                     )) : Container(height: 0,width: 0,),
                 Padding(

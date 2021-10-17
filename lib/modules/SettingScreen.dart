@@ -3,6 +3,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
@@ -32,417 +34,424 @@ class _SettingScreenState extends State<SettingScreen> {
       builder: (context, state) {
         EasyLocalization.of(context)!.currentLocale == Locale('en') ? languageValue = "English" : languageValue = "Arabic";
         UserModel? myUser = SocialCubit.get(context).model;
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        return WillPopScope(
+          onWillPop: willPopCallback,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Text(
+                      LocaleKeys.Settings.tr(),
+                      style: GoogleFonts.arya(
+                          fontWeight: FontWeight.bold,
+                          color: SocialCubit.get(context).textColor,
+                          fontSize: 30),
+                    )),
+                InkWell(
+                  onTap: () {
+                    SocialLayoutState.tabController.animateTo(3,
+                        duration: Duration(seconds: 2),
+                        curve: Curves.fastLinearToSlowEaseIn);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(15),
+                    color: SocialCubit.get(context).backgroundColor,
+                    child: Row(
+                      //crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                            radius: 27,
+                            backgroundImage: NetworkImage('${myUser!.profilePic}')),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${myUser.name}',
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: SocialCubit.get(context).textColor),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                LocaleKeys.seeYourProfile.tr(),
+                                style: TextStyle(fontSize: 15, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                        InkWell(
+                            onTap: () {
+                              SocialCubit.get(context).signOut(context);
+                            },
+                            child: Row(
+                              children: [
+                                Icon(IconBroken.Logout),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  LocaleKeys.SignOut.tr(),
+                                  style: TextStyle(
+                                      color: SocialCubit.get(context).textColor),
+                                )
+                              ],
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    LocaleKeys.Settings.tr(),
-                    style: GoogleFonts.arya(
-                        fontWeight: FontWeight.bold,
-                        color: SocialCubit.get(context).textColor,
-                        fontSize: 30),
-                  )),
-              InkWell(
-                onTap: () {
-                  SocialLayoutState.tabController.animateTo(3,
-                      duration: Duration(seconds: 2),
-                      curve: Curves.fastLinearToSlowEaseIn);
-                },
-                child: Container(
+                    LocaleKeys.account.tr(),
+                    style: TextStyle(
+                        fontSize: 20, color: SocialCubit.get(context).textColor),
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
                   padding: const EdgeInsets.all(15),
                   color: SocialCubit.get(context).backgroundColor,
-                  child: Row(
-                    //crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
                     children: [
-                      CircleAvatar(
-                          radius: 27,
-                          backgroundImage: NetworkImage('${myUser!.profilePic}')),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      InkWell(
+                        onTap: () {
+                          navigateTo(context, EditProfileScreen());
+                        },
+                        child: Row(
+                          //crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            CircleAvatar(
+                              child: Icon(
+                                Icons.person,
+                                color: Colors.grey[600],
+                                size: 27,
+                              ),
+                              backgroundColor: Colors.grey[400],
+                            ),
+                            SizedBox(width: 10),
                             Text(
-                              '${myUser.name}',
+                              LocaleKeys.personalInfo.tr(),
                               style: TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.bold,
                                   color: SocialCubit.get(context).textColor),
                             ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              'See your Profile',
-                              style: TextStyle(fontSize: 15, color: Colors.grey),
-                            ),
+                            Spacer(),
+                            Icon(Icons.arrow_forward_ios_outlined),
                           ],
                         ),
                       ),
+                      SizedBox(
+                        height: 15,
+                      ),
                       InkWell(
-                          onTap: () {
-                            SocialCubit.get(context).signOut(context);
-                          },
-                          child: Row(
-                            children: [
-                              Icon(IconBroken.Logout),
-                              SizedBox(
-                                width: 5,
+                        onTap: () {
+                          navigateTo(context, ResetPasswordScreen());
+                        },
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              child: Icon(
+                                IconBroken.Lock,
+                                color: Colors.grey[600],
+                                size: 27,
                               ),
-                              Text(
-                                LocaleKeys.SignOut,
-                                style: TextStyle(
-                                    color: SocialCubit.get(context).textColor),
-                              )
-                            ],
-                          )),
+                              backgroundColor: Colors.grey[400],
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              LocaleKeys.changePassword.tr(),
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: SocialCubit.get(context).textColor),
+                            ),
+                            Spacer(),
+                            Icon(Icons.arrow_forward_ios_outlined),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          SocialLayoutState.tabController.animateTo(4,
+                              duration: Duration(seconds: 2),
+                              curve: Curves.fastLinearToSlowEaseIn);
+                        },
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              child: Icon(
+                                IconBroken.Notification,
+                                color: Colors.grey[600],
+                                size: 27,
+                              ),
+                              backgroundColor: Colors.grey[400],
+                            ),
+                            SizedBox(width: 10),
+                            Text(
+                              LocaleKeys.Notifications.tr(),
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: SocialCubit.get(context).textColor),
+                            ),
+                            Spacer(),
+                            Icon(Icons.arrow_forward_ios_outlined),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Account',
-                  style: TextStyle(
-                      fontSize: 20, color: SocialCubit.get(context).textColor),
+                SizedBox(
+                  height: 15,
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                padding: const EdgeInsets.all(15),
-                color: SocialCubit.get(context).backgroundColor,
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        navigateTo(context, EditProfileScreen());
-                      },
-                      child: Row(
-                        //crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            child: Icon(
-                              Icons.person,
-                              color: Colors.grey[600],
-                              size: 27,
-                            ),
-                            backgroundColor: Colors.grey[400],
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            LocaleKeys.personalInfo.tr(),
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: SocialCubit.get(context).textColor),
-                          ),
-                          Spacer(),
-                          Icon(Icons.arrow_forward_ios_outlined),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        navigateTo(context, ResetPasswordScreen());
-                      },
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            child: Icon(
-                              IconBroken.Lock,
-                              color: Colors.grey[600],
-                              size: 27,
-                            ),
-                            backgroundColor: Colors.grey[400],
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            LocaleKeys.changePassword.tr(),
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: SocialCubit.get(context).textColor),
-                          ),
-                          Spacer(),
-                          Icon(Icons.arrow_forward_ios_outlined),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        SocialLayoutState.tabController.animateTo(4,
-                            duration: Duration(seconds: 2),
-                            curve: Curves.fastLinearToSlowEaseIn);
-                      },
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            child: Icon(
-                              IconBroken.Notification,
-                              color: Colors.grey[600],
-                              size: 27,
-                            ),
-                            backgroundColor: Colors.grey[400],
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            LocaleKeys.Notifications.tr(),
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: SocialCubit.get(context).textColor),
-                          ),
-                          Spacer(),
-                          Icon(Icons.arrow_forward_ios_outlined),
-                        ],
-                      ),
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    LocaleKeys.Settings.tr(),
+                    style: TextStyle(
+                        fontSize: 20, color: SocialCubit.get(context).textColor),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Preferences',
-                  style: TextStyle(
-                      fontSize: 20, color: SocialCubit.get(context).textColor),
+                SizedBox(
+                  height: 15,
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                padding: const EdgeInsets.all(15),
-                color: SocialCubit.get(context).backgroundColor,
-                child: Column(
-                  children: [
-                    ExpansionWidget(
-                        titleBuilder: (double animationValue, _, bool isExpand, toogleFunction) {
-                          return InkWell(
-                            onTap: () => toogleFunction(animated: true),
-                            child: Row(
-                              //crossAxisAlignment: CrossAxisAlignment.start,
+                Container(
+                  padding: const EdgeInsets.all(15),
+                  color: SocialCubit.get(context).backgroundColor,
+                  child: Column(
+                    children: [
+                      ExpansionWidget(
+                          titleBuilder: (double animationValue, _, bool isExpand, toogleFunction) {
+                            return InkWell(
+                              onTap: () => toogleFunction(animated: true),
+                              child: Row(
+                                //crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    child: Icon(
+                                      Icons.language,
+                                      color: Colors.grey[600],
+                                      size: 27,
+                                    ),
+                                    backgroundColor: Colors.grey[400],
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    LocaleKeys.language.tr(),
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
+                                        color: SocialCubit.get(context).textColor),
+                                  ),
+                                  Spacer(),
+                                  Transform.rotate(
+                                    child: Icon(Icons.arrow_forward_ios_outlined),
+                                    angle: math.pi * animationValue / 2,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          content: Container(
+                            width: 300,
+                            child: Column(
                               children: [
-                                CircleAvatar(
-                                  child: Icon(
-                                    Icons.language,
-                                    color: Colors.grey[600],
-                                    size: 27,
-                                  ),
-                                  backgroundColor: Colors.grey[400],
+                                Row(
+                                  children: [
+                                    Text('عربي',style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                    Spacer(),
+                                    Radio(
+                                      toggleable: true,
+                                      value: 'Arabic',
+                                      groupValue: languageValue,
+                                      activeColor: Colors.blueAccent,
+                                      onChanged: (value){
+                                        setState(() {
+                                          languageValue = value.toString();
+                                        });
+                                        SocialCubit.get(context).changeLocalToAr(context);
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(width: 10),
-                                Text(
-                                  LocaleKeys.language.tr(),
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                      color: SocialCubit.get(context).textColor),
+                                Row(
+                                  children: [
+                                    Text("English",style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                    Spacer(),
+                                    Radio(
+                                      toggleable: true,
+                                      value: 'English',
+                                      groupValue: languageValue,
+                                      activeColor: Colors.blueAccent,
+                                      onChanged: (value){
+                                        setState(() {
+                                          languageValue = value.toString();
+                                        });
+                                        SocialCubit.get(context).changeLocalToEn(context);
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                Spacer(),
-                                Transform.rotate(
-                                  child: Icon(Icons.arrow_forward_ios_outlined),
-                                  angle: math.pi * animationValue / 2,
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        content: Container(
-                          width: 300,
-                          child: Column(
-                            children: [
-                              Row(
+                              ],),
+                          )
+                      ),
+                      SizedBox(height: 15,),
+                      ExpansionWidget(
+                          titleBuilder: (double animationValue, _, bool isExpand, toogleFunction) {
+                            return InkWell(
+                              onTap: () => toogleFunction(animated: true),
+                              child: Row(
+                                //crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('عربي',style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                  CircleAvatar(
+                                    child: Icon(
+                                      Icons.dark_mode_outlined,
+                                      color: Colors.grey[600],
+                                      size: 27,
+                                    ),
+                                    backgroundColor: Colors.grey[400],
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    LocaleKeys.darkMode.tr(),
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold,
+                                        color: SocialCubit.get(context).textColor),
+                                  ),
                                   Spacer(),
-                                  Radio(
-                                    toggleable: true,
-                                    value: 'Arabic',
-                                    groupValue: languageValue,
-                                    activeColor: Colors.blueAccent,
-                                    onChanged: (value){
-                                      setState(() {
-                                        languageValue = value.toString();
-                                      });
-                                      SocialCubit.get(context).changeLocalToAr(context);
-                                    },
+                                  Transform.rotate(
+                                    child: Icon(Icons.arrow_forward_ios_outlined),
+                                    angle: math.pi * animationValue / 2,
                                   ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  Text("English",style: TextStyle(color: SocialCubit.get(context).textColor),),
-                                  Spacer(),
-                                  Radio(
-                                    toggleable: true,
-                                    value: 'English',
-                                    groupValue: languageValue,
-                                    activeColor: Colors.blueAccent,
-                                    onChanged: (value){
-                                      setState(() {
-                                        languageValue = value.toString();
-                                      });
-                                      SocialCubit.get(context).changeLocalToEn(context);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],),
-                        )
-                    ),
-                    SizedBox(height: 15,),
-                    ExpansionWidget(
-                        titleBuilder: (double animationValue, _, bool isExpand, toogleFunction) {
-                          return InkWell(
-                            onTap: () => toogleFunction(animated: true),
-                            child: Row(
-                              //crossAxisAlignment: CrossAxisAlignment.start,
+                            );
+                          },
+                          content: Container(
+                            width: 300,
+                            child: Column(
                               children: [
-                                CircleAvatar(
-                                  child: Icon(
-                                    Icons.dark_mode_outlined,
-                                    color: Colors.grey[600],
-                                    size: 27,
-                                  ),
-                                  backgroundColor: Colors.grey[400],
+                                Row(
+                                  children: [
+                                    Text(LocaleKeys.on.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                    Spacer(),
+                                    Radio(
+                                      toggleable: true,
+                                      value: 'On',
+                                      groupValue: SocialCubit.get(context).darkModeRadio,
+                                      activeColor: Colors.blueAccent,
+                                      onChanged: (value){
+                                        SocialCubit.get(context).changeActiveRadio(value);
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(width: 10),
-                                Text(
-                                  LocaleKeys.darkMode.tr(),
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                      color: SocialCubit.get(context).textColor),
+                                Row(
+                                  children: [
+                                    Text(LocaleKeys.off.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                    Spacer(),
+                                    Radio(
+                                      toggleable: true,
+                                      value: 'Off',
+                                      groupValue: SocialCubit.get(context).darkModeRadio,
+                                      activeColor: Colors.blueAccent,
+                                      onChanged: (value){
+                                        SocialCubit.get(context).changeActiveRadio(value);
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                Spacer(),
-                                Transform.rotate(
-                                  child: Icon(Icons.arrow_forward_ios_outlined),
-                                  angle: math.pi * animationValue / 2,
-                                ),
-                              ],
+                              ],),
+                          )
+                      ),
+                      SizedBox(height: 15,),
+                      InkWell(
+                        onTap: () {},
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              child: Icon(
+                                Icons.help,
+                                color: Colors.grey[600],
+                                size: 27,
+                              ),
+                              backgroundColor: Colors.grey[400],
                             ),
-                          );
+                            SizedBox(width: 10),
+                            Text(
+                              LocaleKeys.help.tr(),
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: SocialCubit.get(context).textColor),
+                            ),
+                            Spacer(),
+                            Icon(Icons.arrow_forward_ios_outlined),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15,),
+                      InkWell(
+                        onTap: () {
+                          navigateTo(context, AboutMe());
                         },
-                        content: Container(
-                          width: 300,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(LocaleKeys.on.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
-                                  Spacer(),
-                                  Radio(
-                                    toggleable: true,
-                                    value: 'On',
-                                    groupValue: SocialCubit.get(context).darkModeRadio,
-                                    activeColor: Colors.blueAccent,
-                                    onChanged: (value){
-                                      SocialCubit.get(context).changeActiveRadio(value);
-                                    },
-                                  ),
-                                ],
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              child: Icon(
+                                IconBroken.Info_Circle,
+                                color: Colors.grey[600],
+                                size: 27,
                               ),
-                              Row(
-                                children: [
-                                  Text(LocaleKeys.off.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
-                                  Spacer(),
-                                  Radio(
-                                    toggleable: true,
-                                    value: 'Off',
-                                    groupValue: SocialCubit.get(context).darkModeRadio,
-                                    activeColor: Colors.blueAccent,
-                                    onChanged: (value){
-                                      SocialCubit.get(context).changeActiveRadio(value);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],),
-                        )
-                    ),
-                    SizedBox(height: 15,),
-                    InkWell(
-                      onTap: () {},
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            child: Icon(
-                              Icons.help,
-                              color: Colors.grey[600],
-                              size: 27,
+                              backgroundColor: Colors.grey[400],
                             ),
-                            backgroundColor: Colors.grey[400],
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            LocaleKeys.help.tr(),
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: SocialCubit.get(context).textColor),
-                          ),
-                          Spacer(),
-                          Icon(Icons.arrow_forward_ios_outlined),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 15,),
-                    InkWell(
-                      onTap: () {
-                        navigateTo(context, AboutMe());
-                      },
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            child: Icon(
-                              IconBroken.Info_Circle,
-                              color: Colors.grey[600],
-                              size: 27,
+                            SizedBox(width: 10),
+                            Text(
+                              LocaleKeys.aboutUs.tr(),
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: SocialCubit.get(context).textColor),
                             ),
-                            backgroundColor: Colors.grey[400],
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            LocaleKeys.aboutUs.tr(),
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: SocialCubit.get(context).textColor),
-                          ),
-                          Spacer(),
-                          Icon(Icons.arrow_forward_ios_outlined),
-                        ],
+                            Spacer(),
+                            Icon(Icons.arrow_forward_ios_outlined),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              )
-            ],
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         );
       },
     );
+  }
+  Future<bool> willPopCallback()async {
+    SocialLayoutState.tabController.animateTo(0,duration: Duration(seconds: 2),curve: Curves.fastLinearToSlowEaseIn);
+    return false;
   }
 }

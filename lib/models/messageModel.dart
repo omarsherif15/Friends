@@ -6,7 +6,7 @@ class MessageModel
   String? receiverId;
   String? senderId;
   String? messageText;
-  String? messageImage;
+  Map<String,dynamic>? messageImage;
   String? time;
   String? date;
   FieldValue? dateTime;

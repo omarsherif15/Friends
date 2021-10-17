@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
@@ -11,6 +12,7 @@ import 'package:socialapp/modules/chatScreen.dart';
 import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class RecentMessages extends StatelessWidget {
   var refreshMessages = RefreshController();
@@ -48,7 +50,7 @@ class RecentMessages extends StatelessWidget {
                       searchBar(context: context,height: 60),
                       if(friends.length > 0)
                         Container(
-                          height: 110,
+                          height: 112,
                           child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           physics: BouncingScrollPhysics(),
@@ -71,25 +73,28 @@ class RecentMessages extends StatelessWidget {
                                   itemCount: recentMessages.length,
                                 ),
                             fallbackBuilder: (context) => Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.chat,color: Colors.grey,size: 50,),
-                                  Text('No recent messages',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                                  SizedBox(height: 10,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Click on'),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                        child: Icon(Icons.chat,color: Colors.grey),
-                                      ),
-                                      Text('to start a new conversation'),
-                                    ],
-                                  )
-                                ],
+                              child: Container(
+                                height: MediaQuery.of(context).size.height-200,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.chat,color: Colors.grey,size: 50,),
+                                    Text(LocaleKeys.Norecentmessages.tr(),style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold,fontSize: 18),),
+                                    SizedBox(height: 10,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(LocaleKeys.clickOn.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                          child: Icon(Icons.chat,color: Colors.grey),
+                                        ),
+                                        Text(LocaleKeys.tostartanewconversation.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             )
             ),
@@ -100,9 +105,7 @@ class RecentMessages extends StatelessWidget {
               floatingActionButton: FloatingActionButton(
                   backgroundColor: Colors.blueAccent,
                   onPressed: () {
-                    //SocialCubit.get(context).signIn();
-                    //navigateAndKill(context, SocialLayout(1));
-                   //print(SocialCubit.get(context).checkFriends('mi5uiCLintXWBZ6GTnDpEipOXng2'));
+                   SocialLayoutState.tabController.animateTo(1,duration: Duration(seconds: 1),curve: Curves.fastLinearToSlowEaseIn);
                   },
                   child: Icon(Icons.chat,)),
             ),
@@ -165,7 +168,7 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
                     ,maxLines: 1,overflow: TextOverflow.ellipsis,)),
                 ],): Row (
                   children: [
-                  Text('You: '),
+                    Text(LocaleKeys.You.tr() + ": "),
                   Icon(Icons.image_rounded,color: Colors.grey,),
                   SizedBox(width: 5,),
                   Expanded(child: Text('${recentMessages.recentMessageText}',maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: SocialCubit.get(context).textColor,))),
@@ -175,18 +178,18 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
                 Row (children: [
                   Icon(Icons.image_rounded),
                   SizedBox(width: 5,),
-                  Text('Photo',style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor)),
+                  Text(LocaleKeys.Photo.tr(),style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor)),
                 ],): Row (children: [
-                  Text('You: '),
+                  Text(LocaleKeys.You.tr() + ": "),
                   Icon(Icons.image_rounded,color: Colors.grey,),
                   SizedBox(width: 5,),
-                  Text('Photo',style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor),),
+                  Text(LocaleKeys.Photo.tr(),style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor),),
                 ],)
                     : recentMessages.recentMessageText !=null ?
                 recentMessages.receiverId == SocialCubit.get(context).model!.uID ?
                 Text('${recentMessages.recentMessageText}',
                   style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor),maxLines: 1,overflow: TextOverflow.ellipsis,):
-                Text('You: ${recentMessages.recentMessageText}',
+                Text(LocaleKeys.You.tr() + ": " + '${recentMessages.recentMessageText}',
                     style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor),maxLines: 1,overflow: TextOverflow.ellipsis,)
                     : Text('ERROR 404'),
               ],
@@ -200,7 +203,7 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
 }
 
 Future<bool> willPopCallback()async {
-  SocialLayoutState.tabController.animateTo(0,duration: Duration(milliseconds: 30),curve: Curves.fastLinearToSlowEaseIn);
+  SocialLayoutState.tabController.animateTo(0,duration: Duration(seconds: 2),curve: Curves.fastLinearToSlowEaseIn);
   return false;
 }
 

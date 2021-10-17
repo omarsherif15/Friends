@@ -244,7 +244,8 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                       SizedBox(
                         width: 5,
                       ),
-                      Text('${postModel.comments}' + LocaleKeys.comment.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
+                      Text('${postModel.comments} ' + LocaleKeys.comment.tr(),
+                          style: TextStyle(color: SocialCubit.get(context).textColor)),
                     ],
                   ),
                 ),
@@ -282,16 +283,16 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
               Spacer(),
               InkWell(
                 onTap: () {
-                  if(SocialCubit.get(context).isLiked == false)
+                  if(postModel.likedByMe == false)
                     SocialCubit.get(context).likePost(postModel.postId);
-                  if(SocialCubit.get(context).isLiked == true)
+                  if(postModel.likedByMe == true)
                     SocialCubit.get(context).disLikePost(postModel.postId);
                 },
                 child: Row(
                   children: [
                     Icon(
                       IconBroken.Heart,
-                      color: Colors.red,
+                      color:postModel.likedByMe ? Colors.red : Colors.grey
                     ),
                     SizedBox(
                       width: 5,

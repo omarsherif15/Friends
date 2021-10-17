@@ -70,7 +70,6 @@ class CodegenLoader extends AssetLoader{
   "Norecentmessages": "لا توجد رسائل حديثه",
   "You": "أنت",
   "Photo": "صوره",
-  "Don\'thaveanaccount": "ليس لديك حساب",
   "Peoplewhoreacted": "الأشخاص اللذين تفاعلوا",
   "YouarealreadyFriends": "أنتم بالفعل اصدقاء",
   "DoyouwanttoUnfriend": "هل تريد ألغاء الصداقه",
@@ -102,7 +101,13 @@ class CodegenLoader extends AssetLoader{
   "changePassword": "أعادة تعيين كلمة السر",
   "help": "المساعده",
   "contactUs": "تواصل معنا",
-  "aboutUs": "معلومات عنا"
+  "aboutUs": "معلومات عنا",
+  "EnterAssociatedEmail": "أدخل عنوان البريد الإلكتروني المرتبط بحسابك",
+  "account": "الحساب الشخصي",
+  "Donthaveanaccount": "ليس لديك حساب",
+  "seeYourProfile": "عرض ملفك الشخصي",
+    "newsFeeds": "اخر الأخبار"
+
 };
 static const Map<String,dynamic> en = {
   "share": "Share",
@@ -150,8 +155,8 @@ static const Map<String,dynamic> en = {
   "Deleteforme": "DELETE FOR ME",
   "Delete": "Delete",
   "Confirm": "Confirm",
-  "NoFriendRequest": "no friend requests",
-  "nofriends": "no friends",
+  "NoFriendRequest": "No friend requests",
+  "nofriends": "No friends",
   "NoSearchResults": "No Search Results",
   "Register": "Register",
   "SIGNUP": "SIGN UP",
@@ -160,7 +165,6 @@ static const Map<String,dynamic> en = {
   "Norecentmessages": "No recent messages",
   "You": "You",
   "Photo": "Photo",
-  "Don\'thaveanaccount": "Don't have an account",
   "Peoplewhoreacted": "People who reacted",
   "YouarealreadyFriends": "You are already Friends",
   "DoyouwanttoUnfriend": "Do you want to Unfriend ",
@@ -192,7 +196,12 @@ static const Map<String,dynamic> en = {
   "changePassword": "Reset Password",
   "help": "Help",
   "contactUs": "Contact Us",
-  "aboutUs": "About Us"
+  "aboutUs": "About Us",
+  "EnterAssociatedEmail": "Enter the email address associated with your account",
+  "account": "Account",
+  "Donthaveanaccount": "Don\\'t have an account",
+  "seeYourProfile": "See your profile",
+  "newsFeeds" : "News Feeds"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": ar, "en": en};
 }

@@ -54,7 +54,6 @@
   "Norecentmessages": "لا توجد رسائل حديثه",
   "You": "أنت",
   "Photo": "صوره",
-  "Don'thaveanaccount": "ليس لديك حساب",
   "Peoplewhoreacted": "الأشخاص اللذين تفاعلوا",
   "YouarealreadyFriends": "أنتم بالفعل اصدقاء",
   "DoyouwanttoUnfriend": "هل تريد ألغاء الصداقه",
@@ -86,5 +85,10 @@
   "changePassword": "أعادة تعيين كلمة السر",
   "help": "المساعده",
   "contactUs": "تواصل معنا",
-  "aboutUs": "معلومات عنا"
+  "aboutUs": "معلومات عنا",
+  "EnterAssociatedEmail": "أدخل عنوان البريد الإلكتروني المرتبط بحسابك",
+  "account": "الحساب الشخصي",
+  "Donthaveanaccount": "ليس لديك حساب",
+  "seeYourProfile": "عرض ملفك الشخصي",
+  "newsFeeds": "اخر الأخبار"
 }

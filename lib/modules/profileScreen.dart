@@ -325,7 +325,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<bool> willPopCallback()async {
-    SocialLayoutState.tabController.animateTo(0,duration: Duration(milliseconds: 30),curve: Curves.fastLinearToSlowEaseIn);
+    SocialLayoutState.tabController.animateTo(0,duration: Duration(seconds: 2),curve: Curves.fastLinearToSlowEaseIn);
     return false;
   }
 

@@ -1,3 +1,4 @@
+import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class SocialLayout extends StatefulWidget {
   int initialIndex = 0;
@@ -43,7 +45,7 @@ class SocialLayout extends StatefulWidget {
           return Scaffold(
             appBar: tabController.index == 0?
             AppBar(
-                      title: Text('News Feeds',),
+                      title: Text(LocaleKeys.newsFeeds.tr(),),
                       automaticallyImplyLeading: false,
                       elevation: 8,
                       actions: [
@@ -81,7 +83,7 @@ class SocialLayout extends StatefulWidget {
               ),
             ) ,
             body: TabBarView(
-              physics: BouncingScrollPhysics(),
+              physics: RangeMaintainingScrollPhysics(),
               controller: tabController,
               children: SocialCubit.get(context).screens
             ),

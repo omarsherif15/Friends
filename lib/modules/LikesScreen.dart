@@ -5,10 +5,8 @@ import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/models/likesModel.dart';
-import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/friendsProfileScreen.dart';
 import 'package:socialapp/shared/constants.dart';
-import 'package:socialapp/shared/styles/iconBroken.dart';
 import 'package:socialapp/translations/local_keys.g.dart';
 
 import 'chatScreen.dart';
@@ -26,7 +24,7 @@ WhoLikedScreen(this.postId);
             List<LikesModel> peopleReacted = SocialCubit.get(context).peopleReacted;
             return Scaffold(
               appBar: AppBar(
-                title: Text('People who reacted'),
+                title: Text(LocaleKeys.Peoplewhoreacted.tr()),
                 titleSpacing: 0,
                 elevation: 8,
               ),

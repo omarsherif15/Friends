@@ -2,6 +2,7 @@ import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
@@ -44,6 +45,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
         isEdit && postModel!.postText != null ? postTextController.text = postModel!.postText! : print('post text = null');
         UserModel? userModel = SocialCubit.get(context).model;
         return  Scaffold(
+          backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
             appBar: AppBar(
               toolbarHeight: 50,
               automaticallyImplyLeading: false,
@@ -60,58 +62,70 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                     pop(context);
                   }
                 },
-                  icon: Icon(IconBroken.Arrow___Left_2)),
+                  icon: Icon(IconBroken.Arrow___Left_2,textDirection: Directionality.of(context),)),
               titleSpacing: 0,
               title: Text(LocaleKeys.createPost.tr()),
               actions: [
-                TextButton(
-                    onPressed: (){
-                      if(isEdit == false) {
-                      if (SocialCubit.get(context).postImage == null) {
-                        SocialCubit.get(context).createNewPost(
-                          name: userModel!.name,
-                          postText: postTextController.text,
-                          profileImage: userModel.profilePic,
-                          date: getDate(),
-                          time: TimeOfDay.now().format(context),
-                        );
-                      } else {
-                        SocialCubit.get(context).uploadPostPic(
-                            userModel!.name,
-                            userModel.profilePic,
-                            postTextController.text,
-                            getDate(),
-                            TimeOfDay.now().toString());
-                      }
-                    }
-                      else {
-                      if (SocialCubit.get(context).postImage == null) {
-                        SocialCubit.get(context).editPost(
-                          postId: postId,
-                          postImage: postModel!.postImage,
-                          name: userModel!.name,
-                          profileImage: userModel.profilePic,
-                          postText: postTextController.text,
-                          likes: postModel!.likes,
-                          comments: postModel!.comments,
-                          date: postModel!.date,
-                          time: postModel!.time,
-                        );
-                      } else {
-                        SocialCubit.get(context).editPostPic(
-                            postId: postId,
-                            name: userModel!.name,
-                            profilePicture :userModel.profilePic,
-                            postText: postTextController.text,
-                            likes: postModel!.likes,
-                            comments: postModel!.comments,
-                            date: postModel!.date,
-                            time: postModel!.time,
-                        );
-                      }
-                    }
-                  },
-                    child: isEdit?Text(LocaleKeys.save.tr()):Text(LocaleKeys.post.tr())
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    //padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: SocialCubit.get(context).textFieldColor
+                    ),
+                    child: TextButton(
+                        onPressed: (){
+                          if(isEdit == false) {
+                          if (SocialCubit.get(context).postImage == null) {
+                            SocialCubit.get(context).createNewPost(
+                              name: userModel!.name,
+                              postText: postTextController.text,
+                              profileImage: userModel.profilePic,
+                              date: getDate(),
+                              time: DateFormat.jm().format(DateTime.now()),
+                            );
+                          } else {
+                            SocialCubit.get(context).uploadPostPic(
+                                userModel!.name,
+                                userModel.profilePic,
+                                postTextController.text,
+                                getDate(),
+                              DateFormat.jm().format(DateTime.now()),);
+                          }
+                        }
+                          else {
+                          if (SocialCubit.get(context).postImage == null) {
+                            SocialCubit.get(context).editPost(
+                              postId: postId,
+                              postImage: postModel!.postImage,
+                              name: userModel!.name,
+                              profileImage: userModel.profilePic,
+                              postText: postTextController.text,
+                              likes: postModel!.likes,
+                              likedByMe: postModel!.likedByMe,
+                              comments: postModel!.comments,
+                              date: postModel!.date,
+                              time: postModel!.time,
+                            );
+                          } else {
+                            SocialCubit.get(context).editPostPic(
+                                postId: postId,
+                                name: userModel!.name,
+                                profilePicture :userModel.profilePic,
+                                postText: postTextController.text,
+                                likes: postModel!.likes,
+                                likedByMe: postModel!.likedByMe,
+                                comments: postModel!.comments,
+                                date: postModel!.date,
+                                time: postModel!.time,
+                            );
+                          }
+                        }
+                      },
+                        child: isEdit?Text(LocaleKeys.save.tr()):Text(LocaleKeys.post.tr())
+                    ),
+                  ),
                 ),
                 SizedBox(width: 10,)
               ],
@@ -140,7 +154,7 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('${userModel.name}',style: TextStyle(fontSize: 15),),
+                            Text('${userModel.name}',style: TextStyle(fontSize: 15,color: SocialCubit.get(context).textColor),),
                             SizedBox(height: 5,),
                             Text(LocaleKeys.public.tr(),style: TextStyle(color: Colors.grey),)
                           ],
@@ -167,7 +181,9 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                         children: [
                           Container(
                             width: double.infinity,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+                            decoration: BoxDecoration(
+                                color: SocialCubit.get(context).backgroundColor,
+                                borderRadius: BorderRadius.circular(15)),
                             clipBehavior: Clip.antiAliasWithSaveLayer,
                             child:Image.file(postPic,fit: BoxFit.cover,width: double.infinity),
                             alignment: AlignmentDirectional.topCenter,
@@ -191,7 +207,9 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                         children: [
                           Container(
                             width: double.infinity,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
+                            decoration: BoxDecoration(
+                                color: SocialCubit.get(context).backgroundColor,
+                                borderRadius: BorderRadius.circular(15)),
                             clipBehavior: Clip.antiAliasWithSaveLayer,
                             child:Image.network(postModel!.postImage!,fit: BoxFit.cover,width: double.infinity),
                             alignment: AlignmentDirectional.topCenter,
@@ -214,56 +232,60 @@ NewPostScreen({required this.isEdit,this.postId,this.postModel});
                 ),
               ),
             ),
-          bottomSheet: Row(
-            children:
-            [
-              SizedBox(width: 5,),
-              Expanded(
-                child: TextButton(
-                    onPressed: (){
-                      SocialCubit.get(context).getPostImage();
-                    },
-                    child: Row(
-                      children:
-                      [
-                        Icon(IconBroken.Image),
-                        SizedBox(width: 5,),
-                        Text(LocaleKeys.image.tr(),style: TextStyle(color: Colors.grey)),
-                      ],
-                    )
+          bottomSheet:
+          Container(
+            color: SocialCubit.get(context).backgroundColor.withOpacity(1),
+            child: Row(
+              children:
+              [
+                SizedBox(width: 5,),
+                Expanded(
+                  child: TextButton(
+                      onPressed: (){
+                        SocialCubit.get(context).getPostImage();
+                      },
+                      child: Row(
+                        children:
+                        [
+                          Icon(IconBroken.Image),
+                          SizedBox(width: 5,),
+                          Text(LocaleKeys.image.tr(),style: TextStyle(color: Colors.grey)),
+                        ],
+                      )
+                  ),
                 ),
-              ),
-              Container(height: 30,width: 1,color: Colors.grey[300],),
-              SizedBox(width: 5,),
-              Expanded(
-                child: TextButton(
-                    onPressed: (){},
-                    child: Row(
-                      children:
-                      [
-                        Icon(Icons.tag,color: Colors.red,),
-                        SizedBox(width: 5,),
-                        Text(LocaleKeys.tags.tr(),style: TextStyle(color: Colors.grey),),
-                      ],
-                    )
+                Container(height: 30,width: 1,color: Colors.grey[300],),
+                SizedBox(width: 5,),
+                Expanded(
+                  child: TextButton(
+                      onPressed: (){},
+                      child: Row(
+                        children:
+                        [
+                          Icon(Icons.tag,color: Colors.red,),
+                          SizedBox(width: 5,),
+                          Text(LocaleKeys.tags.tr(),style: TextStyle(color: Colors.grey),),
+                        ],
+                      )
+                  ),
                 ),
-              ),
-              Container(height: 30,width: 1,color: Colors.grey[300],),
-              SizedBox(width: 5,),
-              Expanded(
-                child: TextButton(
-                    onPressed: (){},
-                    child: Row(
-                      children:
-                      [
-                        Icon(IconBroken.Document,color: Colors.green,),
-                        SizedBox(width: 5,),
-                        Text(LocaleKeys.docs.tr(),style: TextStyle(color: Colors.grey)),
-                      ],
-                    )
+                Container(height: 30,width: 1,color: Colors.grey[300],),
+                SizedBox(width: 5,),
+                Expanded(
+                  child: TextButton(
+                      onPressed: (){},
+                      child: Row(
+                        children:
+                        [
+                          Icon(IconBroken.Document,color: Colors.green,),
+                          SizedBox(width: 5,),
+                          Text(LocaleKeys.docs.tr(),style: TextStyle(color: Colors.grey)),
+                        ],
+                      )
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           );
       },

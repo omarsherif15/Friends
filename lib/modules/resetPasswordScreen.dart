@@ -22,9 +22,9 @@ class ResetPasswordScreen extends StatelessWidget {
             child: Form(
               child: Column(
                 children: [
-                  Text('Reset Password',
+                  Text(LocaleKeys.changePassword.tr(),
                     style: TextStyle(color: SocialCubit.get(context).textColor,fontSize: 50,fontWeight: FontWeight.bold),),
-                  Text('Enter the email address associated with your account',
+                  Text(LocaleKeys.EnterAssociatedEmail.tr(),
                   style: TextStyle(color: SocialCubit.get(context).textColor,fontSize: 20),),
                   SizedBox(height: 40,),
                   defaultFormField(
@@ -43,7 +43,7 @@ class ResetPasswordScreen extends StatelessWidget {
                   state is ResetPasswordLoadingState ?
                   Center(child: CircularProgressIndicator())
                       :defaultButton(
-                    text: 'RESET PASSWORD',
+                    text: LocaleKeys.changePassword.tr(),
                     onTap: () {
                       if (resetKey.currentState!.validate()) {
                         SocialCubit.get(context).resetPassword(

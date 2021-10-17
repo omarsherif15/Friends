@@ -5,7 +5,7 @@ class CommentModel
   String? name;
   String? profilePicture;
   String? commentText;
-  String? commentImage;
+  Map<String,dynamic>? commentImage;
   String? time;
   FieldValue? dateTime;
 

@@ -74,7 +74,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                       padding: EdgeInsetsDirectional.only(
                                           top: 15, bottom: 5),
                                       alignment: AlignmentDirectional.center,
-                                      child: Text('No friend Requests',style: TextStyle(color: SocialCubit.get(context).textColor),)),
+                                      child: Text(LocaleKeys.NoFriendRequest.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),)),
                             ),
                             SizedBox(height: 10,),
                             Text(LocaleKeys.peopleMayKnow.tr(), style: TextStyle(
@@ -115,7 +115,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                       padding: EdgeInsetsDirectional.only(
                                           top: 15, bottom: 5),
                                       alignment: AlignmentDirectional.center,
-                                      child: Text('No friend Yet',style: TextStyle(color: SocialCubit.get(context).textColor))),
+                                      child: Text(LocaleKeys.nofriends.tr(),style: TextStyle(color: SocialCubit.get(context).textColor))),
                             ),
                           ],
                         ),
@@ -141,7 +141,7 @@ class _UsersScreenState extends State<UsersScreen> {
     refreshController.refreshCompleted();
   }
   Future<bool> willPopCallback()async {
-     SocialLayoutState.tabController.animateTo(0,duration: Duration(milliseconds: 30),curve: Curves.fastLinearToSlowEaseIn);
+     SocialLayoutState.tabController.animateTo(0,duration: Duration(seconds: 2),curve: Curves.fastLinearToSlowEaseIn);
      return false;
   }
 
@@ -196,7 +196,7 @@ class _UsersScreenState extends State<UsersScreen> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-              color:Colors.grey.shade900, style: BorderStyle.solid)
+              color:SocialCubit.get(context).borderColor.withOpacity(1), style: BorderStyle.solid)
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Column(

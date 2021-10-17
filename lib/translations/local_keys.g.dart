@@ -56,7 +56,6 @@ abstract class  LocaleKeys {
   static const Norecentmessages = 'Norecentmessages';
   static const You = 'You';
   static const Photo = 'Photo';
-  static const Donthaveanaccount = 'Don\'thaveanaccount';
   static const Peoplewhoreacted = 'Peoplewhoreacted';
   static const YouarealreadyFriends = 'YouarealreadyFriends';
   static const DoyouwanttoUnfriend = 'DoyouwanttoUnfriend';
@@ -79,6 +78,7 @@ abstract class  LocaleKeys {
   static const arabic = 'arabic';
   static const clickOn = 'clickOn';
   static const CreateToCommunicate = 'CreateToCommunicate';
+  //static const  tostartanewconversation = ' tostartanewconversation';
   static const darkMode = 'darkMode';
   static const on = 'on';
   static const off = 'off';
@@ -88,5 +88,10 @@ abstract class  LocaleKeys {
   static const help = 'help';
   static const contactUs = 'contactUs';
   static const aboutUs = 'aboutUs';
+  static const EnterAssociatedEmail = 'EnterAssociatedEmail';
+  static const account = 'account';
+  static const Donthaveanaccount = 'Donthaveanaccount';
+  static const seeYourProfile = 'seeYourProfile';
+  static const newsFeeds = 'newsFeeds';
 
 }

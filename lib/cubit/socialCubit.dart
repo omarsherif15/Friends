@@ -443,6 +443,7 @@ class SocialCubit extends Cubit<SocialStates> {
         postText: postText,
         postImage: postImage,
         likes: 0,
+        likedByMe: false,
         comments: 0,
         date: date,
         time: time,
@@ -458,27 +459,37 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  void setPostId() {
-    FirebaseFirestore.instance.collection('posts').get().then((value) {
-      value.docs.forEach((element) {
-        element.reference.update({'postId': element.id});
-      });
+  Future<bool> likedByMe (QueryDocumentSnapshot<Map<String,dynamic>> element) async{
+    bool isLikedByMe = false;
+    var likes = await element.reference.collection('likes').get();
+    likes.docs.forEach((element) {
+      if(element.id == model!.uID)
+        isLikedByMe = true;
     });
+    return isLikedByMe;
   }
 
   List<PostModel> posts = [];
-
   void getPosts() {
     FirebaseFirestore.instance
         .collection('posts')
         .orderBy('dateTime', descending: true)
         .snapshots()
-        .listen((event) {
+        .listen((event) async {
       posts = [];
-      event.docs.forEach((element) {
+      event.docs.forEach((element) async{
         posts.add(PostModel.fromJson(element.data()));
+        var likes = await element.reference.collection('likes').get();
+        var comments = await element.reference.collection('comments').get();
+        bool isLikedByMe = await likedByMe(element);
+        await FirebaseFirestore.instance.collection('posts').doc(element.id)
+            .update({
+          'likes' : likes.docs.length,
+          'comments' : comments.docs.length,
+          'postId' : element.id,
+          'likedByMe' : isLikedByMe
+        });
       });
-      //setPostId();
       emit(GetPostSuccessState());
     });
   }
@@ -519,6 +530,7 @@ class SocialCubit extends Cubit<SocialStates> {
     String? postText,
     String? postImage,
     int? likes,
+    required bool likedByMe,
     int? comments,
     String? date,
     String? time,
@@ -532,6 +544,7 @@ class SocialCubit extends Cubit<SocialStates> {
         postText: postText,
         postImage: postImage,
         likes: likes,
+        likedByMe: likedByMe,
         comments: comments,
         date: date,
         time: time,
@@ -554,6 +567,7 @@ class SocialCubit extends Cubit<SocialStates> {
     String? profilePicture,
     String? postText,
     int? likes,
+    required bool likedByMe,
     int? comments,
     String? date,
     String? time,
@@ -572,6 +586,7 @@ class SocialCubit extends Cubit<SocialStates> {
           postImage: value,
           postText: postText,
           likes: likes,
+          likedByMe:likedByMe ,
           comments: comments,
           time: time,
           date: date,
@@ -588,8 +603,6 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  bool isLiked = false;
-
   void likePost(String? postId) {
     LikesModel likesModel = LikesModel(
         uId: model!.uID,
@@ -603,10 +616,7 @@ class SocialCubit extends Cubit<SocialStates> {
         .doc(model!.uID)
         .set(likesModel.toMap())
         .then((value) {
-      FirebaseFirestore.instance.collection('posts').doc(postId).update({
-        'likes': FieldValue.increment(1),
-      });
-      isLiked = true;
+          getPosts();
       emit(LikePostSuccessState());
     }).catchError((error) {
       print(error.toString());
@@ -622,11 +632,7 @@ class SocialCubit extends Cubit<SocialStates> {
         .doc(model!.uID)
         .delete()
         .then((value) {
-      FirebaseFirestore.instance
-          .collection('posts')
-          .doc(postId)
-          .update({'likes': FieldValue.increment(-1)});
-      isLiked = false;
+        getPosts();
       emit(DisLikePostSuccessState());
     }).catchError((error) {
       emit(DisLikePostErrorState());
@@ -652,7 +658,8 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   File? commentImage;
-
+  int? commentImageWidth;
+  int? commentImageHeight;
   Future getCommentImage() async {
     emit(UpdatePostLoadingState());
     final pickedFile = await picker?.pickImage(source: ImageSource.gallery);
@@ -692,7 +699,11 @@ class SocialCubit extends Cubit<SocialStates> {
         commentPost(
             postId: postId,
             comment: commentText,
-            commentImage: commentImageURL,
+            commentImage: {
+              'width' : commentImageWidth,
+              'image' : value,
+              'height': commentImageHeight
+            },
             time: time);
         emit(UploadCommentPicSuccessState());
         isCommentImageLoading = false;
@@ -709,7 +720,7 @@ class SocialCubit extends Cubit<SocialStates> {
   void commentPost({
     required String? postId,
     String? comment,
-    String? commentImage,
+    Map<String,dynamic>? commentImage,
     required String? time,
   }) {
     CommentModel commentModel = CommentModel(
@@ -725,11 +736,6 @@ class SocialCubit extends Cubit<SocialStates> {
         .collection('comments')
         .add(commentModel.toMap())
         .then((value) {
-      FirebaseFirestore.instance.collection('posts').doc(postId).update({
-        'comments': FieldValue.increment(1),
-      }).then((value) {
-        emit(PlusCommentSuccessState());
-      });
       getPosts();
       emit(CommentPostSuccessState());
     }).catchError((error) {
@@ -850,7 +856,7 @@ class SocialCubit extends Cubit<SocialStates> {
     required messageId,
     required String? receiverId,
     String? messageText,
-    String? messageImage,
+    Map<String,dynamic>? messageImage,
     required String? date,
     required String? time,
   }) {
@@ -918,11 +924,17 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   File? messageImage;
-
+  int? messageImageWidth;
+  int? messageImageHeight;
   Future getMessageImage() async {
     final pickedFile = await picker?.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       messageImage = File(pickedFile.path);
+      var decodedImage = await decodeImageFromList(messageImage!.readAsBytesSync());
+      messageImageHeight = decodedImage.height;
+      messageImageWidth = decodedImage.width;
+      print('$messageImageHeight' + ' height');
+      print('$messageImageWidth' + ' Width');
       emit(GetMessagePicSuccessState());
     } else {
       print('No Image Selected');
@@ -958,7 +970,11 @@ class SocialCubit extends Cubit<SocialStates> {
             messageId:messageId ,
             receiverId: receiverId,
             messageText: messageText,
-            messageImage: value,
+            messageImage: {
+              'width' : messageImageWidth,
+              'image' : value,
+              'height': messageImageHeight
+            },
             date: date,
             time: time);
         emit(UploadMessagePicSuccessState());
@@ -1150,7 +1166,7 @@ class SocialCubit extends Cubit<SocialStates> {
         textColor = Colors.white;
         backgroundColor = HexColor('#212121').withOpacity(0.8);
         textFieldColor = Colors.grey[900];
-        borderColor = Colors.grey.shade500;
+        borderColor = Colors.grey.shade900;
         messageColor = Colors.grey[600];
         myMessageColor = Colors.blueAccent;
         emit(ChangeModeState());
@@ -1164,7 +1180,7 @@ class SocialCubit extends Cubit<SocialStates> {
         backgroundColor = Colors.white;
         textColor = Colors.black;
         textFieldColor = Colors.grey[300];
-        borderColor = Colors.grey.shade900;
+        borderColor = Colors.grey.shade300  ;
         messageColor = Colors.grey[300];
         myMessageColor = Colors.blueAccent;
         emit(ChangeModeState());

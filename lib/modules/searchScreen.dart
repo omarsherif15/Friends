@@ -65,7 +65,7 @@ class SearchScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.search_off_outlined,size: 60,color: Colors.grey,),
                   SizedBox(height: 30,),
-                  Text('No Search Results',style: TextStyle(fontSize: 25,color: SocialCubit.get(context).textColor),)
+                  Text(LocaleKeys.NoSearchResults.tr(),style: TextStyle(fontSize: 25,color: SocialCubit.get(context).textColor),)
                 ],
               ),
             )
