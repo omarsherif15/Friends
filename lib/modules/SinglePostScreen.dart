@@ -3,23 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
-import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/models/commentModel.dart';
 import 'package:socialapp/models/postModel.dart';
+import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
-import 'package:socialapp/shared/styles/iconBroken.dart';
 import 'package:socialapp/translations/local_keys.g.dart';
-
-import 'CommentsScreen.dart';
-import 'LikesScreen.dart';
-import 'friendsProfileScreen.dart';
-import 'newPostScreen.dart';
 
 class SinglePostScreen extends StatelessWidget {
   String? postId;
   var commentTextControl = TextEditingController();
+  var scaffoldKey = GlobalKey<ScaffoldState>();
   SinglePostScreen({required this.postId});
 
   @override
@@ -34,6 +29,7 @@ class SinglePostScreen extends StatelessWidget {
           List<CommentModel> comments = SocialCubit.get(context).comments;
           PostModel? singlePost = SocialCubit.get(context).singlePost;
           return Scaffold(
+            key: scaffoldKey,
             backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
               appBar: AppBar(
                 elevation: 8,
@@ -56,7 +52,7 @@ class SinglePostScreen extends StatelessWidget {
                   : SingleChildScrollView(
                     child: Column(
                         children: [
-                          buildPost(context, state, singlePost, SocialCubit.get(context).model,isSingle: true),
+                          buildPost(context, state, singlePost, SocialCubit.get(context).model,scaffoldKey,isSingle: true),
                           comments.length > 0 ?  Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: ListView.separated(
@@ -145,6 +141,8 @@ class SinglePostScreen extends StatelessWidget {
                                   IconButton(
                                       padding: EdgeInsets.zero,
                                       onPressed: (){
+                                        SocialCubit.get(context).getUserData(singlePost!.uId);
+                                        UserModel? user = SocialCubit.get(context).userModel;
                                         if(commentImage == null)
                                           SocialCubit.get(context).commentPost(
                                             postId: postId,
@@ -157,6 +155,18 @@ class SinglePostScreen extends StatelessWidget {
                                             commentText: commentTextControl.text == ''? null:commentTextControl.text,
                                             time: TimeOfDay.now().format(context),
                                           );
+                                        SocialCubit.get(context).sendInAppNotification(
+                                            receiverName: singlePost.name,
+                                            receiverId: singlePost.uId,
+                                            content: 'commented on a post you shared',
+                                            contentId: postId,
+                                            contentKey: 'post'
+                                        );
+                                        SocialCubit.get(context).sendFCMNotification(
+                                          token: user!.token,
+                                          senderName: SocialCubit.get(context).model!.name,
+                                          messageText: '${SocialCubit.get(context).model!.name}' + ' commented on a post you shared',
+                                        );
                                         commentTextControl.clear();
                                         SocialCubit.get(context).popCommentImage();
                                       },

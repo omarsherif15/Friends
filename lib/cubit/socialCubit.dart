@@ -461,12 +461,25 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  Future<bool> likedByMe (QueryDocumentSnapshot<Map<String,dynamic>> element) async{
+  Future<bool> likedByMe (postId) async{
+    emit(LikedByMeCheckedLoadingState());
     bool isLikedByMe = false;
-    var likes = await element.reference.collection('likes').get();
-    likes.docs.forEach((element) {
-      if(element.id == model!.uID)
-        isLikedByMe = true;
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .get()
+        .then((event) async {
+        var likes = await event.reference.collection('likes').get();
+        likes.docs.forEach((element) {
+          if(element.id == model!.uID) {
+          isLikedByMe = true;
+          disLikePost(postId);
+        }
+      });
+        if(isLikedByMe == false)
+          likePost(postId);
+       print(isLikedByMe);
+      emit(LikedByMeCheckedSuccessState());
     });
     return isLikedByMe;
   }
@@ -483,7 +496,6 @@ class SocialCubit extends Cubit<SocialStates> {
         posts.add(PostModel.fromJson(element.data()));
         var likes = await element.reference.collection('likes').get();
         var comments = await element.reference.collection('comments').get();
-        bool isLikedByMe = await likedByMe(element);
         await FirebaseFirestore.instance.collection('posts').doc(element.id)
             .update({
           'likes' : likes.docs.length,
@@ -509,7 +521,7 @@ class SocialCubit extends Cubit<SocialStates> {
           userPosts.add(PostModel.fromJson(element.data()));
         }
       });
-      emit(GetPostSuccessState());
+      emit(GetUserPostSuccessState());
     });
   }
 
@@ -522,7 +534,7 @@ class SocialCubit extends Cubit<SocialStates> {
         .get()
         .then((value) {
           singlePost = PostModel.fromJson(value.data());
-          emit(GetPostSuccessState());
+          emit(GetSinglePostSuccessState());
     }).catchError((error){
       emit(GetPostErrorState());
     });
@@ -989,7 +1001,6 @@ class SocialCubit extends Cubit<SocialStates> {
     required String? time,
   }) {
     RecentMessagesModel recentMessagesModel = RecentMessagesModel(
-
         senderId: model!.uID,
         senderName: model!.name,
         senderProfilePic: model!.profilePic,
@@ -998,6 +1009,19 @@ class SocialCubit extends Cubit<SocialStates> {
         receiverProfilePic: receiverProfilePic,
         recentMessageText: recentMessageText,
         recentMessageImage: recentMessageImage,
+        read: false,
+        time: time,
+        dateTime: FieldValue.serverTimestamp());
+    RecentMessagesModel myRecentMessagesModel = RecentMessagesModel(
+        senderId: model!.uID,
+        senderName: model!.name,
+        senderProfilePic: model!.profilePic,
+        receiverId: receiverId,
+        receiverName: receiverName,
+        receiverProfilePic: receiverProfilePic,
+        recentMessageText: recentMessageText,
+        recentMessageImage: recentMessageImage,
+        read: true,
         time: time,
         dateTime: FieldValue.serverTimestamp());
     FirebaseFirestore.instance
@@ -1005,7 +1029,7 @@ class SocialCubit extends Cubit<SocialStates> {
         .doc(model!.uID)
         .collection('recentMsg')
         .doc(receiverId)
-        .set(recentMessagesModel.toMap())
+        .set(myRecentMessagesModel.toMap())
         .then((value) {
       emit(SetRecentMessageSuccessState());
     }).catchError((error) {
@@ -1105,6 +1129,16 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+  Future readRecentMessage(String? recentMessageId) async{
+    await FirebaseFirestore.instance.collection('users')
+        .doc(model!.uID)
+        .collection('recentMsg')
+        .doc(recentMessageId)
+        .update({'read' : true}).then((value) {
+      emit(ReadNotificationSuccessState());
+    });
+  }
+
   void sendFCMNotification({
     required String? token,
     required String? senderName,
@@ -1192,9 +1226,10 @@ class SocialCubit extends Cubit<SocialStates> {
         notifications.docs.forEach((notificationsElement) async {
          await notificationsElement.reference.update({
             'notificationId' : notificationsElement.id
-          }).then((value) {emit(SetNotificationIdSuccessState());});
+          });
         });
       });
+      emit(SetNotificationIdSuccessState());
     });
   }
 

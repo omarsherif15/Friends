@@ -483,3 +483,48 @@ Widget imagePreview(String? image){
 // ),
 // ),
 // )
+
+// PopupMenuButton(
+// color: SocialCubit.get(context).backgroundColor.withOpacity(1),
+// onSelected: (value) {
+// if (value == 'Delete post')
+// SocialCubit.get(context)
+//     .deletePost(postModel.postId);
+// else if (value == 'Edit post')
+// navigateTo(context, NewPostScreen(
+// isEdit: true,
+// postId:postModel.postId,
+// postModel: postModel,
+// ));
+// },
+// child: Icon(Icons.more_horiz_outlined),
+// itemBuilder: (context) => [
+// PopupMenuItem(
+// value: 'Delete post',
+// child: Row(
+// children: [
+// Icon(
+// Icons.delete_outline_outlined,
+// color: Colors.red,
+// ),
+// SizedBox(
+// width: 5,
+// ),
+// Text(LocaleKeys.deletepost.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),)
+// ],
+// )), // delete post
+// PopupMenuItem(
+// value: 'Edit post',
+// child: Row(
+// children: [
+// Icon(
+// Icons.edit_outlined,
+// color: Colors.grey,
+// ),
+// SizedBox(
+// width: 5,
+// ),
+// Text(LocaleKeys.Editpost.tr(),style: TextStyle(color: SocialCubit.get(context).textColor))
+// ],
+// )), // editPost
+// ]),

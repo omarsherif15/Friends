@@ -19,6 +19,7 @@ class FriendsProfileScreen extends StatelessWidget {
   String? userUid;
   FriendsProfileScreen(this.userUid);
   var refreshController5 = RefreshController();
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +51,7 @@ class FriendsProfileScreen extends StatelessWidget {
               conditionBuilder: (context) => state is GetAllUsersLoadingState || friendsModel == null,
               widgetBuilder: (context) => Center(child: CircularProgressIndicator(),),
               fallbackBuilder:(context) => Scaffold(
+                key: scaffoldKey,
                 appBar: AppBar(
                   leading: IconButton(
                     onPressed: (){
@@ -174,6 +176,18 @@ class FriendsProfileScreen extends StatelessWidget {
                                                   friendName: friendsModel.name,
                                                   friendProfilePic: friendsModel.profilePic);
                                               SocialCubit.get(context).checkFriendRequest(userUid);
+                                              SocialCubit.get(context).sendInAppNotification(
+                                                contentKey: 'friendRequest',
+                                                contentId: friendsModel.uID,
+                                                content: 'sent you a friend request, check it out!',
+                                                receiverId: friendsModel.uID,
+                                                receiverName: friendsModel.name
+                                              );
+                                              SocialCubit.get(context).sendFCMNotification(
+                                                  token: friendsModel.token,
+                                                  senderName: SocialCubit.get(context).model!.name,
+                                                messageText: '${SocialCubit.get(context).model!.name}' + 'sent you a friend request, check it out!'
+                                              );
                                             }
                                            else {
                                              showDialog(
@@ -261,7 +275,7 @@ class FriendsProfileScreen extends StatelessWidget {
                           widgetBuilder:(context) => ListView.separated(
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemBuilder: (context,index) => buildPost(context,state, posts[index], friendsModel,isSingle: false),
+                            itemBuilder: (context,index) => buildPost(context,state, posts[index], friendsModel,scaffoldKey,isSingle: false),
                             separatorBuilder: (context,index) => SizedBox(height: 10,),
                             itemCount:posts.length,
                           ),

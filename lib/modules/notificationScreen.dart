@@ -102,19 +102,6 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
                               )),
                     ],
                   ),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () {
-                      SocialCubit.get(context).sendInAppNotification(
-                        contentKey: 'friendRequestAccepted',
-                        contentId: '${SocialCubit.get(context).model!.uID}',
-                        content:
-                            'accepted your friend request, You are now friends',
-                        receiverId: '6nZdbh61OAWpHoM9aEqXDP8Lk932',
-                        receiverName: 'Omar Sherif',
-                      );
-                    },
-                    child: Icon(Icons.notifications),
-                  ),
                 ));
           },
         );
@@ -129,12 +116,19 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
           SocialCubit.get(context)
               .readNotification(notifications.notificationId);
           navigateTo(context, FriendsProfileScreen(notifications.contentId));
-        } else if (notifications.contentKey == 'post') {
+        }
+        else if (notifications.contentKey == 'post') {
           SocialCubit.get(context)
               .readNotification(notifications.notificationId);
           navigateTo(
               context, SinglePostScreen(postId: notifications.contentId));
         }
+        else if (notifications.contentKey == 'friendRequest') {
+          SocialCubit.get(context)
+              .readNotification(notifications.notificationId);
+          SocialLayoutState.tabController.animateTo(1,duration: Duration(seconds: 2),curve: Curves.fastLinearToSlowEaseIn);
+        }
+
       },
       child: Container(
         color: notifications.read
@@ -157,6 +151,7 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     RichText(
                       maxLines: 3,
@@ -186,8 +181,7 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
                   onPressed: () {
                     scaffoldKey.currentState!.showBodyScrim(true, 0.5);
                     scaffoldKey.currentState!.
-                    showBottomSheet(
-                          (context) => Card(
+                    showBottomSheet((context) => Card(
                             clipBehavior: Clip.antiAliasWithSaveLayer,
                             shape: OutlineInputBorder(
                                 borderRadius: BorderRadius.only(

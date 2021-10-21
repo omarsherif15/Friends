@@ -122,6 +122,10 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
   return InkWell(
     onTap: () {
       recentMessages.receiverId == SocialCubit.get(context).model!.uID?
+      SocialCubit.get(context).readRecentMessage(recentMessages.senderId):
+      SocialCubit.get(context).readRecentMessage(recentMessages.receiverId);
+
+      recentMessages.receiverId == SocialCubit.get(context).model!.uID?
         navigateTo(context, ChatScreen(uId: recentMessages.senderId,)) :
         navigateTo(context, ChatScreen(uId: recentMessages.receiverId,));
     },
@@ -142,6 +146,7 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                recentMessages.read?
                 Row(
                   children: [
                     Text(
@@ -151,36 +156,66 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 15,
-                        color: SocialCubit.get(context).textColor,
+                        color: Colors.grey[700],
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Spacer(),
                     Text('${sinceWhen(recentMessages.time.toString())}',style: TextStyle(color: Colors.grey),)
                   ],
+                ):Row(
+                  children: [
+                    Text(
+                      '${recentMessages.receiverId == SocialCubit.get(context).model!.uID?
+                      recentMessages.senderName : recentMessages.receiverName}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: SocialCubit.get(context).textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    Text('${sinceWhen(recentMessages.time.toString())}',style: TextStyle(color: SocialCubit.get(context).textColor,
+                      fontWeight: FontWeight.bold,),)
+                  ],
                 ),
                 SizedBox(height: 5,),
                 recentMessages.recentMessageImage != null && recentMessages.recentMessageText !=null ?
                 recentMessages.receiverId == SocialCubit.get(context).model!.uID ?
                 Row (children: [
-                  Icon(Icons.image_rounded),
+                  Icon(Icons.image_rounded,color: Colors.grey,),
                   SizedBox(width: 5,),
-                  Expanded(child: Text('${recentMessages.recentMessageText}',style: TextStyle(color: SocialCubit.get(context).textColor,)
-                    ,maxLines: 1,overflow: TextOverflow.ellipsis,)),
+                  recentMessages.read?
+                  Expanded(child: Text('${recentMessages.recentMessageText}',style: TextStyle(color: Colors.grey[700],)
+                    ,maxLines: 1,overflow: TextOverflow.ellipsis,)) :Expanded(child: Text('${recentMessages.recentMessageText}'
+                    ,style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)
+                    ,maxLines: 1,overflow: TextOverflow.ellipsis,))
                 ],): Row (
                   children: [
                     Text(LocaleKeys.You.tr() + ": "),
                   Icon(Icons.image_rounded,color: Colors.grey,),
                   SizedBox(width: 5,),
-                  Expanded(child: Text('${recentMessages.recentMessageText}',maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: SocialCubit.get(context).textColor,))),
+                    recentMessages.read?
+                    Expanded(child: Text('${recentMessages.recentMessageText}',style: TextStyle(color: Colors.grey[700],)
+                      ,maxLines: 1,overflow: TextOverflow.ellipsis,)) :Expanded(child: Text('${recentMessages.recentMessageText}'
+                      ,style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)
+                      ,maxLines: 1,overflow: TextOverflow.ellipsis,))
                 ],)
                     : recentMessages.recentMessageImage != null ?
                 recentMessages.receiverId == SocialCubit.get(context).model!.uID ?
+                    recentMessages.read?
                 Row (children: [
                   Icon(Icons.image_rounded),
                   SizedBox(width: 5,),
-                  Text(LocaleKeys.Photo.tr(),style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor)),
+                  Text(LocaleKeys.Photo.tr(),style: TextStyle(fontSize: 16,color: Colors.grey[700])),
                 ],): Row (children: [
+                      Icon(Icons.image_rounded),
+                      SizedBox(width: 5,),
+                      Text(LocaleKeys.Photo.tr(),style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold)),
+                    ],)
+                    : Row (children: [
                   Text(LocaleKeys.You.tr() + ": "),
                   Icon(Icons.image_rounded,color: Colors.grey,),
                   SizedBox(width: 5,),
@@ -188,10 +223,16 @@ Widget chatBuildItem(context,RecentMessagesModel recentMessages) {
                 ],)
                     : recentMessages.recentMessageText !=null ?
                 recentMessages.receiverId == SocialCubit.get(context).model!.uID ?
+                    recentMessages.read?
                 Text('${recentMessages.recentMessageText}',
-                  style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor),maxLines: 1,overflow: TextOverflow.ellipsis,):
+                  style: TextStyle(fontSize: 16,color: Colors.grey[700]),
+                  maxLines: 1,overflow: TextOverflow.ellipsis,):Text('${recentMessages.recentMessageText}',
+                      style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),
+                      maxLines: 1,overflow: TextOverflow.ellipsis,):
+                    recentMessages.read?
                 Text(LocaleKeys.You.tr() + ": " + '${recentMessages.recentMessageText}',
-                    style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor),maxLines: 1,overflow: TextOverflow.ellipsis,)
+                    style: TextStyle(fontSize: 16,color: Colors.grey[700]),maxLines: 1,overflow: TextOverflow.ellipsis,) : Text(LocaleKeys.You.tr() + ": " + '${recentMessages.recentMessageText}',
+                  style: TextStyle(fontSize: 16,color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),maxLines: 1,overflow: TextOverflow.ellipsis,)
                     : Text('ERROR 404'),
               ],
 

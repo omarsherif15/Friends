@@ -11,6 +11,7 @@ class RecentMessagesModel
   String? senderProfilePic;
   String? recentMessageText;
   String? recentMessageImage;
+  late bool read;
   String? time;
   FieldValue? dateTime;
 
@@ -25,6 +26,7 @@ class RecentMessagesModel
     this.time,
     this.receiverProfilePic,
     this.senderProfilePic,
+    required this.read,
     this.dateTime,
 
   });
@@ -38,6 +40,7 @@ class RecentMessagesModel
     recentMessageImage  = json['recentMessageImage'];
     time                = json['time'];
     receiverProfilePic  = json['receiverProfilePic'];
+    read                = json['read'];
     senderProfilePic    = json['senderProfilePic'];
   }
 
@@ -52,6 +55,7 @@ class RecentMessagesModel
       'time'              :time,
       'receiverProfilePic':receiverProfilePic,
       'senderProfilePic'  :senderProfilePic,
+      'read'              :read,
       'dateTime'          :dateTime,
     };
   }

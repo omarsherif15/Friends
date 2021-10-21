@@ -241,6 +241,18 @@ class _UsersScreenState extends State<UsersScreen> {
                               friendName: userModel.name,
                               friendProfilePic: userModel.profilePic
                           );
+                          SocialCubit.get(context).sendInAppNotification(
+                              contentKey: 'friendRequest',
+                              contentId: userModel.uID,
+                              content: 'sent you a friend request, check it out!',
+                              receiverId: userModel.uID,
+                              receiverName: userModel.name
+                          );
+                          SocialCubit.get(context).sendFCMNotification(
+                              token: userModel.token,
+                              senderName: SocialCubit.get(context).model!.name,
+                              messageText: '${SocialCubit.get(context).model!.name}' + 'sent you a friend request, check it out!'
+                          );
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -313,6 +325,18 @@ class _UsersScreenState extends State<UsersScreen> {
                             );
                             SocialCubit.get(context).deleteFriendRequest(
                                 userModel.uID);
+                            SocialCubit.get(context).sendInAppNotification(
+                                contentKey: 'friendRequestAccepted',
+                                contentId: SocialCubit.get(context).model!.name,
+                                content: 'accepted your friend request, you are now friends checkout his profile',
+                                receiverId: userModel.uID,
+                                receiverName: userModel.name
+                            );
+                            SocialCubit.get(context).sendFCMNotification(
+                                token: userModel.token,
+                                senderName: SocialCubit.get(context).model!.name,
+                                messageText: '${SocialCubit.get(context).model!.name}' + 'accepted your friend request, you are now friends checkout his profile'
+                            );
                           },
                           child: Text('Confirm', style: TextStyle(
                               color: Colors.white)),

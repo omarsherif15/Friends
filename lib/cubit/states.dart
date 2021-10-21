@@ -216,6 +216,8 @@ class DeletePostSuccessState extends SocialStates{}
 ///GetPost State
 class GetPostLoadingState extends SocialStates{}
 class GetPostSuccessState extends SocialStates {}
+class GetUserPostSuccessState extends SocialStates {}
+class GetSinglePostSuccessState extends SocialStates {}
 class GetPostErrorState extends SocialStates{}
 ///End of GetPost State
 
@@ -287,6 +289,8 @@ class DisLikePostErrorState extends SocialStates{}
 ///LikePressed State
 class LikePressedSuccessState extends SocialStates {}
 class GetLikesSuccessState extends SocialStates {}
+class LikedByMeCheckedLoadingState extends SocialStates{}
+class LikedByMeCheckedSuccessState extends SocialStates{}
 ///End of LikePressed State
 
 ///ChangePassword State

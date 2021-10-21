@@ -94,7 +94,7 @@ Widget defaultButton({
       ),
     );
 
-Widget buildPost(context,state, PostModel postModel, UserModel? model ,{required bool isSingle}) {
+Widget buildPost(context,state, PostModel postModel, UserModel? model ,GlobalKey<ScaffoldState> scaffoldKey,{required bool isSingle}) {
   return Card(
     clipBehavior: Clip.antiAliasWithSaveLayer,
     elevation: 8,
@@ -147,50 +147,110 @@ Widget buildPost(context,state, PostModel postModel, UserModel? model ,{required
               ),
               Spacer(),
               if(SocialCubit.get(context).model!.uID == postModel.uId)
-                PopupMenuButton(
-                  color: SocialCubit.get(context).backgroundColor.withOpacity(1),
-                  onSelected: (value) {
-                    if (value == 'Delete post')
-                      SocialCubit.get(context)
-                          .deletePost(postModel.postId);
-                    else if (value == 'Edit post')
-                      navigateTo(context, NewPostScreen(
-                            isEdit: true,
-                            postId:postModel.postId,
-                            postModel: postModel,
-                          ));
+                IconButton(
+                  onPressed: () {
+                    scaffoldKey.currentState!.showBodyScrim(true, 0.5);
+                    scaffoldKey.currentState!.
+                    showBottomSheet((context) => Card(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      shape: OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(15),
+                              topLeft: Radius.circular(15)),borderSide: BorderSide.none),
+                      elevation: 15,
+                      color: SocialCubit.get(context)
+                          .backgroundColor
+                          .withOpacity(1),
+                      margin: EdgeInsets.zero,
+                      child: Padding(
+                        padding:
+                        const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.drag_handle),
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  '${postModel.profilePicture}'),
+                              radius: 25,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text('${postModel.postText}',style: TextStyle(color: SocialCubit.get(context).textColor), textAlign: TextAlign.center,),
+                           SizedBox(height:10,),
+                            Text('This Post was shared on '+'${postModel.date} at ${postModel.time}',
+                              style: TextStyle(color: Colors.grey), textAlign: TextAlign.center,),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            InkWell(
+                              onTap: (){
+                                Scaffold.of(context).currentBottomSheet!.close();
+                                SocialCubit.get(context).deletePost(postModel.postId);
+                              },
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    child:
+                                    Icon(Icons.delete_outline_outlined),
+                                  ),
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text(
+                                    LocaleKeys.deletepost.tr(),
+                                    style: TextStyle(
+                                        color: SocialCubit.get(context)
+                                            .textColor,
+                                        fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            InkWell(
+                              onTap: (){
+                                Scaffold.of(context).currentBottomSheet!.close();
+                              },
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    child:
+                                    Icon(Icons.edit_outlined),
+                                  ),
+                                  SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text(
+                                    LocaleKeys.Editpost.tr(),
+                                    style: TextStyle(
+                                        color: SocialCubit.get(context)
+                                            .textColor,
+                                        fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                      shape: OutlineInputBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(15),
+                              topLeft: Radius.circular(15)),borderSide: BorderSide.none),
+                    ).closed.then((value) {
+                      scaffoldKey.currentState!.showBodyScrim(false, 1);
+                    });
                   },
-                  child: Icon(Icons.more_horiz_outlined),
-                  itemBuilder: (context) => [
-                        PopupMenuItem(
-                            value: 'Delete post',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.delete_outline_outlined,
-                                  color: Colors.red,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(LocaleKeys.deletepost.tr(),style: TextStyle(color: SocialCubit.get(context).textColor),)
-                              ],
-                            )), // delete post
-                        PopupMenuItem(
-                            value: 'Edit post',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.edit_outlined,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(LocaleKeys.Editpost.tr(),style: TextStyle(color: SocialCubit.get(context).textColor))
-                              ],
-                            )), // editPost
-                      ]),
+                  icon: Icon(Icons.more_horiz_outlined))
             ],
           ),
           SizedBox(
@@ -262,30 +322,30 @@ Widget buildPost(context,state, PostModel postModel, UserModel? model ,{required
             children: [
               Expanded(
                 child: InkWell(
-                  onTap: () {
-                    if(postModel.likedByMe == false) {
-                            SocialCubit.get(context).likePost(postModel.postId);
-                            SocialCubit.get(context).sendInAppNotification(
-                                receiverName: postModel.name,
-                                receiverId: postModel.uId,
-                                content: 'likes a post you shared',
-                                contentId: postModel.postId,
-                                contentKey: 'post'
-                            );
-                            SocialCubit.get(context).sendFCMNotification(
-                              token: model!.token,
-                              senderName: SocialCubit.get(context).model!.name,
-                              messageText: '${SocialCubit.get(context).model!.name}' + ' likes a post you shared',
-                            );
-                          }
-                          if(postModel.likedByMe == true)
-                      SocialCubit.get(context).disLikePost(postModel.postId);
+                  onTap: () async {
+                    if(await SocialCubit.get(context).likedByMe(postModel.postId) == false) {
+                      await Future.delayed(Duration(seconds: 1)).then((value) {
+                        if(state is LikedByMeCheckedSuccessState) {
+                                SocialCubit.get(context).sendInAppNotification(
+                                    receiverName: postModel.name,
+                                    receiverId: postModel.uId,
+                                    content: 'likes a post you shared',
+                                    contentId: postModel.postId,
+                                    contentKey: 'post');
+                                SocialCubit.get(context).sendFCMNotification(
+                                  token: model!.token,
+                                  senderName: SocialCubit.get(context).model!.name,
+                                  messageText: '${SocialCubit.get(context).model!.name}' + ' likes a post you shared',
+                                );
+                              }
+                            });
+                    }
                   },
                   child: Row(
                     children: [
                       Icon(
                           IconBroken.Heart,
-                          color:postModel.likedByMe ? Colors.red : Colors.grey
+                          color: Colors.red
                       ),
                       SizedBox(
                         width: 5,
@@ -394,11 +454,11 @@ Widget buildPost(context,state, PostModel postModel, UserModel? model ,{required
               ),
               Spacer(),
               InkWell(
-                onTap: () {
+                onTap: () async {
                   SocialCubit.get(context).getUserData(postModel.uId);
                   UserModel? postUser = SocialCubit.get(context).userModel;
-                  if(postModel.likedByMe == false) {
-                          SocialCubit.get(context).likePost(postModel.postId);
+                  bool aa = await SocialCubit.get(context).likedByMe(postModel.postId);
+                  if(postModel.uId != model.uID) {
                           SocialCubit.get(context).sendInAppNotification(
                               receiverName: postModel.name,
                               receiverId: postModel.uId,
@@ -412,14 +472,12 @@ Widget buildPost(context,state, PostModel postModel, UserModel? model ,{required
                             messageText: '${SocialCubit.get(context).model!.name}' + ' likes a post you shared',
                           );
                         }
-                        if(postModel.likedByMe == true)
-                    SocialCubit.get(context).disLikePost(postModel.postId);
                 },
                 child: Row(
                   children: [
                     Icon(
                       IconBroken.Heart,
-                      color:postModel.likedByMe ? Colors.red : Colors.grey
+                      color:Colors.red
                     ),
                     SizedBox(
                       width: 5,

@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var refreshController1 = RefreshController();
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 : WillPopScope(
                   onWillPop: willPop,
                   child: Scaffold(
+                    key: scaffoldKey,
                       body: SmartRefresher(
                         physics: BouncingScrollPhysics(),
                         controller: refreshController1,
@@ -106,14 +108,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                             child: TextButton(
                                                 onPressed: () {
                                                   SocialCubit.get(context).getPostImage();
-                                                  navigateTo(context, NewPostScreen(isEdit: false));
+                                                  if(SocialCubit.get(context).postImage != null)
+                                                    navigateTo(context, NewPostScreen(isEdit: false));
                                                 },
                                                 child: Row(
                                                   children: [
                                                     Icon(IconBroken.Image),
-                                                    SizedBox(
-                                                      width: 5,
-                                                    ),
+                                                    SizedBox(width: 5,),
                                                     Text(LocaleKeys.image.tr(),
                                                         style: TextStyle(color: Colors.grey)),
                                                   ],
@@ -182,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) =>
-                                    buildPost(context, state, posts[index], userModel,isSingle: false),
+                                    buildPost(context, state, posts[index], userModel,scaffoldKey,isSingle: false),
                                 separatorBuilder: (context, index) => Container(
                                   height: 10,
                                 ),
