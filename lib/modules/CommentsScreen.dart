@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/models/commentModel.dart';
+import 'package:socialapp/models/postModel.dart';
+import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/LikesScreen.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
@@ -11,26 +13,31 @@ import 'package:socialapp/translations/local_keys.g.dart';
 
 class CommentsScreen extends StatelessWidget {
   var commentTextControl = TextEditingController();
-  int index;
+  int? likes;
   String? postId;
-CommentsScreen(this.index,this.postId);
+  String? postUid;
+CommentsScreen({this.likes, this.postId,this.postUid});
 
   @override
   Widget build(BuildContext context) {
-    int index = this.index;
     String? postId = this.postId;
     return Builder(
       builder:(context)
       {
+        SocialCubit.get(context).getSinglePost(postId);
         SocialCubit.get(context).getComments(postId);
+        SocialCubit.get(context).getUserData(postUid);
         return BlocConsumer<SocialCubit,SocialStates>(
             listener: (context,state){},
             builder: (context,state) {
               dynamic commentImage = SocialCubit.get(context).commentImage;
+              PostModel? post = SocialCubit.get(context).singlePost;
               List<CommentModel> comments = SocialCubit.get(context).comments;
+              UserModel? user = SocialCubit.get(context).userModel;
               return Scaffold(
+                backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
                 appBar: AppBar(
-                  automaticallyImplyLeading: false,
+                  automaticallyImplyLeading: true,
                   leading: IconButton(
                     onPressed: (){
                       comments.clear();
@@ -51,7 +58,7 @@ CommentsScreen(this.index,this.postId);
                             children: [
                               Icon(IconBroken.Heart,color: Colors.red,),
                               SizedBox(width: 5,),
-                              Text('${SocialCubit.get(context).posts[index].likes}',style: TextStyle(color: SocialCubit.get(context).textColor),),
+                              Text('$likes',style: TextStyle(color: SocialCubit.get(context).textColor),),
                               Spacer(),
                               Icon(IconBroken.Arrow___Right_2),
                             ],
@@ -113,7 +120,7 @@ CommentsScreen(this.index,this.postId);
                             ),
                           ),
                         Container(
-                          height: 50,
+                          height: 35,
                           child: TextFormField(
                               controller: commentTextControl,
                               autofocus: true,
@@ -156,6 +163,18 @@ CommentsScreen(this.index,this.postId);
                                                   commentText: commentTextControl.text == ''? null:commentTextControl.text,
                                                   time: TimeOfDay.now().format(context),
                                               );
+                                            SocialCubit.get(context).sendInAppNotification(
+                                              receiverName: post!.name,
+                                              receiverId: post.uId,
+                                              content: 'commented on a post you shared',
+                                              contentId: postId,
+                                              contentKey: 'post'
+                                            );
+                                            SocialCubit.get(context).sendFCMNotification(
+                                                token: user!.token,
+                                                senderName: SocialCubit.get(context).model!.name,
+                                                messageText: '${SocialCubit.get(context).model!.name}' + ' commented on a post you shared',
+                                            );
                                             commentTextControl.clear();
                                             SocialCubit.get(context).popCommentImage();
                                           },
@@ -203,7 +222,7 @@ CommentsScreen(this.index,this.postId);
                     Container(
                         padding: EdgeInsets.symmetric(horizontal: 10,vertical: 8),
                         decoration: BoxDecoration(
-                            color: SocialCubit.get(context).backgroundColor.withOpacity(1),
+                            color: SocialCubit.get(context).unreadMessage,
                             borderRadius: BorderRadius.circular(15)),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,7 +266,7 @@ CommentsScreen(this.index,this.postId);
                 Container(
                     padding: EdgeInsets.symmetric(horizontal: 10,vertical: 8),
                     decoration: BoxDecoration(
-                        color: SocialCubit.get(context).backgroundColor.withOpacity(1),
+                        color: SocialCubit.get(context).unreadMessage,
                         borderRadius: BorderRadius.circular(15)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

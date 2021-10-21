@@ -14,17 +14,10 @@ import 'package:socialapp/remoteNetwork/dioHelper.dart';
 import 'package:socialapp/shared/bloc_observer.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/themes.dart';
-import 'package:socialapp/translations/codegen_loader.g.dart';
 import 'cubit/appCubit.dart';
 import 'modules/loginScreen.dart';
 
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async
-{
-  print('on background message');
-  print(message.data.toString());
-
-  showToast('on background message');
-}
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -84,26 +77,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => AppCubit()),
-        BlocProvider(create: (context) => SocialCubit()..changeMode(fromCache: isDark),),
-      ],
-      child: BlocConsumer<SocialCubit,SocialStates>(
-          listener:(context,state){},
-          builder: (context,state) {
-            return MaterialApp(
-                localizationsDelegates: context.localizationDelegates,
-                supportedLocales: context.supportedLocales,
-                locale: context.locale,
-              debugShowCheckedModeBanner: false,
-              home: startWidget,
-              theme: lightMode(),
-              darkTheme: darkMode(),
-              themeMode:appMode
-            );
-          }
-      ),
+    return BlocProvider(create: (context) => SocialCubit()..changeMode(fromCache: isDark),
+      child:  BlocConsumer<SocialCubit,SocialStates>(
+        listener:(context,state){},
+        builder: (context,state) {
+          return MaterialApp(
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
+            debugShowCheckedModeBanner: false,
+            home: startWidget,
+            theme: lightMode(),
+            darkTheme: darkMode(),
+            themeMode:appMode
+          );
+        }
+    )
     );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -13,6 +14,7 @@ import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/models/commentModel.dart';
 import 'package:socialapp/models/likesModel.dart';
 import 'package:socialapp/models/messageModel.dart';
+import 'package:socialapp/models/notificationModel.dart';
 import 'package:socialapp/models/postModel.dart';
 import 'package:socialapp/models/recentMessagesModel.dart';
 import 'package:socialapp/models/userModel.dart';
@@ -62,9 +64,9 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  UserModel? userModel;
 
-  void getUserData(String uid) {
+  UserModel? userModel;
+  void getUserData(String? uid) {
     emit(UserLoadingState());
     FirebaseFirestore.instance.collection('users').doc(uid).get().then((value) {
       userModel = UserModel.fromJson(value.data());
@@ -487,7 +489,6 @@ class SocialCubit extends Cubit<SocialStates> {
           'likes' : likes.docs.length,
           'comments' : comments.docs.length,
           'postId' : element.id,
-          'likedByMe' : isLikedByMe
         });
       });
       emit(GetPostSuccessState());
@@ -509,6 +510,21 @@ class SocialCubit extends Cubit<SocialStates> {
         }
       });
       emit(GetPostSuccessState());
+    });
+  }
+
+  PostModel? singlePost;
+  void getSinglePost(String? postId){
+    emit(GetPostLoadingState());
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .get()
+        .then((value) {
+          singlePost = PostModel.fromJson(value.data());
+          emit(GetPostSuccessState());
+    }).catchError((error){
+      emit(GetPostErrorState());
     });
   }
 
@@ -898,31 +914,6 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  void sendFCMNotification({
-    required String? token,
-    required String? senderName,
-    String? messageText,
-    String? messageImage,
-  }) {
-    DioHelper.postData(data: {
-      "to": "$token",
-      "notification": {
-        "title": "$senderName",
-        "body":
-            "${messageText != null ? messageText : messageImage != null ? 'Photo' : 'ERROR 404'}",
-        "sound": "default"
-      },
-      "android": {
-        "Priority": "HIGH",
-      },
-      "data": {
-        "type": "order",
-        "id": "87",
-        "click_action": "FLUTTER_NOTIFICATION_CLICK"
-      }
-    });
-  }
-
   File? messageImage;
   int? messageImageWidth;
   int? messageImageHeight;
@@ -1076,29 +1067,7 @@ class SocialCubit extends Cubit<SocialStates> {
     myDocument.docs[0].reference.delete();
   }
 
-  bool showTime = false;
-  void time() {
-    showTime = !showTime;
-    emit(ShowTimeState());
-  }
 
-  // void setMessageId({
-  //   required String? userUid,
-  //   required String? receiverUserUid
-  // }) {
-  //   FirebaseFirestore.instance
-  //       .collection('users')
-  //   .doc(userUid)
-  //   .collection('chats')
-  //   .doc(receiverUserUid)
-  //   .collection('message')
-  //       .get().then((value) {
-  //     value.docs.forEach((element){
-  //       element.reference.update({'messageId': element.id});
-  //     });
-  //     print('hello');
-  //   });
-  // }
   List<MessageModel> chat = [];
   void getChat(String? receiverId) {
     FirebaseFirestore.instance
@@ -1136,12 +1105,127 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+  void sendFCMNotification({
+    required String? token,
+    required String? senderName,
+    String? messageText,
+    String? messageImage,
+  }) {
+    DioHelper.postData(
+        data: {
+          "to": "$token",
+          "notification": {
+            "title": "$senderName",
+            "body":
+            "${messageText != null ? messageText : messageImage != null ? 'Photo' : 'ERROR 404'}",
+            "sound": "default"
+          },
+          "android": {
+            "Priority": "HIGH",
+          },
+          "data": {
+            "type": "order",
+            "id": "87",
+            "click_action": "FLUTTER_NOTIFICATION_CLICK"
+          }
+        });
+    emit(SendMessageSuccessState());
+  }
+
+  void sendInAppNotification({
+    String? contentKey,
+    String? contentId,
+    String? content,
+    String? receiverName,
+    String? receiverId,
+  }){
+    emit(SendInAppNotificationLoadingState());
+    NotificationModel notificationModel = NotificationModel(
+      contentKey:contentKey,
+      contentId:contentId,
+      content:content,
+      senderName: model!.name,
+      receiverName:receiverName,
+      senderId:model!.uID,
+      receiverId:receiverId,
+      senderProfilePicture:model!.profilePic,
+      read: false,
+      dateTime: Timestamp.now(),
+      serverTimeStamp:FieldValue.serverTimestamp(),
+    );
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(receiverId)
+        .collection('notifications')
+        .add(notificationModel.toMap()).then((value) async{
+      await setNotificationId();
+      emit(SendInAppNotificationLoadingState());
+    }).catchError((error) {
+      emit(SendInAppNotificationLoadingState());
+    });
+  }
+
+  List<NotificationModel> notifications = [];
+  void getInAppNotification() async{
+    emit(GetInAppNotificationLoadingState());
+    FirebaseFirestore.instance
+    .collection('users')
+    .doc(model!.uID)
+    .collection('notifications')
+    .orderBy('serverTimeStamp',descending: true)
+    .snapshots()
+    .listen((event) async {
+      notifications = [];
+      event.docs.forEach((element) async {
+        notifications.add(NotificationModel.fromJson(element.data()));
+      });
+      emit(GetInAppNotificationSuccessState());
+    });
+  }
+
+  Future setNotificationId() async{
+    await FirebaseFirestore.instance.collection('users').get()
+    .then((value) {
+      value.docs.forEach((element) async {
+        var notifications = await element.reference.collection('notifications').get();
+        notifications.docs.forEach((notificationsElement) async {
+         await notificationsElement.reference.update({
+            'notificationId' : notificationsElement.id
+          }).then((value) {emit(SetNotificationIdSuccessState());});
+        });
+      });
+    });
+  }
+
+  Future readNotification(String? notificationId) async{
+    await FirebaseFirestore.instance.collection('users')
+        .doc(model!.uID)
+        .collection('notifications')
+        .doc(notificationId)
+        .update({'read' : true}).then((value) {
+          emit(ReadNotificationSuccessState());
+    });
+  }
+
+  void deleteNotification(String? notificationId) async{
+      await FirebaseFirestore.instance.collection('users')
+          .doc(model!.uID)
+          .collection('notifications')
+          .doc(notificationId)
+          .delete().then((value) {
+        emit(ReadNotificationSuccessState());
+      });
+    }
+
+
   bool isDark = false;
   String? darkModeRadio = 'Off';
   Color borderColor = Colors.grey.shade300;
   Color? textFieldColor = Colors.grey[300];
   Color? myMessageColor = Colors.blueAccent;
   Color? messageColor = Colors.grey[300];
+  Color? unreadMessage = Colors.grey[300];
   Color textColor = Colors.black;
   Color backgroundColor = Colors.white;
   IconData? icon = Icons.brightness_4_outlined;
@@ -1166,6 +1250,7 @@ class SocialCubit extends Cubit<SocialStates> {
         textColor = Colors.white;
         backgroundColor = HexColor('#212121').withOpacity(0.8);
         textFieldColor = Colors.grey[900];
+        unreadMessage = Colors.grey[800];
         borderColor = Colors.grey.shade900;
         messageColor = Colors.grey[600];
         myMessageColor = Colors.blueAccent;
@@ -1182,6 +1267,7 @@ class SocialCubit extends Cubit<SocialStates> {
         textFieldColor = Colors.grey[300];
         borderColor = Colors.grey.shade300  ;
         messageColor = Colors.grey[300];
+        unreadMessage = Colors.grey[300];
         myMessageColor = Colors.blueAccent;
         emit(ChangeModeState());
       }
@@ -1228,23 +1314,14 @@ class SocialCubit extends Cubit<SocialStates> {
   ];
 
   int currentIndex = 0;
-
   changeBottomNav(index) {
     currentIndex = index;
     emit(ChangeBottomNavState());
   }
-// void signIn() {
-//   DioHelper.postData(
-//       url: 'login',
-//       token: 'PWdNOJrLk6fyVbu2GQGKfE7FIuP7yhC9Ha168yC1kST4z0EOQXaJZemfI2PpIYL0wBO8I3',
-//       data:
-//       {
-//         'email': 'omarsherifmetwaly@gmail.com',
-//         'password': '25901502',
-//       }).then((value) {
-//     print(value.data);
-//   }).catchError((error) {
-//     print(error.toString());
-//   });
-// }
+
+  bool showTime = false;
+  void time() {
+    showTime = !showTime;
+    emit(ShowTimeState());
+  }
 }

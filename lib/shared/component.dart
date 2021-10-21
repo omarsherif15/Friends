@@ -94,7 +94,7 @@ Widget defaultButton({
       ),
     );
 
-Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
+Widget buildPost(context,state, PostModel postModel, UserModel? model ,{required bool isSingle}) {
   return Card(
     clipBehavior: Clip.antiAliasWithSaveLayer,
     elevation: 8,
@@ -231,7 +231,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                     navigateTo(
                         context,
                         CommentsScreen(
-                            index, postModel.postId));
+                            likes: postModel.likes, postId: postModel.postId,postUid: postModel.uId,));
                   },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -256,6 +256,118 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: myDivider(),
           ),
+          isSingle ? Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    if(postModel.likedByMe == false) {
+                            SocialCubit.get(context).likePost(postModel.postId);
+                            SocialCubit.get(context).sendInAppNotification(
+                                receiverName: postModel.name,
+                                receiverId: postModel.uId,
+                                content: 'likes a post you shared',
+                                contentId: postModel.postId,
+                                contentKey: 'post'
+                            );
+                            SocialCubit.get(context).sendFCMNotification(
+                              token: model!.token,
+                              senderName: SocialCubit.get(context).model!.name,
+                              messageText: '${SocialCubit.get(context).model!.name}' + ' likes a post you shared',
+                            );
+                          }
+                          if(postModel.likedByMe == true)
+                      SocialCubit.get(context).disLikePost(postModel.postId);
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                          IconBroken.Heart,
+                          color:postModel.likedByMe ? Colors.red : Colors.grey
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(LocaleKeys.Like.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    navigateTo(
+                        context,
+                        CommentsScreen(
+                            likes: postModel.likes, postId: postModel.postId,postUid: postModel.uId,));
+                  },
+                  child: isSingle?  Row(
+                    children: [
+                      Icon(
+                          IconBroken.Chat,
+                          color:Colors.amber
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(LocaleKeys.comment.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
+                    ],
+                  ) :Row(
+                    children: [
+                      CircleAvatar(
+                          radius: 18,
+                          backgroundImage: NetworkImage('${model!.profilePic}')),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        LocaleKeys.write_comment.tr(),
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ) ,
+                ),
+              ),
+              SizedBox(width: 15,),
+              Expanded(
+                child: PopupMenuButton(
+                  color: SocialCubit.get(context).backgroundColor.withOpacity(1),
+                  onSelected: (value) {
+                    if(value == 'Share')
+                    {
+                      SocialCubit.get(context).createNewPost(
+                          name: SocialCubit.get(context).model!.name,
+                          profileImage: SocialCubit.get(context).model!.profilePic,
+                          postText: postModel.postText,
+                          postImage: postModel.postImage,
+                          date: getDate() ,
+                          time: TimeOfDay.now().format(context).toString()
+                      ) ;
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                        value: 'Share',
+                        child:
+                        Row(children: [
+                          Icon(Icons.share,color: Colors.green),
+                          SizedBox(width: 8,),
+                          Text(LocaleKeys.shareNow.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
+                        ],))
+                  ],
+                  child: Row(
+                    children: [
+                      Icon(Icons.share, color: Colors.green,),
+                      SizedBox(width: 5,),
+                      Text(LocaleKeys.share.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ):
           Row(
             children: [
               InkWell(
@@ -263,13 +375,13 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                   navigateTo(
                       context,
                       CommentsScreen(
-                          index, postModel.postId));
+                          likes: postModel.likes, postId: postModel.postId,postUid: postModel.uId,));
                 },
                 child: Row(
                   children: [
                     CircleAvatar(
                         radius: 18,
-                        backgroundImage: NetworkImage('${model.profilePic}')),
+                        backgroundImage: NetworkImage('${model!.profilePic}')),
                     SizedBox(
                       width: 15,
                     ),
@@ -278,14 +390,29 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],
-                ),
+                ) ,
               ),
               Spacer(),
               InkWell(
                 onTap: () {
-                  if(postModel.likedByMe == false)
-                    SocialCubit.get(context).likePost(postModel.postId);
-                  if(postModel.likedByMe == true)
+                  SocialCubit.get(context).getUserData(postModel.uId);
+                  UserModel? postUser = SocialCubit.get(context).userModel;
+                  if(postModel.likedByMe == false) {
+                          SocialCubit.get(context).likePost(postModel.postId);
+                          SocialCubit.get(context).sendInAppNotification(
+                              receiverName: postModel.name,
+                              receiverId: postModel.uId,
+                              content: 'likes a post you shared',
+                              contentId: postModel.postId,
+                              contentKey: 'post'
+                          );
+                          SocialCubit.get(context).sendFCMNotification(
+                            token: postUser!.token,
+                            senderName: SocialCubit.get(context).model!.name,
+                            messageText: '${SocialCubit.get(context).model!.name}' + ' likes a post you shared',
+                          );
+                        }
+                        if(postModel.likedByMe == true)
                     SocialCubit.get(context).disLikePost(postModel.postId);
                 },
                 child: Row(
@@ -301,9 +428,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
                   ],
                 ),
               ),
-              SizedBox(
-                width: 10,
-              ),
+              SizedBox(width: 10,),
               PopupMenuButton(
                 color: SocialCubit.get(context).backgroundColor.withOpacity(1),
                 onSelected: (value) {
@@ -339,9 +464,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel model, index) {
               ),
             ],
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: 10,),
         ],
       ),
     ),
@@ -410,7 +533,7 @@ Widget searchBar({
       decoration: InputDecoration(
         border: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
         filled: true,
-        fillColor: SocialCubit.get(context).textFieldColor,
+        fillColor: SocialCubit.get(context).unreadMessage,
         disabledBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
         focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(15)),
         hintText: LocaleKeys.search.tr(),

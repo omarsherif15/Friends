@@ -246,6 +246,21 @@ class SetRecentMessageSuccessState extends SocialStates {}
 class SetRecentMessageErrorState extends SocialStates{}
 ///End of SetRecentMessage State
 
+///SendInAppNotification State
+class SendInAppNotificationLoadingState extends SocialStates{}
+class SendInAppNotificationSuccessState extends SocialStates {}
+class SendInAppNotificationErrorState extends SocialStates{}
+///End of SendInAppNotification State
+
+///GetInAppNotification State
+class GetInAppNotificationLoadingState extends SocialStates{}
+class GetInAppNotificationSuccessState extends SocialStates {}
+class GetInAppNotificationErrorState extends SocialStates{}
+///End of GetInAppNotification State
+
+class ReadNotificationSuccessState extends SocialStates{}
+class SetNotificationIdSuccessState extends SocialStates {}
+
 ///CommentPost State
 class CommentPostSuccessState extends SocialStates {}
 class PlusCommentSuccessState extends SocialStates {}

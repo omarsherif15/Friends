@@ -29,7 +29,7 @@ class ChatScreen extends StatelessWidget {
         print('userModel is null');
       else if (recentMessagesModel == null) print('recentModel is null');
       SocialCubit.get(context).getChat(uId);
-      SocialCubit.get(context).getUserData(uId!);
+      SocialCubit.get(context).getUserData(uId);
       return BlocConsumer<SocialCubit, SocialStates>(
           listener: (context, state) {},
           builder: (context, state) {

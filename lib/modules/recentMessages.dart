@@ -39,6 +39,7 @@ class RecentMessages extends StatelessWidget {
           return WillPopScope(
             onWillPop: willPopCallback,
             child: Scaffold(
+              backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
               body: SmartRefresher(
                 controller: refreshMessages,
                 onRefresh: onRefresh,

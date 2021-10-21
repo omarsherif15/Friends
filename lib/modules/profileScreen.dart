@@ -305,7 +305,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
-                            return buildPost(context, state, userPosts[index], userModel, index);
+                            return buildPost(context, state, userPosts[index], userModel,isSingle: false);
                           },
                           separatorBuilder: (context, index) => SizedBox(
                             height: 10,

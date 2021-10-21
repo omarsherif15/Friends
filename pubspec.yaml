@@ -30,16 +30,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   dio: ^4.0.0
   intl: ^0.17.0
-  sqflite: ^2.0.0+3
   bloc: ^7.0.0
   flutter_bloc: ^7.0.0
-  webview_flutter: ^2.0.10
   shared_preferences: ^2.0.6
   hexcolor: ^2.0.3
-  smooth_page_indicator: ^1.0.0+2
   fluttertoast: ^8.0.8
   flutter_conditional_rendering: ^2.0.0
-  carousel_slider: ^4.0.0
   firebase_core: ^1.5.0
   firebase_auth: ^3.0.2
   cloud_firestore: ^2.5.3

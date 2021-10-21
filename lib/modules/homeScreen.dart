@@ -182,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 physics: NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) =>
-                                    buildPost(context, state, posts[index], userModel, index),
+                                    buildPost(context, state, posts[index], userModel,isSingle: false),
                                 separatorBuilder: (context, index) => Container(
                                   height: 10,
                                 ),
