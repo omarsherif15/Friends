@@ -45,7 +45,11 @@ class SocialLayout extends StatefulWidget {
           return Scaffold(
             appBar: tabController.index == 0?
             AppBar(
-                      title: Text(LocaleKeys.newsFeeds.tr(),),
+              titleSpacing: 0,
+                      title: SocialCubit.get(context).isDark?
+                      Image(image: AssetImage('assets/images/Dark Logo.png'),width: 200,height: 60,fit: BoxFit.cover,)
+                          :
+                      Image(image: AssetImage('assets/images/Light Logo.png'),width: 200,height: 60,fit: BoxFit.cover,),
                       automaticallyImplyLeading: false,
                       elevation: 8,
                       actions: [

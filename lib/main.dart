@@ -1,14 +1,17 @@
 import 'dart:io';
 
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
+import 'package:socialapp/modules/splashScreen.dart';
 import 'package:socialapp/remoteNetwork/cacheHelper.dart';
 import 'package:socialapp/remoteNetwork/dioHelper.dart';
 import 'package:socialapp/shared/bloc_observer.dart';
@@ -86,7 +89,13 @@ class MyApp extends StatelessWidget {
               supportedLocales: context.supportedLocales,
               locale: context.locale,
             debugShowCheckedModeBanner: false,
-            home: startWidget,
+            home: AnimatedSplashScreen(
+                splash: SplashScreen(isDark!),
+                backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
+                nextScreen: startWidget,
+                splashTransition: SplashTransition.scaleTransition,
+                animationDuration: Duration(milliseconds:2000),
+            ),
             theme: lightMode(),
             darkTheme: darkMode(),
             themeMode:appMode
