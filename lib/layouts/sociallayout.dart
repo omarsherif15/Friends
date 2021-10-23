@@ -143,7 +143,6 @@ class SocialLayoutState extends State<SocialLayout>
   Widget tabBarBadge({required IconData icon, required int count}) {
     return Badge(
       badgeContent: Text('$count'),
-      badgeColor: Colors.blueAccent,
       animationType: BadgeAnimationType.scale,
       child: Icon(icon),
     );
