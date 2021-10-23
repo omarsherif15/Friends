@@ -16,7 +16,6 @@ ThemeData lightMode () => ThemeData(
       fontSize: 23,
     ),
     iconTheme: IconThemeData(color: Colors.black),
-    backwardsCompatibility: false,
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
       statusBarColor: Colors.transparent,

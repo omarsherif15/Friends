@@ -9,7 +9,6 @@ import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/models/recentMessagesModel.dart';
 import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/chatScreen.dart';
-import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/translations/local_keys.g.dart';

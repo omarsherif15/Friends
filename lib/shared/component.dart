@@ -8,7 +8,6 @@ import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/CommentsScreen.dart';
 import 'package:socialapp/modules/LikesScreen.dart';
 import 'package:socialapp/modules/friendsProfileScreen.dart';
-import 'package:socialapp/modules/newPostScreen.dart';
 import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';
 import 'package:socialapp/translations/local_keys.g.dart';
@@ -457,7 +456,6 @@ Widget buildPost(context,state, PostModel postModel, UserModel? model ,GlobalKey
                 onTap: () async {
                   SocialCubit.get(context).getUserData(postModel.uId);
                   UserModel? postUser = SocialCubit.get(context).userModel;
-                  bool aa = await SocialCubit.get(context).likedByMe(postModel.postId);
                   if(postModel.uId != model.uID) {
                           SocialCubit.get(context).sendInAppNotification(
                               receiverName: postModel.name,

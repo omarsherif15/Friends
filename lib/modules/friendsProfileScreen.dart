@@ -7,7 +7,6 @@ import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/models/postModel.dart';
 import 'package:socialapp/models/userModel.dart';
-import 'package:socialapp/modules/searchScreen.dart';
 import 'package:socialapp/shared/component.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/iconBroken.dart';

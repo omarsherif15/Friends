@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
-import 'package:socialapp/models/userModel.dart';
 import 'package:socialapp/modules/friendsProfileScreen.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/translations/local_keys.g.dart';
