@@ -28,6 +28,7 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
     return Builder(
       builder: (context) {
         SocialCubit.get(context).getInAppNotification();
+        SocialCubit.get(context).getUnReadRecentMessagesCount();
         return BlocConsumer<SocialCubit, SocialStates>(
           listener: (context, state) {},
           builder: (context, state) {

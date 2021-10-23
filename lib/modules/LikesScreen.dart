@@ -9,8 +9,6 @@ import 'package:socialapp/modules/friendsProfileScreen.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/translations/local_keys.g.dart';
 
-import 'chatScreen.dart';
-
 class WhoLikedScreen extends StatelessWidget {
 String ?postId;
 WhoLikedScreen(this.postId);

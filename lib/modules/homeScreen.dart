@@ -27,8 +27,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
-        SocialCubit.get(context).getPosts();
         SocialCubit.get(context).getMyData();
+        SocialCubit.get(context).getPosts();
+        if(SocialCubit.get(context).model != null) {
+          SocialCubit.get(context).getUnReadNotificationsCount();
+          SocialCubit.get(context).getUnReadRecentMessagesCount();
+          SocialCubit.get(context).getFriendRequest();
+        }
         return BlocConsumer<SocialCubit, SocialStates>(
           listener: (context, state) {},
           builder: (context, state) {
@@ -37,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return userModel == null  || posts.length == 0
                 ? Container(
                     child: Center(
-                    child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(),
                   ))
                 : WillPopScope(
                   onWillPop: willPop,
@@ -216,7 +221,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> onRefresh() async {
     await Future.delayed(Duration(seconds: 1)).then((value) {
+      SocialCubit.get(context).getMyData();
       SocialCubit.get(context).getPosts();
+      SocialCubit.get(context).getUnReadNotificationsCount();
+      SocialCubit.get(context).getUnReadRecentMessagesCount();
+      SocialCubit.get(context).getFriendRequest();
       refreshController1.refreshCompleted();
     });
   }

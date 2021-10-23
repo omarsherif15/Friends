@@ -29,7 +29,7 @@ class _UsersScreenState extends State<UsersScreen> {
   Widget build(BuildContext context) {
     return Builder(
         builder: (context) {
-          SocialCubit.get(context).getFriendRequest(SocialCubit.get(context).model!.uID);
+          SocialCubit.get(context).getFriendRequest();
           SocialCubit.get(context).getAllUsers();
           SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
           return BlocConsumer<SocialCubit, SocialStates>(
@@ -135,7 +135,7 @@ class _UsersScreenState extends State<UsersScreen> {
   Future<void> onRefresh() async {
     await Future.delayed(Duration(seconds: 1));
     SocialCubit.get(context).getMyData();
-    SocialCubit.get(context).getFriendRequest(SocialCubit.get(context).model!.uID);
+    SocialCubit.get(context).getFriendRequest();
     SocialCubit.get(context).getAllUsers();
     SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
     refreshController.refreshCompleted();

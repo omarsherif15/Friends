@@ -74,7 +74,7 @@ class LoginScreen extends StatelessWidget {
                       SocialCubit.get(context).changeLocalToEn(context);
                   } ,
                   color: SocialCubit.get(context).backgroundColor.withOpacity(1),
-                  icon: Icon(Icons.language),
+                  icon: Icon(Icons.language,color: Colors.white,),
                   itemBuilder: (context) =>  [
                     PopupMenuItem(
                       value: 'Arabic',
@@ -191,7 +191,6 @@ class LoginScreen extends StatelessWidget {
                                     )
                                 ),
                               ),
-                              SizedBox(height: 20,),
                               state is LoginLoadingState ?
                               Center(child: CircularProgressIndicator())
                                   :defaultButton(

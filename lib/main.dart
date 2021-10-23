@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:bloc/bloc.dart';
@@ -7,7 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
@@ -17,7 +15,6 @@ import 'package:socialapp/remoteNetwork/dioHelper.dart';
 import 'package:socialapp/shared/bloc_observer.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/themes.dart';
-import 'cubit/appCubit.dart';
 import 'modules/loginScreen.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
@@ -90,7 +87,7 @@ class MyApp extends StatelessWidget {
               locale: context.locale,
             debugShowCheckedModeBanner: false,
             home: AnimatedSplashScreen(
-                splash: SplashScreen(isDark!),
+                splash: SplashScreen(),
                 backgroundColor: SocialCubit.get(context).backgroundColor.withOpacity(1),
                 nextScreen: startWidget,
                 splashTransition: SplashTransition.scaleTransition,

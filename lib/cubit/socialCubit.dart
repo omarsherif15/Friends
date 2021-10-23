@@ -28,7 +28,6 @@ import 'package:socialapp/modules/usersScreen.dart';
 import 'package:socialapp/remoteNetwork/cacheHelper.dart';
 import 'package:socialapp/remoteNetwork/dioHelper.dart';
 import 'package:socialapp/shared/constants.dart';
-import 'package:socialapp/shared/styles/iconBroken.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class SocialCubit extends Cubit<SocialStates> {
@@ -48,7 +47,7 @@ class SocialCubit extends Cubit<SocialStates> {
 
   UserModel? model;
 
-  void getMyData() async {
+  Future getMyData() async {
     emit(UserLoadingState());
     FirebaseFirestore.instance
         .collection('users')
@@ -64,6 +63,18 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+
+  Future getHomeData() async{
+   await getMyData();
+      getPosts();
+      await getUnReadNotificationsCount();
+      await getUnReadRecentMessagesCount();
+      getFriends(model!.uID);
+      getFriendRequest();
+      getUserPosts(model!.uID);
+      getInAppNotification();
+
+  }
 
   UserModel? userModel;
   void getUserData(String? uid) {
@@ -264,8 +275,7 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   List<UserModel> friendRequests = [];
-
-  void getFriendRequest(String? userUid) {
+  void getFriendRequest() {
     emit(GetFriendLoadingState());
     FirebaseFirestore.instance
         .collection('users')
@@ -1139,6 +1149,25 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+  int unReadRecentMessagesCount = 0;
+  Future<int> getUnReadRecentMessagesCount() async{
+    FirebaseFirestore.instance.collection('users')
+        .doc(model!.uID)
+        .collection('recentMsg')
+        .snapshots()
+    .listen((event) {
+      unReadRecentMessagesCount = 0;
+      for(int i = 0; i < event.docs.length; i++)
+      {
+        if(event.docs[i]['read'] == false)
+          unReadRecentMessagesCount++;
+      }
+      emit(ReadNotificationSuccessState());
+      print("UnRead: " + '$unReadRecentMessagesCount');
+    });
+    return unReadRecentMessagesCount;
+  }
+
   void sendFCMNotification({
     required String? token,
     required String? senderName,
@@ -1216,6 +1245,26 @@ class SocialCubit extends Cubit<SocialStates> {
       });
       emit(GetInAppNotificationSuccessState());
     });
+  }
+
+  int unReadNotificationsCount = 0;
+  Future<int> getUnReadNotificationsCount() async{
+     FirebaseFirestore.instance.collection('users')
+        .doc(model!.uID)
+        .collection('notifications')
+     .snapshots()
+     .listen((event) {
+       unReadNotificationsCount = 0;
+       for(int i = 0; i < event.docs.length; i++)
+       {
+         if(event.docs[i]['read'] == false)
+           unReadNotificationsCount++;
+       }
+       emit(ReadNotificationSuccessState());
+       print("UnRead: " + '$unReadNotificationsCount');
+     });
+
+    return unReadNotificationsCount;
   }
 
   Future setNotificationId() async{
@@ -1318,26 +1367,7 @@ class SocialCubit extends Cubit<SocialStates> {
     emit(ChangeActiveRadio());
   }
 
-  List<Widget> tabBar = [
-    Tab(
-      icon: Icon(Icons.home_outlined),
-    ),
-    Tab(
-      icon: Icon(Icons.group_outlined),
-    ),
-    Tab(
-      icon: Icon(IconBroken.Chat),
-    ),
-    Tab(
-      icon: Icon(IconBroken.Profile),
-    ),
-    Tab(
-      icon: Icon(IconBroken.Notification),
-    ),
-    Tab(
-      icon: Icon(Icons.menu),
-    )
-  ];
+
 
   List<Widget> screens = [
     HomeScreen(),

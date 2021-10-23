@@ -22,11 +22,14 @@ class RecentMessages extends StatelessWidget {
     return Builder(builder: (context) {
       SocialCubit.get(context).getMyData();
       SocialCubit.get(context).getRecentMessages();
+      SocialCubit.get(context).getUnReadRecentMessagesCount();
       SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
+
       Future<void> onRefresh() async {
         await Future.delayed(Duration(seconds: 1));
         SocialCubit.get(context).getMyData();
         SocialCubit.get(context).getRecentMessages();
+        SocialCubit.get(context).getUnReadRecentMessagesCount();
         SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
         refreshMessages.refreshCompleted();
       }

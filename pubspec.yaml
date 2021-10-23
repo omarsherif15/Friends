@@ -55,6 +55,7 @@ dependencies:
   google_fonts: ^2.1.0
   expansion_widget: ^0.0.2
   animated_splash_screen: ^1.1.0
+  badges: ^2.0.1
 
 dev_dependencies:
   flutter_test:
