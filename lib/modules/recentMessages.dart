@@ -21,14 +21,12 @@ class RecentMessages extends StatelessWidget {
     return Builder(builder: (context) {
       SocialCubit.get(context).getMyData();
       SocialCubit.get(context).getRecentMessages();
-      SocialCubit.get(context).getUnReadRecentMessagesCount();
       SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
 
       Future<void> onRefresh() async {
         await Future.delayed(Duration(seconds: 1));
         SocialCubit.get(context).getMyData();
         SocialCubit.get(context).getRecentMessages();
-        SocialCubit.get(context).getUnReadRecentMessagesCount();
         SocialCubit.get(context).getFriends(SocialCubit.get(context).model!.uID);
         refreshMessages.refreshCompleted();
       }
@@ -108,7 +106,7 @@ class RecentMessages extends StatelessWidget {
               floatingActionButton: FloatingActionButton(
                   backgroundColor: Colors.blueAccent,
                   onPressed: () {
-                   SocialLayoutState.tabController.animateTo(1,duration: Duration(seconds: 1),curve: Curves.fastLinearToSlowEaseIn);
+                    SocialLayoutState.tabController.animateTo(1,duration: Duration(seconds: 1),curve: Curves.fastLinearToSlowEaseIn);
                   },
                   child: Icon(Icons.chat,)),
             ),

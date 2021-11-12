@@ -10,23 +10,37 @@ import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/translations/local_keys.g.dart';
 import 'package:uuid/uuid.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   final UserModel? userModel;
   final RecentMessagesModel? recentMessagesModel;
   String? uId;
 
   ChatScreen({this.userModel, this.recentMessagesModel, this.uId});
 
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+
+class _ChatScreenState extends State<ChatScreen> {
   var messageTextControl = TextEditingController();
+
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+  Scrollable.ensureVisible(context);
+  super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
-      if (userModel == null)
+      if (widget.userModel == null)
         print('userModel is null');
-      else if (recentMessagesModel == null) print('recentModel is null');
-      SocialCubit.get(context).getChat(uId);
-      SocialCubit.get(context).getUserData(uId);
+      else if (widget.recentMessagesModel == null) print('recentModel is null');
+      SocialCubit.get(context).getChat(widget.uId);
+      SocialCubit.get(context).getUserData(widget.uId);
       return BlocConsumer<SocialCubit, SocialStates>(
           listener: (context, state) {},
           builder: (context, state) {
@@ -68,6 +82,7 @@ class ChatScreen extends StatelessWidget {
                         children: [
                           Expanded(
                               child: ListView.separated(
+                                controller: scrollController,
                                   physics: BouncingScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     var chat = SocialCubit.get(context).chat[index];
@@ -155,7 +170,7 @@ class ChatScreen extends StatelessWidget {
                                               if(messageImage == null)
                                                 SocialCubit.get(context).sendMessage(
                                                   messageId: uuid.v4(),
-                                                  receiverId: uId,
+                                                  receiverId: widget.uId,
                                                   messageText: messageTextControl.text,
                                                   date: getDate(),
                                                   time: TimeOfDay.now().format(context).toString(),
@@ -163,7 +178,7 @@ class ChatScreen extends StatelessWidget {
                                               else
                                                 SocialCubit.get(context).uploadMessagePic(
                                                     messageId: uuid.v4(),
-                                                    receiverId: uId,
+                                                    receiverId: widget.uId,
                                                     messageText: messageTextControl.text == '' ? null : messageTextControl.text,
                                                     date: getDate(),
                                                     time: TimeOfDay.now().format(context).toString(),

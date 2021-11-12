@@ -114,11 +114,10 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
     return InkWell(
       onTap: () {
         if (notifications.contentKey == 'friendRequestAccepted') {
-          SocialCubit.get(context)
-              .readNotification(notifications.notificationId);
+          SocialCubit.get(context).readNotification(notifications.notificationId);
           navigateTo(context, FriendsProfileScreen(notifications.contentId));
         }
-        else if (notifications.contentKey == 'post') {
+        else if (notifications.contentKey == 'likePost' || notifications.contentKey == 'commentPost'  ) {
           SocialCubit.get(context)
               .readNotification(notifications.notificationId);
           navigateTo(
@@ -141,10 +140,20 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
             //mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                backgroundImage:
-                    NetworkImage('${notifications.senderProfilePicture}'),
-                radius: 34,
+              Stack(
+                alignment: AlignmentDirectional.bottomEnd,
+                children: [
+                  CircleAvatar(
+                    backgroundImage:
+                        NetworkImage('${notifications.senderProfilePicture}'),
+                    radius: 34,
+                  ),
+                  CircleAvatar(
+                    backgroundColor: Colors.blueAccent.shade200,
+                    radius: 15,
+                    child: Icon(SocialCubit.get(context).notificationContentIcon(notifications.contentKey)),
+                  ),
+                ],
               ),
               SizedBox(
                 width: 10,
@@ -165,7 +174,7 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold)),
                         TextSpan(
-                            text: '${notifications.content}',
+                            text: SocialCubit.get(context).notificationContent(notifications.contentKey),
                             style: TextStyle(
                                 color: SocialCubit.get(context).textColor,
                                 fontSize: 15))
@@ -210,7 +219,8 @@ class NotificationScreenState extends State<NotificationScreen> with SingleTicke
                                     height: 10,
                                   ),
                                   Text('${notifications.senderName} ' +
-                                      '${notifications.content}',textAlign: TextAlign.center,),
+                                      '${SocialCubit.get(context).notificationContent(notifications.contentKey)}',
+                                    textAlign: TextAlign.center,style: TextStyle(color: SocialCubit.get(context).textColor),),
                                   SizedBox(
                                     height: 15,
                                   ),

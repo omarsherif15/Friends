@@ -43,11 +43,11 @@ class FriendsProfileScreen extends StatelessWidget {
         listener: (context,state){},
         builder: (context ,state) {
           UserModel? friendsModel = SocialCubit.get(context).friendsProfile;
-          List<PostModel> posts = SocialCubit.get(context).userPosts;
+          List<PostModel>? posts = SocialCubit.get(context).userPosts;
           List<UserModel>? friends = SocialCubit.get(context).friends;
           return Conditional.single(
               context: context,
-              conditionBuilder: (context) => state is GetAllUsersLoadingState || friendsModel == null,
+              conditionBuilder: (context) => friendsModel == null || posts == null,
               widgetBuilder: (context) => Center(child: CircularProgressIndicator(),),
               fallbackBuilder:(context) => Scaffold(
                 key: scaffoldKey,
@@ -125,7 +125,7 @@ class FriendsProfileScreen extends StatelessWidget {
                                     Expanded(
                                       child: Column(
                                         children: [
-                                          Text('${posts.length}',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),),
+                                          Text('${posts!.length}',style: TextStyle(color: SocialCubit.get(context).textColor,fontWeight: FontWeight.bold),),
                                           SizedBox(height: 5,),
                                           Text(LocaleKeys.posts.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
                                         ],

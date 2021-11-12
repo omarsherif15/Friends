@@ -1,5 +1,6 @@
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,29 +17,24 @@ import 'package:socialapp/shared/bloc_observer.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:socialapp/shared/styles/themes.dart';
 import 'modules/loginScreen.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
-  FirebaseMessaging.onMessage.listen((event)
-  {
-    print('on message');
-    print(event.data.toString());
 
-    showToast('on message');
-  });
-
+  //when the app is opened
+  FirebaseMessaging.onMessage.listen((event) {});
   // when click on notification to open app
-  FirebaseMessaging.onMessageOpenedApp.listen((event)
-  {
-
-  });
-
-  // background fcm
+  FirebaseMessaging.onMessageOpenedApp.listen((event) {});
+  // background notification
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   Bloc.observer = MyBlocObserver();
   await DioHelper.init();
   await CacheHelper.init();
@@ -53,6 +49,10 @@ Future<void> main() async {
       widget = SocialLayout(0);
     else
       widget = LoginScreen();
+
+    if(kDebugMode)
+      await FirebaseCrashlytics.instance
+          .setCrashlyticsCollectionEnabled(false);
 
   runApp(
       EasyLocalization(

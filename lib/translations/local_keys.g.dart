@@ -93,5 +93,9 @@ abstract class  LocaleKeys {
   static const Donthaveanaccount = 'Donthaveanaccount';
   static const seeYourProfile = 'seeYourProfile';
   static const newsFeeds = 'newsFeeds';
+  static const likePost = 'likePost';
+  static const commentPost = 'commentPost';
+  static const friendRequestNotify = 'friendRequestNotify';
+  static const friendRequestAccepted = 'friendRequestAccepted';
 
 }

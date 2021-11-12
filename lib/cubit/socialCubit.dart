@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -29,6 +28,8 @@ import 'package:socialapp/remoteNetwork/cacheHelper.dart';
 import 'package:socialapp/remoteNetwork/dioHelper.dart';
 import 'package:socialapp/shared/constants.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:socialapp/shared/styles/iconBroken.dart';
+import 'package:socialapp/translations/local_keys.g.dart';
 
 class SocialCubit extends Cubit<SocialStates> {
   SocialCubit() : super(InitialState());
@@ -52,22 +53,23 @@ class SocialCubit extends Cubit<SocialStates> {
     FirebaseFirestore.instance
         .collection('users')
         .doc(uId!)
-        .get()
-        .then((value) async {
+        .snapshots()
+        .listen((value) async {
       model = UserModel.fromJson(value.data());
       setUserToken();
+      getUnReadRecentMessagesCount();
+      getUnReadNotificationsCount();
+      getFriendRequest();
       print(model!.uID);
       emit(UserSuccessState());
-    }).catchError((error) {
-      emit(UserErrorState());
     });
   }
 
 
-  Future getHomeData() async{
+  Future getHomeData(context) async{
    await getMyData();
       getPosts();
-      await getUnReadNotificationsCount();
+      await getUnReadRecentMessagesCount();
       await getUnReadRecentMessagesCount();
       getFriends(model!.uID);
       getFriendRequest();
@@ -391,6 +393,16 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
+  void deleteAccount(context) async{
+    await FirebaseAuth.instance.currentUser!.delete()
+        .then((value) async {
+      await FirebaseMessaging.instance.deleteToken();
+      await FirebaseFirestore.instance.collection('users').doc(uId!).delete();
+      CacheHelper.removeData('uId');
+      navigateAndKill(context, LoginScreen());
+            });
+  }
+
   void popPostImage() {
     postImage = null;
     emit(DeletePostPicState());
@@ -455,7 +467,6 @@ class SocialCubit extends Cubit<SocialStates> {
         postText: postText,
         postImage: postImage,
         likes: 0,
-        likedByMe: false,
         comments: 0,
         date: date,
         time: time,
@@ -471,7 +482,12 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  Future<bool> likedByMe (postId) async{
+  Future<bool> likedByMe ({
+    context,
+    String? postId,
+    PostModel? postModel,
+    UserModel? postUser
+}) async{
     emit(LikedByMeCheckedLoadingState());
     bool isLikedByMe = false;
     FirebaseFirestore.instance
@@ -487,7 +503,12 @@ class SocialCubit extends Cubit<SocialStates> {
         }
       });
         if(isLikedByMe == false)
-          likePost(postId);
+          likePost(
+              postId : postId,
+            context: context,
+            postModel: postModel,
+            postUser: postUser
+          );
        print(isLikedByMe);
       emit(LikedByMeCheckedSuccessState());
     });
@@ -517,7 +538,7 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  List<PostModel> userPosts = [];
+  List<PostModel>? userPosts = [];
 
   void getUserPosts(String? userId) {
     FirebaseFirestore.instance
@@ -528,7 +549,7 @@ class SocialCubit extends Cubit<SocialStates> {
       userPosts = [];
       event.docs.forEach((element) {
         if (element.data()['uId'] == userId) {
-          userPosts.add(PostModel.fromJson(element.data()));
+          userPosts?.add(PostModel.fromJson(element.data()));
         }
       });
       emit(GetUserPostSuccessState());
@@ -568,7 +589,6 @@ class SocialCubit extends Cubit<SocialStates> {
     String? postText,
     String? postImage,
     int? likes,
-    required bool likedByMe,
     int? comments,
     String? date,
     String? time,
@@ -582,7 +602,6 @@ class SocialCubit extends Cubit<SocialStates> {
         postText: postText,
         postImage: postImage,
         likes: likes,
-        likedByMe: likedByMe,
         comments: comments,
         date: date,
         time: time,
@@ -605,7 +624,6 @@ class SocialCubit extends Cubit<SocialStates> {
     String? profilePicture,
     String? postText,
     int? likes,
-    required bool likedByMe,
     int? comments,
     String? date,
     String? time,
@@ -624,7 +642,6 @@ class SocialCubit extends Cubit<SocialStates> {
           postImage: value,
           postText: postText,
           likes: likes,
-          likedByMe:likedByMe ,
           comments: comments,
           time: time,
           date: date,
@@ -641,7 +658,12 @@ class SocialCubit extends Cubit<SocialStates> {
     });
   }
 
-  void likePost(String? postId) {
+  void likePost({
+    context,
+    String? postId,
+    PostModel? postModel,
+    UserModel? postUser
+  }) {
     LikesModel likesModel = LikesModel(
         uId: model!.uID,
         name: model!.name,
@@ -655,6 +677,19 @@ class SocialCubit extends Cubit<SocialStates> {
         .set(likesModel.toMap())
         .then((value) {
           getPosts();
+          if(postModel!.uId != model!.uID) {
+            SocialCubit.get(context).sendInAppNotification(
+                receiverName: postModel.name,
+                receiverId: postModel.uId,
+                contentId: postModel.postId,
+                contentKey: 'likePost'
+            );
+            SocialCubit.get(context).sendFCMNotification(
+              token: postUser!.token,
+              senderName: SocialCubit.get(context).model!.name,
+              messageText: '${SocialCubit.get(context).model!.name}' + ' likes a post you shared',
+            );
+          }
       emit(LikePostSuccessState());
     }).catchError((error) {
       print(error.toString());
@@ -1233,12 +1268,12 @@ class SocialCubit extends Cubit<SocialStates> {
   void getInAppNotification() async{
     emit(GetInAppNotificationLoadingState());
     FirebaseFirestore.instance
-    .collection('users')
-    .doc(model!.uID)
-    .collection('notifications')
-    .orderBy('serverTimeStamp',descending: true)
-    .snapshots()
-    .listen((event) async {
+        .collection('users')
+        .doc(model!.uID)
+        .collection('notifications')
+        .orderBy('serverTimeStamp',descending: true)
+        .snapshots()
+        .listen((event) async {
       notifications = [];
       event.docs.forEach((element) async {
         notifications.add(NotificationModel.fromJson(element.data()));
@@ -1249,31 +1284,31 @@ class SocialCubit extends Cubit<SocialStates> {
 
   int unReadNotificationsCount = 0;
   Future<int> getUnReadNotificationsCount() async{
-     FirebaseFirestore.instance.collection('users')
+    FirebaseFirestore.instance.collection('users')
         .doc(model!.uID)
         .collection('notifications')
-     .snapshots()
-     .listen((event) {
-       unReadNotificationsCount = 0;
-       for(int i = 0; i < event.docs.length; i++)
-       {
-         if(event.docs[i]['read'] == false)
-           unReadNotificationsCount++;
-       }
-       emit(ReadNotificationSuccessState());
-       print("UnRead: " + '$unReadNotificationsCount');
-     });
+        .snapshots()
+        .listen((event) {
+      unReadNotificationsCount = 0;
+      for(int i = 0; i < event.docs.length; i++)
+      {
+        if(event.docs[i]['read'] == false)
+          unReadNotificationsCount++;
+      }
+      emit(ReadNotificationSuccessState());
+      print("UnRead: " + '$unReadNotificationsCount');
+    });
 
     return unReadNotificationsCount;
   }
 
   Future setNotificationId() async{
     await FirebaseFirestore.instance.collection('users').get()
-    .then((value) {
+        .then((value) {
       value.docs.forEach((element) async {
         var notifications = await element.reference.collection('notifications').get();
         notifications.docs.forEach((notificationsElement) async {
-         await notificationsElement.reference.update({
+          await notificationsElement.reference.update({
             'notificationId' : notificationsElement.id
           });
         });
@@ -1288,19 +1323,41 @@ class SocialCubit extends Cubit<SocialStates> {
         .collection('notifications')
         .doc(notificationId)
         .update({'read' : true}).then((value) {
-          emit(ReadNotificationSuccessState());
+      emit(ReadNotificationSuccessState());
     });
   }
 
   void deleteNotification(String? notificationId) async{
-      await FirebaseFirestore.instance.collection('users')
-          .doc(model!.uID)
-          .collection('notifications')
-          .doc(notificationId)
-          .delete().then((value) {
-        emit(ReadNotificationSuccessState());
-      });
-    }
+    await FirebaseFirestore.instance.collection('users')
+        .doc(model!.uID)
+        .collection('notifications')
+        .doc(notificationId)
+        .delete().then((value) {
+      emit(ReadNotificationSuccessState());
+    });
+  }
+
+  String notificationContent (String? contentKey){
+    if(contentKey == 'likePost')
+      return LocaleKeys.likePost.tr();
+    else if (contentKey == 'commentPost')
+      return  LocaleKeys.commentPost.tr();
+    else if (contentKey == 'friendRequestAccepted')
+      return  LocaleKeys.friendRequestAccepted.tr();
+    else
+      return  LocaleKeys.friendRequestNotify.tr();
+  }
+
+  IconData notificationContentIcon (String? contentKey){
+    if(contentKey == 'likePost')
+      return IconBroken.Heart;
+    else if (contentKey == 'commentPost')
+      return IconBroken.Chat;
+    else if (contentKey == 'friendRequestAccepted')
+      return  Icons.person;
+    else
+      return  Icons.person;
+  }
 
 
   bool isDark = false;

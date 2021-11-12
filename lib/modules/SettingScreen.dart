@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
 import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
@@ -58,7 +59,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                   child: Container(
                     padding: const EdgeInsets.all(15),
-                    color: SocialCubit.get(context).backgroundColor,
+                    color: SocialCubit.get(context).isDark? HexColor('#212121').withOpacity(0.8) : Colors.grey.shade300,
                     child: Row(
                       //crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -110,7 +111,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Padding(
@@ -121,12 +122,12 @@ class _SettingScreenState extends State<SettingScreen> {
                         fontSize: 20, color: SocialCubit.get(context).textColor),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Container(
                   padding: const EdgeInsets.all(15),
-                  color: SocialCubit.get(context).backgroundColor,
+                  color: SocialCubit.get(context).isDark? HexColor('#212121').withOpacity(0.8) : Colors.grey.shade300,
                   child: Column(
                     children: [
                       InkWell(
@@ -144,7 +145,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               ),
                               backgroundColor: Colors.grey[400],
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               LocaleKeys.personalInfo.tr(),
                               style: TextStyle(
@@ -157,7 +158,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       InkWell(
@@ -174,7 +175,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               ),
                               backgroundColor: Colors.grey[400],
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               LocaleKeys.changePassword.tr(),
                               style: TextStyle(
@@ -187,7 +188,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       InkWell(
@@ -206,7 +207,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               ),
                               backgroundColor: Colors.grey[400],
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               LocaleKeys.Notifications.tr(),
                               style: TextStyle(
@@ -222,7 +223,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Padding(
@@ -233,12 +234,12 @@ class _SettingScreenState extends State<SettingScreen> {
                         fontSize: 20, color: SocialCubit.get(context).textColor),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Container(
                   padding: const EdgeInsets.all(15),
-                  color: SocialCubit.get(context).backgroundColor,
+                  color: SocialCubit.get(context).isDark? HexColor('#212121').withOpacity(0.8) : Colors.grey.shade300,
                   child: Column(
                     children: [
                       ExpansionWidget(
@@ -256,7 +257,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     ),
                                     backgroundColor: Colors.grey[400],
                                   ),
-                                  SizedBox(width: 10),
+                                  const SizedBox(width: 10),
                                   Text(
                                     LocaleKeys.language.tr(),
                                     style: TextStyle(
@@ -316,7 +317,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               ],),
                           )
                       ),
-                      SizedBox(height: 15,),
+                      const SizedBox(height: 15,),
                       ExpansionWidget(
                           titleBuilder: (double animationValue, _, bool isExpand, toogleFunction) {
                             return InkWell(
@@ -332,7 +333,7 @@ class _SettingScreenState extends State<SettingScreen> {
                                     ),
                                     backgroundColor: Colors.grey[400],
                                   ),
-                                  SizedBox(width: 10),
+                                  const SizedBox(width: 10),
                                   Text(
                                     LocaleKeys.darkMode.tr(),
                                     style: TextStyle(
@@ -386,7 +387,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               ],),
                           )
                       ),
-                      SizedBox(height: 15,),
+                      const SizedBox(height: 15,),
                       InkWell(
                         onTap: () {},
                         child: Row(
@@ -399,7 +400,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               ),
                               backgroundColor: Colors.grey[400],
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               LocaleKeys.help.tr(),
                               style: TextStyle(
@@ -412,7 +413,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 15,),
+                      const SizedBox(height: 15,),
                       InkWell(
                         onTap: () {
                           navigateTo(context, AboutMe());
@@ -427,7 +428,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               ),
                               backgroundColor: Colors.grey[400],
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Text(
                               LocaleKeys.aboutUs.tr(),
                               style: TextStyle(
@@ -442,7 +443,27 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                     ],
                   ),
-                )
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(SocialCubit.get(context).isDark? HexColor('#212121').withOpacity(0.8) : Colors.grey.shade300,),
+                      fixedSize: MaterialStateProperty.all(Size.fromHeight(50))
+                  ),
+                    onPressed: () => SocialCubit.get(context).deleteAccount(context),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.delete,color: Colors.red,),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text('DELETE MY ACCOUNT',style: TextStyle(color: Colors.red),),
+                      ],
+                    ),
+                ),
               ],
             ),
           ),

@@ -29,11 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) {
         SocialCubit.get(context).getMyData();
         SocialCubit.get(context).getPosts();
-        if(SocialCubit.get(context).model != null) {
-          SocialCubit.get(context).getUnReadNotificationsCount();
-          SocialCubit.get(context).getUnReadRecentMessagesCount();
-          SocialCubit.get(context).getFriendRequest();
-        }
         return BlocConsumer<SocialCubit, SocialStates>(
           listener: (context, state) {},
           builder: (context, state) {
@@ -223,9 +218,6 @@ class _HomeScreenState extends State<HomeScreen> {
     await Future.delayed(Duration(seconds: 1)).then((value) {
       SocialCubit.get(context).getMyData();
       SocialCubit.get(context).getPosts();
-      SocialCubit.get(context).getUnReadNotificationsCount();
-      SocialCubit.get(context).getUnReadRecentMessagesCount();
-      SocialCubit.get(context).getFriendRequest();
       refreshController1.refreshCompleted();
     });
   }

@@ -90,5 +90,10 @@
   "account": "Account",
   "Donthaveanaccount": "Don\\'t have an account",
   "seeYourProfile": "See your profile",
-  "newsFeeds" : "News Feeds"
+  "newsFeeds": "News Feeds",
+  "likePost": "likes a post you shared",
+  "commentPost": "Commented on a post you shared",
+  "friendRequestNotify": "sent you a friend request, check it out!",
+  "friendRequestAccepted": "accepted your friend request, you are now friends checkout his profile",
+  "removeThisNotify": "Remove This Notify"
 }

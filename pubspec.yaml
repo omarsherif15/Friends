@@ -43,19 +43,17 @@ dependencies:
   firebase_storage: ^10.0.3
   firebase_messaging: ^10.0.8
   flutter_local_notifications: ^9.0.0
-  scroll_app_bar: ^2.0.0
-  scrollable_positioned_list: ^0.2.0-nullsafety.0
   get_time_ago: ^1.0.7+1
   pull_to_refresh: ^2.0.0
   full_screen_image_null_safe: any
   google_sign_in: ^5.1.1
-  path_provider: ^2.0.5
   uuid: 3.0.5
   easy_localization: ^3.0.0
   google_fonts: ^2.1.0
   expansion_widget: ^0.0.2
   animated_splash_screen: ^1.1.0
   badges: ^2.0.1
+  firebase_crashlytics: ^2.2.4
 
 dev_dependencies:
   flutter_test:
@@ -89,9 +87,6 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: SpecialIcon
-      fonts:
-        - asset: assets/fonts/MyFlutterApp.ttf
     - family: IconBroken
       fonts:
         - asset: assets/fonts/icons.ttf

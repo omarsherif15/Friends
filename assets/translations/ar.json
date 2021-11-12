@@ -90,5 +90,10 @@
   "account": "الحساب الشخصي",
   "Donthaveanaccount": "ليس لديك حساب",
   "seeYourProfile": "عرض ملفك الشخصي",
-  "newsFeeds": "اخر الأخبار"
+  "newsFeeds": "اخر الأخبار",
+  "likePost": "اعجبه المنشور الذي شاركته ",
+  "commentPost": "علق على منشورقمت بنشره",
+  "friendRequestNotify": "أرسل لك طلب صداقة ، تحقق من ذلك !",
+  "friendRequestAccepted": "قبلت طلب الصداقة الخاص بك ، فأنتم الآن أصدقاء تحقق من ملفه الشخصي",
+  "removeThisNotify": "حذف هذا الاشعار"
 }

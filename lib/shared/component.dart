@@ -1,7 +1,6 @@
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:socialapp/cubit/socialCubit.dart';
-import 'package:socialapp/cubit/states.dart';
 import 'package:socialapp/layouts/sociallayout.dart';
 import 'package:socialapp/models/postModel.dart';
 import 'package:socialapp/models/userModel.dart';
@@ -315,31 +314,23 @@ Widget buildPost(context,state, PostModel postModel, UserModel? model ,GlobalKey
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: myDivider(),
           ),
-          isSingle ? Row(
+          isSingle ?
+          Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
                 child: InkWell(
                   onTap: () async {
-                    if(await SocialCubit.get(context).likedByMe(postModel.postId) == false) {
-                      await Future.delayed(Duration(seconds: 1)).then((value) {
-                        if(state is LikedByMeCheckedSuccessState) {
-                                SocialCubit.get(context).sendInAppNotification(
-                                    receiverName: postModel.name,
-                                    receiverId: postModel.uId,
-                                    content: 'likes a post you shared',
-                                    contentId: postModel.postId,
-                                    contentKey: 'post');
-                                SocialCubit.get(context).sendFCMNotification(
-                                  token: model!.token,
-                                  senderName: SocialCubit.get(context).model!.name,
-                                  messageText: '${SocialCubit.get(context).model!.name}' + ' likes a post you shared',
-                                );
-                              }
-                            });
-                    }
-                  },
+
+                    UserModel? postUser = SocialCubit.get(context).userModel;
+                    await SocialCubit.get(context).likedByMe(
+                      postUser: postUser,
+                      context: context,
+                      postModel: postModel,
+                      postId: postModel.postId
+                    );
+                    },
                   child: Row(
                     children: [
                       Icon(
@@ -362,7 +353,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel? model ,GlobalKey
                         CommentsScreen(
                             likes: postModel.likes, postId: postModel.postId,postUid: postModel.uId,));
                   },
-                  child: isSingle?  Row(
+                  child: Row(
                     children: [
                       Icon(
                           IconBroken.Chat,
@@ -373,20 +364,7 @@ Widget buildPost(context,state, PostModel postModel, UserModel? model ,GlobalKey
                       ),
                       Text(LocaleKeys.comment.tr(),style: TextStyle(color: SocialCubit.get(context).textColor)),
                     ],
-                  ) :Row(
-                    children: [
-                      CircleAvatar(
-                          radius: 18,
-                          backgroundImage: NetworkImage('${model!.profilePic}')),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Text(
-                        LocaleKeys.write_comment.tr(),
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ) ,
+                  )
                 ),
               ),
               SizedBox(width: 15,),
@@ -454,22 +432,14 @@ Widget buildPost(context,state, PostModel postModel, UserModel? model ,GlobalKey
               Spacer(),
               InkWell(
                 onTap: () async {
-                  SocialCubit.get(context).getUserData(postModel.uId);
+
                   UserModel? postUser = SocialCubit.get(context).userModel;
-                  if(postModel.uId != model.uID) {
-                          SocialCubit.get(context).sendInAppNotification(
-                              receiverName: postModel.name,
-                              receiverId: postModel.uId,
-                              content: 'likes a post you shared',
-                              contentId: postModel.postId,
-                              contentKey: 'post'
-                          );
-                          SocialCubit.get(context).sendFCMNotification(
-                            token: postUser!.token,
-                            senderName: SocialCubit.get(context).model!.name,
-                            messageText: '${SocialCubit.get(context).model!.name}' + ' likes a post you shared',
-                          );
-                        }
+                  await SocialCubit.get(context).likedByMe(
+                      postUser: postUser,
+                      context: context,
+                      postModel: postModel,
+                      postId: postModel.postId
+                  );
                 },
                 child: Row(
                   children: [

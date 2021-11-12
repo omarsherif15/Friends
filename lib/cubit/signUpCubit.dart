@@ -53,6 +53,7 @@ class SignUpCubit extends Cubit<SocialStates> {
         name: name,
         phone: phone,
         email: email,
+        dateTime: FieldValue.serverTimestamp(),
         coverPic: 'https://media.cdnandroid.com/27/54/bb/52/imagen-cartoon-photo-editor-art-filter-2018-1gal.jpg',
         profilePic: 'https://static.toiimg.com/thumb/resizemode-4,msid-76729536,width-1200,height-900/76729536.jpg',
         bio: 'Write you own bio...'

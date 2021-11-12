@@ -106,8 +106,11 @@ class CodegenLoader extends AssetLoader{
   "account": "الحساب الشخصي",
   "Donthaveanaccount": "ليس لديك حساب",
   "seeYourProfile": "عرض ملفك الشخصي",
-    "newsFeeds": "اخر الأخبار"
-
+  "newsFeeds": "اخر الأخبار",
+  "likePost": "اعجبه المنشور الذي شاركته ",
+  "commentPost": "علق على منشورقمت بنشره",
+  "friendRequestNotify": "أرسل لك طلب صداقة ، تحقق من ذلك !",
+  "friendRequestAccepted": "قبلت طلب الصداقة الخاص بك ، فأنتم الآن أصدقاء تحقق من ملفه الشخصي"
 };
 static const Map<String,dynamic> en = {
   "share": "Share",
@@ -201,7 +204,11 @@ static const Map<String,dynamic> en = {
   "account": "Account",
   "Donthaveanaccount": "Don\\'t have an account",
   "seeYourProfile": "See your profile",
-  "newsFeeds" : "News Feeds"
+  "newsFeeds": "News Feeds",
+  "likePost": "likes a post you shared",
+  "commentPost": "Commented on a post you shared",
+  "friendRequestNotify": "sent you a friend request, check it out!",
+  "friendRequestAccepted": "accepted your friend request, you are now friends checkout his profile"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"ar": ar, "en": en};
 }

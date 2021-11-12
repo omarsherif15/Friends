@@ -325,7 +325,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                 userModel.uID);
                             SocialCubit.get(context).sendInAppNotification(
                                 contentKey: 'friendRequestAccepted',
-                                contentId: SocialCubit.get(context).model!.name,
+                                contentId: SocialCubit.get(context).model!.uID,
                                 content: 'accepted your friend request, you are now friends checkout his profile',
                                 receiverId: userModel.uID,
                                 receiverName: userModel.name
